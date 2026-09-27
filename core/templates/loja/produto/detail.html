@@ -311,8 +311,8 @@
                                     <li><a href="../categoria/65699.html">Lanches</a></li>
                                  </ul>
                               </li>
-                              <li><a href="../categoriab4a6.html?filtro=4">Ofertas</a></li>
-                              <li><span class="sidrLeft">Fale conosco</span></li>
+                              {# <li><a href="../categoriab4a6.html?filtro=4">Ofertas</a></li> #}
+                              {% if config.whatsapp_numero %}<li><a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer">Fale conosco</a></li>{% endif %}
                               <li class="visible-sm visible-xs"><a href="#" data-toggle="modal" data-target="#modalSuporte">Suporte</a></li>
                            </ul>
                         </nav>
