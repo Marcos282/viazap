@@ -15,7 +15,7 @@
         Por esse motivo, disponibilizamos esta ferramenta para que vocês possam ajustar as imagens de acordo com a qualidade mínima necessária, garantindo uma boa resolução sem comprometer a performance e a experiência do usuário.
       </div>
       <p class="text-muted">Se você não souber quais dimensões usar, deixe os campos de largura e altura em branco. Nesse caso, a ferramenta manterá as dimensões originais da imagem.</p>
-      <p class="text-muted">Escolha o tamanho máximo e baixe as imagens comprimidas em WebP.</p>
+      <p class="text-muted">Escolha o tamanho máximo e baixe as imagens comprimidas em WebP ou marque a opção para converter para JPG.</p>
       {% if erro %}<div class="alert alert-danger">{{ erro }}</div>{% endif %}
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -36,6 +36,13 @@
         <div class="form-group">
           <label for="imagens">Imagens</label>
           <input id="imagens" name="imagens" type="file" class="form-control" accept="image/*" multiple required>
+        </div>
+        <div class="form-group">
+          <label class="checkbox">
+            <input id="converter_jpg" name="converter_jpg" type="checkbox" value="1" aria-describedby="converter_jpg_ajuda"{% if converter_jpg %} checked{% endif %}>
+            <span></span> Converter para JPG
+          </label>
+          <small id="converter_jpg_ajuda" class="form-text text-muted">Áreas transparentes ficarão com fundo branco no JPG.</small>
         </div>
         <button type="submit" class="btn btn-primary">Comprimir imagens</button>
       </form>

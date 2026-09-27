@@ -1306,6 +1306,10 @@ def painel_reduzir_imagens(request):
 
     resultados = []
     erro = None
+    converter_jpg = request.POST.get('converter_jpg') == '1'
+    formato = 'JPEG' if converter_jpg else 'WEBP'
+    extensao = 'jpg' if converter_jpg else 'webp'
+    mime_type = 'image/jpeg' if converter_jpg else 'image/webp'
     if request.method == 'POST':
         try:
             limite_mb = float(request.POST.get('limite_mb', '1'))
@@ -1328,6 +1332,10 @@ def painel_reduzir_imagens(request):
                 try:
                     imagem = Image.open(arquivo)
                     imagem.load()
+                    if converter_jpg:
+                        imagem_rgba = imagem.convert('RGBA')
+                        imagem = Image.new('RGB', imagem_rgba.size, 'white')
+                        imagem.paste(imagem_rgba, mask=imagem_rgba.getchannel('A'))
                     if imagem.mode not in ('RGB', 'RGBA'):
                         imagem = imagem.convert('RGBA' if 'A' in imagem.getbands() else 'RGB')
 
@@ -1346,7 +1354,8 @@ def painel_reduzir_imagens(request):
                     dados = b''
                     for tentativa in range(12):
                         buffer = BytesIO()
-                        imagem.save(buffer, format='WEBP', quality=qualidade, method=6)
+                        opcoes = {'optimize': True} if converter_jpg else {'method': 6}
+                        imagem.save(buffer, format=formato, quality=qualidade, **opcoes)
                         dados = buffer.getvalue()
                         if len(dados) <= limite_bytes:
                             break
@@ -1355,12 +1364,12 @@ def painel_reduzir_imagens(request):
                             imagem = imagem.resize((max(1, int(largura * 0.85)), max(1, int(altura * 0.85))), Image.Resampling.LANCZOS)
                             largura, altura = imagem.size
 
-                    nome = f'{arquivo.name.rsplit(".", 1)[0]}.webp'
+                    nome = f'{arquivo.name.rsplit(".", 1)[0]}.{extensao}'
                     resultados.append({
                         'nome': nome,
                         'tamanho_kb': round(len(dados) / 1024, 1),
                         'limite_mb': limite_mb,
-                        'data_url': 'data:image/webp;base64,' + base64.b64encode(dados).decode('ascii'),
+                        'data_url': f'data:{mime_type};base64,' + base64.b64encode(dados).decode('ascii'),
                     })
                 except Exception:
                     resultados.append({'nome': arquivo.name, 'erro': 'Arquivo de imagem inválido.'})
@@ -1371,6 +1380,7 @@ def painel_reduzir_imagens(request):
         'limite_mb': request.POST.get('limite_mb', '1'),
         'largura': request.POST.get('largura', ''),
         'altura': request.POST.get('altura', ''),
+        'converter_jpg': converter_jpg,
         'localizacao': [{'n1': 'Reduzir imagens', 'url': 'painel_reduzir_imagens'}],
         'qt_items_cliente': qt_items_cliente(request),
         'url_marketplace': get_tenant_url(request, '/loja/'),

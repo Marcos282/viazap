@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 
 from .forms import UserCreationForm
@@ -276,3 +276,57 @@ class NewRegistrationTenantIsolationTests(TestCase):
         with self.assertRaises(IntegrityError):
             User(email='igual@example.com', username='segunda').save()
         self.assertFalse(Tenant.objects.filter(subdomain='segunda').exists())
+
+
+class ImageReductionFormatTests(SimpleTestCase):
+    def process_image(self, converter_jpg=False, mode='RGBA'):
+        import base64
+        from io import BytesIO
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from django.test import RequestFactory
+        from PIL import Image
+        from .views_auth import painel_reduzir_imagens
+
+        source = BytesIO()
+        image = Image.new(mode, (40, 20), (255, 0, 0, 0) if mode == 'RGBA' else 0)
+        if mode == 'P':
+            image.info['transparency'] = 0
+        image.save(source, format='PNG')
+        data = {
+            'imagens': SimpleUploadedFile('foto.png', source.getvalue(), content_type='image/png'),
+            'limite_mb': '1', 'largura': '20',
+        }
+        if converter_jpg:
+            data['converter_jpg'] = '1'
+        request = RequestFactory().post('/painel/reduzir-imagens/', data)
+        request.user = SimpleNamespace(is_authenticated=True)
+        with patch('customers.views_auth.render', side_effect=lambda request, template, context: context), \
+             patch('customers.views_auth.qt_items_cliente', return_value=0), \
+             patch('customers.views_auth.get_tenant_url', return_value='/loja/'):
+            context = painel_reduzir_imagens(request)
+        result = context['resultados'][0]
+        prefix, encoded = result['data_url'].split(',', 1)
+        output = Image.open(BytesIO(base64.b64decode(encoded)))
+        output.load()
+        self.assertEqual(output.size, (20, 10))
+        self.assertEqual(context['converter_jpg'], converter_jpg)
+        return result, prefix, output
+
+    def test_default_output_remains_webp(self):
+        result, prefix, output = self.process_image()
+        self.assertEqual(result['nome'], 'foto.webp')
+        self.assertEqual(prefix, 'data:image/webp;base64')
+        self.assertEqual(output.format, 'WEBP')
+        self.assertEqual(output.getpixel((0, 0))[3], 0)
+
+    def test_jpg_output_flattens_transparency_on_white(self):
+        for mode in ('RGBA', 'P'):
+            with self.subTest(mode=mode):
+                result, prefix, output = self.process_image(converter_jpg=True, mode=mode)
+                self.assertEqual(result['nome'], 'foto.jpg')
+                self.assertEqual(prefix, 'data:image/jpeg;base64')
+                self.assertEqual(output.format, 'JPEG')
+                self.assertEqual(output.mode, 'RGB')
+                self.assertEqual(output.getpixel((0, 0)), (255, 255, 255))
