@@ -1,0 +1,32 @@
+<div class="modal fade" id="modalCliente{{ info.ordem.pk }}" tabindex="-1" role="dialog" aria-labelledby="clienteTitulo{{ info.ordem.pk }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form class="order-action-form" method="post" action="{% url 'pedido_cliente' info.ordem.pk %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="clienteTitulo{{ info.ordem.pk }}">Cliente do pedido #{{ info.ordem.pk }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">&times;</button>
+        </div>
+        <div class="modal-body text-left">
+          <div class="alert alert-danger order-form-error" role="alert" hidden></div>
+          <div class="form-group">
+            <label for="clienteNome{{ info.ordem.pk }}">Nome do cliente</label>
+            <input class="form-control" id="clienteNome{{ info.ordem.pk }}" name="nome" type="text" maxlength="200" required value="{{ info.dados_cliente.nome|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label for="clienteZap{{ info.ordem.pk }}">WhatsApp com DDD</label>
+            <input class="form-control" id="clienteZap{{ info.ordem.pk }}" name="whatsapp" type="tel" maxlength="25" placeholder="(11) 99999-9999" required value="{{ info.dados_cliente.telefone|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label for="clienteObs{{ info.ordem.pk }}">Observações do pedido</label>
+            <textarea class="form-control" id="clienteObs{{ info.ordem.pk }}" name="observacoes" rows="4" maxlength="2000">{{ info.ordem.observacoes }}</textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar dados</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

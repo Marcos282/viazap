@@ -1,0 +1,1962 @@
+{% load static %}
+<div class="card card-custom">
+   <div class="card-body p-0">
+      <!--begin: Wizard-->
+      <div class="wizard wizard-3" id="kt_wizard_v3" data-wizard-state="first" data-wizard-clickable="true">
+         <!--begin: Wizard Nav-->
+         <div class="wizard-nav">
+            <div class="wizard-steps px-8 py-8 px-lg-15 py-lg-3">
+               <!--begin::Wizard Step 1 Nav-->
+               <div class="wizard-step" data-wizard-type="step" data-wizard-state="current">
+                  <div class="wizard-label">
+                     <h3 class="wizard-title">
+                        <span>1.</span> Geral
+                     </h3>
+                     <div class="wizard-bar"></div>
+                  </div>
+               </div>
+               <!--end::Wizard Step 1 Nav-->
+               <!--begin::Wizard Step 2 Nav-->
+               <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                  <div class="wizard-label">
+                     <h3 class="wizard-title">
+                        <span>2.</span> Aparência
+                     </h3>
+                     <div class="wizard-bar"></div>
+                  </div>
+               </div>
+               <!--end::Wizard Step 2 Nav-->
+               <!--begin::Wizard Step 3 Nav-->
+               <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                  <div class="wizard-label">
+                     <h3 class="wizard-title">
+                        <span>3.</span> Pagamento
+                     </h3>
+                     <div class="wizard-bar"></div>
+                  </div>
+               </div>
+               <!--end::Wizard Step 3 Nav-->
+               <!--begin::Wizard Step 4 Nav-->
+               <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                  <div class="wizard-label">
+                     <h3 class="wizard-title">
+                        <span>4.</span> Horários
+                     </h3>
+                     <div class="wizard-bar"></div>
+                  </div>
+               </div>
+               <!--end::Wizard Step 4 Nav-->
+               <!--begin::Wizard Step 5 Nav-->
+               <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                  <div class="wizard-label">
+                     <h3 class="wizard-title">
+                        <span>5.</span> Contato
+                     </h3>
+                     <div class="wizard-bar"></div>
+                  </div>
+               </div>
+               <!--end::Wizard Step 5 Nav-->
+               <!--begin::Wizard Step 6 Nav-->
+               <div class="wizard-step" data-wizard-type="step" data-wizard-state="pending">
+                  <div class="wizard-label">
+                     <h3 class="wizard-title">
+                        <span>6.</span> Usuário
+                     </h3>
+                     <div class="wizard-bar"></div>
+                  </div>
+               </div>
+               <!--end::Wizard Step 6 Nav-->
+            </div>
+         </div>
+         <!--end: Wizard Nav-->
+         <!--begin: Wizard Body-->
+         <div class="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
+            <div class="col-xl-12 col-xxl-7">
+               <!--begin: Wizard Form-->
+               <form class="form fv-plugins-bootstrap fv-plugins-framework" id="kt_form" method="post" action="{% url 'painel_configuracao' %}" enctype="multipart/form-data" autocomplete="off">
+                  {% csrf_token %}
+                  <!-- Campo fake para confundir o autocomplete do navegador -->
+                  <input type="text" name="fake_username" style="display: none;" tabindex="-1" autocomplete="off">
+                  <input type="password" name="fake_password" style="display: none;" tabindex="-1" autocomplete="off">
+                  <!--begin: Wizard Step 1-->
+                  <div class="pb-5" data-wizard-type="step-content" data-wizard-state="current">
+                     <h4 class="mb-10 font-weight-bold text-dark">Informações gerais</h4>
+                     <!--begin::Input-->
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Nome</label>
+                        <input type="text" class="form-control" name="name" placeholder="Informe o nome da loja" value="{{ settings.nome_loja }}">
+                        <span class="form-text text-muted">Por favor, insira o nome da loja.</span>
+                        <div class="fv-plugins-message-container"></div>
+                     </div>
+                     <!--end::Input-->
+                     <!--begin::Input-->
+                     <div class="form-group">
+                        <label>Descrição da Loja</label>
+                        <input type="text" class="form-control" name="descricao_loja" placeholder="Descrição" value="{{ settings.descricao_loja }}">
+                        <span class="form-text text-muted">Por favor, insira a descrição da loja.</span>
+                     </div>
+                     <!--end::Input-->
+                     
+                           <!--begin::Input-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <!-- <label>Postcode</label>
+                                 <input type="text" class="form-control" name="postcode" placeholder="Postcode" value="3000">
+                                 <span class="form-text text-muted">Please enter your Postcode.</span>
+                                 <div class="fv-plugins-message-container"></div> -->
+                              <h6>URL da loja</h6>
+                              <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">A URL que seus clientes usarão para acessar a loja, não serão permitidos acentos, cedilha, pontos e caracteres especiais.</p>
+                              <div class="form-group"></div>
+                              <div class="input-group">
+                                 <input type="text" class="form-control text-right" placeholder="subdomain" name="subdomain" value="{{ tenant.subdomain|default:'' }}" aria-describedby="basic-addon2" disabled>
+                                 <div class="input-group-append"><span class="input-group-text">.{% if configuracao.dominio %}{{ configuracao.dominio }}{% elif settings.dominio %}{{ settings.dominio }}{% else %}exemplo.com{% endif %}</span></div>
+                              </div>
+                           </div>
+                           <!--end::Input-->
+                        
+                        
+                           <!--begin::Input-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>CEP</label>
+                              <input type="text" class="form-control" name="CEP" id="cep" placeholder="00000-000" value="{{ settings.cep|default:'' }}" maxlength="9">
+                              <span class="form-text text-muted">Digite o CEP no formato 00000-000.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Input-->
+                        
+                       
+                        
+                           <!--begin::Input-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Bairro</label>
+                              <input type="text" class="form-control" name="bairro" placeholder="Bairro" value="{{ settings.bairro|default:'' }}">
+                              <span class="form-text text-muted">Informe seu bairro.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Input-->
+                           <!--begin::Input-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Rua</label>
+                              <input type="text" class="form-control" name="endereco" placeholder="Rua" value="{{ settings.endereco|default:'' }}">
+                              <span class="form-text text-muted">Informe sua rua.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Input-->
+                           <!--begin::Input-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Número</label>
+                              <input type="text" class="form-control" name="numero_endereco" placeholder="Número" value="{{ settings.numero_endereco|default:'' }}">
+                              <span class="form-text text-muted">Informe o número do endereço.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Input-->
+                           <!--begin::Input-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Complemento</label>
+                              <input type="text" class="form-control" name="complemento" placeholder="Complemento (opcional)" value="{{ settings.complemento|default:'' }}">
+                              <span class="form-text text-muted">Ex: Apto 101, Bloco A, etc.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Input-->
+                           <!--begin::Input-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Ponto de Referência</label>
+                              <input type="text" class="form-control" name="referencia" placeholder="Ponto de referência (opcional)" value="{{ settings.referencia|default:'' }}">
+                              <span class="form-text text-muted">Ex: Próximo ao mercado, em frente à escola, etc.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Input-->
+                       
+                     
+                     <div class="row">
+                        <div class="col-xl-6">
+                           <!--begin::Select-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Estado</label>
+                              <select name="estado" id="estado" class="form-control">
+                                 <option value="">Selecione o estado</option>
+                                 <option value="AC">Acre</option>
+                                 <option value="AL">Alagoas</option>
+                                 <option value="AP">Amapá</option>
+                                 <option value="AM">Amazonas</option>
+                                 <option value="BA">Bahia</option>
+                                 <option value="CE">Ceará</option>
+                                 <option value="DF">Distrito Federal</option>
+                                 <option value="ES">Espírito Santo</option>
+                                 <option value="GO">Goiás</option>
+                                 <option value="MA">Maranhão</option>
+                                 <option value="MT">Mato Grosso</option>
+                                 <option value="MS">Mato Grosso do Sul</option>
+                                 <option value="MG">Minas Gerais</option>
+                                 <option value="PA">Pará</option>
+                                 <option value="PB">Paraíba</option>
+                                 <option value="PR">Paraná</option>
+                                 <option value="PE">Pernambuco</option>
+                                 <option value="PI">Piauí</option>
+                                 <option value="RJ">Rio de Janeiro</option>
+                                 <option value="RN">Rio Grande do Norte</option>
+                                 <option value="RS">Rio Grande do Sul</option>
+                                 <option value="RO">Rondônia</option>
+                                 <option value="RR">Roraima</option>
+                                 <option value="SC">Santa Catarina</option>
+                                 <option value="SP">São Paulo</option>
+                                 <option value="SE">Sergipe</option>
+                                 <option value="TO">Tocantins</option>
+                              </select>
+                              <span class="form-text text-muted">Selecione seu estado.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Select-->
+                        </div>
+                        <div class="col-xl-6">
+                           <!--begin::Select-->
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Cidade</label>
+                              <select name="cidade" id="cidade" class="form-control" disabled>
+                                 <option value="">Selecione primeiro o estado</option>
+                              </select>
+                              <span class="form-text text-muted">Selecione sua cidade.</span>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Select-->
+                        </div>
+                        <!--begin::Select-->
+                        
+                     </div>
+
+                     
+                           <div class="form-group fv-plugins-icon-container">
+                              <label>Segmento</label>
+                              <select name="segmento" class="form-control">
+                                 <option  value="18">Academia e esportes</option>
+                                 <option  value="1">Alimentação e Bebidas</option>
+                                 <option  value="22">Artes e cultura</option>
+                                 <option  value="14">Automotivo</option>
+                                 <option  value="8">Beleza, estética e cuidados</option>
+                                 <option  value="25">Calçados</option>
+                                 <option SELECTED value="7">Comércio em Geral</option>
+                                 <option  value="19">Constução civil</option>
+                                 <option  value="24">Educação </option>
+                                 <option  value="9">Eletrônicos e importados</option>
+                                 <option  value="10">Farmácia</option>
+                                 <option  value="11">Imobiliário</option>
+                                 <option  value="27">Infantil</option>
+                                 <option  value="12">Móveis, decorações e utilidades</option>
+                                 <option  value="13">Outros</option>
+                                 <option  value="28">Pet shop</option>
+                                 <option  value="23">Publicidade e marketing</option>
+                                 <option  value="20">Saúde</option>
+                                 <option  value="21">Serviços</option>
+                                 <option  value="16">Sexshop</option>
+                                 <option  value="26">Supermercados</option>
+                                 <option  value="29">Transportadora</option>
+                                 <option  value="17">Turismo e hotelaria</option>
+                                 <option  value="15">Vestuário</option>
+                              </select>
+                              <div class="fv-plugins-message-container"></div>
+                           </div>
+                           <!--end::Select-->
+                        
+
+                  </div>
+                  <!--end: Wizard Step 1-->
+                  <!--begin: Wizard Step 2-->
+                  <div class="pb-5" data-wizard-type="step-content">
+                     <h4 class="mb-10 font-weight-bold text-dark">Aparência</h4>
+                     <!--begin::Foto de Perfil-->
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Imagem de perfil </label>
+                        <div id="dropzoneImagemPerfil" class="dropzone" style="max-width:300px; min-height:200px; margin:auto; border: 2px dashed #ccc; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s ease;"></div>
+                        <style>
+                           #dropzoneImagemPerfil {
+                           background-color: #f8f9fa;
+                           display: flex;
+                           align-items: center;
+                           justify-content: center;
+                           position: relative;
+                           }
+                           #dropzoneImagemPerfil:hover {
+                           border-color: #007bff;
+                           background-color: #e7f3ff;
+                           }
+                           #dropzoneImagemPerfil .dz-message {
+                           color: #6c757d;
+                           font-size: 14px;
+                           text-align: center;
+                           }
+                           #dropzoneImagemPerfil .dz-preview .dz-image img {
+                           width: 220px !important;
+                           height: 220px !important;
+                           object-fit: cover;
+                           border-radius: 10px;
+                           border: 1px solid #eee;
+                           box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                           }
+                           #dropzoneImagemPerfil .dz-preview .dz-image {
+                           width: 220px !important;
+                           height: 220px !important;
+                           }
+                           #dropzoneImagemPerfil .dz-preview {
+                           margin: 0 auto;
+                           }
+                        </style>
+
+                        <!-- Estilos para o botão SALVAR com efeitos -->
+                        <style>
+                           /* Efeitos para o botão SALVAR */
+                           #btn-submit-config {
+                              transition: all 0.3s ease;
+                              position: relative;
+                              overflow: hidden;
+                           }
+                           
+                           #btn-submit-config:hover {
+                              transform: translateY(-2px);
+                              box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+                           }
+                           
+                           #btn-submit-config:active {
+                              transform: translateY(0);
+                           }
+                           
+                           /* Animação de loading */
+                           #btn-submit-config.loading {
+                              background: linear-gradient(45deg, #28a745, #20c997);
+                              animation: loading-pulse 1.5s infinite;
+                           }
+                           
+                           @keyframes loading-pulse {
+                              0% { opacity: 1; }
+                              50% { opacity: 0.7; }
+                              100% { opacity: 1; }
+                           }
+                           
+                           /* Efeito de sucesso */
+                           #btn-submit-config.success {
+                              background: linear-gradient(45deg, #28a745, #34ce57);
+                              animation: success-bounce 0.6s ease;
+                           }
+                           
+                           @keyframes success-bounce {
+                              0% { transform: scale(1); }
+                              50% { transform: scale(1.1); }
+                              100% { transform: scale(1); }
+                           }
+                           
+                           /* Efeito de erro */
+                           #btn-submit-config.error {
+                              background: linear-gradient(45deg, #dc3545, #e74c3c);
+                              animation: error-shake 0.6s ease;
+                           }
+                           
+                           @keyframes error-shake {
+                              0%, 100% { transform: translateX(0); }
+                              25% { transform: translateX(-5px); }
+                              75% { transform: translateX(5px); }
+                           }
+                           
+                           /* Efeito ripple no clique */
+                           .ripple {
+                              position: absolute;
+                              border-radius: 50%;
+                              background: rgba(255, 255, 255, 0.6);
+                              transform: scale(0);
+                              animation: ripple-animation 0.6s linear;
+                              pointer-events: none;
+                           }
+                           
+                           @keyframes ripple-animation {
+                              to {
+                                 transform: scale(4);
+                                 opacity: 0;
+                              }
+                           }
+                           
+                           /* Estilos para validação de senhas */
+                           .form-control.is-valid {
+                              border-color: #28a745;
+                              background-image: none;
+                           }
+                           
+                           .form-control.is-invalid {
+                              border-color: #dc3545;
+                              background-image: none;
+                           }
+                           
+                           .form-control.is-valid:focus {
+                              border-color: #28a745;
+                              box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+                           }
+                           
+                           .form-control.is-invalid:focus {
+                              border-color: #dc3545;
+                              box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+                           }
+                           
+                           /* Animação para ícones de validação */
+                           .senha-icon {
+                              animation: fadeInIcon 0.3s ease-in-out;
+                           }
+                           
+                           @keyframes fadeInIcon {
+                              from {
+                                 opacity: 0;
+                                 transform: translateY(-50%) scale(0.5);
+                              }
+                              to {
+                                 opacity: 1;
+                                 transform: translateY(-50%) scale(1);
+                              }
+                           }
+                        </style>
+
+                        <div id="imagemPerfilErro" style="display:none; color:#856404; background:#fff3cd; border:1px solid #ffeeba; border-radius:6px; padding:8px 12px; margin-top:8px; font-size:0.95em;"></div>
+                     </div>
+                     <!--end::Foto de Perfil-->
+                     <!--begin::Foto de Capa-->
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Foto de Capa</label>
+                        <div id="dropzoneFotoCapa" class="dropzone" style="max-width:100%; min-height:150px; margin:auto; border: 2px dashed #ccc; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s ease;"></div>
+                        <style>
+                           #dropzoneFotoCapa {
+                           background-color: #f8f9fa;
+                           display: flex;
+                           align-items: center;
+                           justify-content: center;
+                           position: relative;
+                           }
+                           #dropzoneFotoCapa:hover {
+                           border-color: #007bff;
+                           background-color: #e7f3ff;
+                           }
+                           #dropzoneFotoCapa .dz-message {
+                           color: #6c757d;
+                           font-size: 14px;
+                           text-align: center;
+                           }
+                           #dropzoneFotoCapa .dz-preview .dz-image img {
+                           width: 100% !important;
+                           max-width: 400px !important;
+                           height: 200px !important;
+                           object-fit: cover;
+                           border-radius: 10px;
+                           border: 1px solid #eee;
+                           box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                           }
+                           #dropzoneFotoCapa .dz-preview .dz-image {
+                           width: 100% !important;
+                           max-width: 400px !important;
+                           height: 200px !important;
+                           }
+                           #dropzoneFotoCapa .dz-preview {
+                           margin: 0 auto;
+                           width: 100%;
+                           }
+                        </style>
+                        <span class="form-text text-muted">Upload de imagem para foto de capa (formatos: JPG, PNG, GIF)</span>
+                        <div id="fotoCapaErro" style="display:none; color:#856404; background:#fff3cd; border:1px solid #ffeeba; border-radius:6px; padding:8px 12px; margin-top:8px; font-size:0.95em;"></div>
+                     </div>
+                     <!--end::Foto de Capa-->
+  
+                     <div class="form-group row">
+                        <div class="col-lg-6">
+                           <label>Cor do tema:</label>
+                           <div class="input-group">
+                              <!-- picker -->
+                              <input id="color" type="color" class="form-control form-control-color" value="#ff0000" title="Escolha a cor" style="width: 60px; height: 38px;">
+                              <!-- mostra o hex ao lado -->
+                              <input id="colorHex" type="text" class="form-control" value="#ff0000" name="color_theme" aria-label="Cor hex" style="cursor:default;">
+                              <!-- preview pequeno -->
+                              <span id="preview" class="input-group-text" style="width:36px"></span>
+                           </div>
+                        </div>
+                        <div class="col-lg-6">
+                           <label>Exibição de produtos por:</label>
+                           <select name="exibicao_produtos" class="form-control">
+                              <option value="1" aria>Lista (Catálogo)</option>
+                              <option value="2">Grade (Catálogo)</option>
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+                  <!--end: Wizard Step 2-->
+                  <!--begin: Wizard Step 3-->
+                  <div class="pb-5" data-wizard-type="step-content">
+                     <h4 class="mb-10 font-weight-bold text-dark">Informações de pagamento</h4>
+                     <!--begin::pagamento minimo-->
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Pagamento Mínimo</label>
+                        <input type="text" class="form-control maskmoney valid" name="pagamento_minimo"  value="{{ settings.pagamento_minimo|default:'' }}">
+                        <!-- <span class="form-text text-muted">Valor mínimo para pagamento</span> -->
+                     </div>
+                     <!--end::pagamento minimo-->
+                     <div class="form-group">
+                        <!-- <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Marque para aparecer em todo o site, caso contrário, irá aparecer apenas para quem você compartilhar o link.</p> -->
+                        <label>Loja aceita dinheiro?</label>
+                        <div class="radio-inline">
+                           <label class="radio radio-square">
+                           <input type="radio" name="dinheiro" value="True" checked> <span></span> Sim
+                           </label>
+                           <label class="radio radio-square">
+                           <input type="radio" name="dinheiro" value="False"> <span></span> Não
+                           </label>
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <!-- <h6>Visivel ?</h6> -->
+                        
+                        <label>A loja aceita cartao de débito</label>
+                        <div class="radio-inline">
+                           <label class="radio radio-square">
+                           <input type="radio" name="debito" value="True" checked> <span></span> Sim
+                           </label>
+                           <label class="radio radio-square">
+                           <input type="radio" name="debito" value="False"> <span></span> Não
+                           </label>
+                        </div>
+                     </div>
+                     <!--begin::pagamento minimo-->
+                     
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Quais bandeiras de cartao de débito aceitas ?</label>
+                        <input type="text" class="form-control" name="bandeiras_cartao_debito" placeholder="Ex: Visa, MasterCard" value="{{ settings.bandeiras_cartao_debito|default:'' }}">
+                        <!-- <span class="form-text text-muted">Valor mínimo para pagamento</span> -->
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                     <label>A loja aceita cartão de crédito?</label>
+                     <div class="radio-inline">
+                        <label class="radio radio-square">
+                        <input type="radio" name="credito" value="True" checked> <span></span> Sim
+                        </label>
+                        <label class="radio radio-square">
+                        <input type="radio" name="credito" value="False"> <span></span> Não
+                        </label>
+                     </div>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Quais bandeiras de cartão de crédito aceitas ?</label>
+                        <input type="text" class="form-control" name="bandeiras_cartao_credito" placeholder="Ex: Visa, MasterCard" value="{{ settings.bandeiras_cartao_credito|default:'' }}">
+                        <!-- <span class="form-text text-muted">Valor mínimo para pagamento</span> -->
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                     
+                      <label>A loja aceita PIX?</label>
+                     <div class="radio-inline">
+                        <label class="radio radio-square">
+                        <input type="radio" name="pix" value="True" checked> <span></span> Sim
+                        </label>
+                        <label class="radio radio-square">
+                        <input type="radio" name="pix" value="False"> <span></span> Não
+                        </label>
+                     </div>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Celular, E-mail, CPF/CNPJ ou Chave Alatória.</p>
+                        <label>Chave pix:</label>
+                        <input type="text" class="form-control" name="chave_pix" placeholder="Ex: chave@pix.com" value="{{ settings.chave_pix|default:'' }}">
+                        <!-- <span class="form-text text-muted">Valor mínimo para pagamento</span> -->
+                     </div>
+                     
+                           <label>Tipo de chave:</label>
+                           <select name="nome_pix" class="form-control">
+                              <option value="CPF" selected="">CPF</option>
+                              <option value="CNPJ">CNPJ</option>
+                              <option value="CELULAR">CELULAR</option>
+                              <option value="E-MAIL">E-MAIL</option>
+                              <option value="ALEATORIA">CHAVE ALEATORIA</option>
+                           </select>
+                          
+                     
+                  </div>
+                  <!--end: Wizard Step 3-->
+                  <!--begin: Wizard Step 4-->
+                  <div class="pb-5" data-wizard-type="step-content" id="step4">
+                     <h4 class="mb-10 font-weight-bold text-dark">Horários de Funcionamento</h4>
+                     <div class="my-5">
+                        <div class="alert alert-info">
+                           <i class="bi bi-info-circle me-2"></i>
+                           Esta etapa ainda está em desenvolvimento. A abertura e o fechamento da loja são controlados pelo botão verde no topo da página.
+                        </div>
+                        
+                        <!--begin::Horários por dia da semana-->
+                        <div class="row">
+                           <div class="col-12">
+                              <div class="card card-custom">
+                                 <div class="card-header">
+                                    <h3 class="card-title">Configurar Horários</h3>
+                                 </div>
+                                 <div class="card-body">
+                                    <fieldset id="horarios-container" disabled>
+                                       <!-- Segunda-feira -->
+                                       <div class="row align-items-center mb-4 horario-dia" data-dia="1">
+                                          <div class="col-md-2">
+                                             <label class="form-label fw-bold">Segunda-feira</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunrise"></i></span>
+                                                <input type="time" class="form-control horario-abertura" name="horario_abertura_1" placeholder="Abertura">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunset"></i></span>
+                                                <input type="time" class="form-control horario-fechamento" name="horario_fechamento_1" placeholder="Fechamento">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <div class="form-check">
+                                                <input class="form-check-input fechado-check" type="checkbox" name="fechado_1" id="fechado_1">
+                                                <label class="form-check-label" for="fechado_1">Fechado</label>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <button type="button" class="btn btn-sm btn-light-success btn-copy-horario" title="Copiar para todos os dias">
+                                                <i class="bi bi-copy"></i> Copiar
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <!-- Terça-feira -->
+                                       <div class="row align-items-center mb-4 horario-dia" data-dia="2">
+                                          <div class="col-md-2">
+                                             <label class="form-label fw-bold">Terça-feira</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunrise"></i></span>
+                                                <input type="time" class="form-control horario-abertura" name="horario_abertura_2" placeholder="Abertura">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunset"></i></span>
+                                                <input type="time" class="form-control horario-fechamento" name="horario_fechamento_2" placeholder="Fechamento">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <div class="form-check">
+                                                <input class="form-check-input fechado-check" type="checkbox" name="fechado_2" id="fechado_2">
+                                                <label class="form-check-label" for="fechado_2">Fechado</label>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <button type="button" class="btn btn-sm btn-light-success btn-copy-horario" title="Copiar para todos os dias">
+                                                <i class="bi bi-copy"></i> Copiar
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <!-- Quarta-feira -->
+                                       <div class="row align-items-center mb-4 horario-dia" data-dia="3">
+                                          <div class="col-md-2">
+                                             <label class="form-label fw-bold">Quarta-feira</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunrise"></i></span>
+                                                <input type="time" class="form-control horario-abertura" name="horario_abertura_3" placeholder="Abertura">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunset"></i></span>
+                                                <input type="time" class="form-control horario-fechamento" name="horario_fechamento_3" placeholder="Fechamento">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <div class="form-check">
+                                                <input class="form-check-input fechado-check" type="checkbox" name="fechado_3" id="fechado_3">
+                                                <label class="form-check-label" for="fechado_3">Fechado</label>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <button type="button" class="btn btn-sm btn-light-success btn-copy-horario" title="Copiar para todos os dias">
+                                                <i class="bi bi-copy"></i> Copiar
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <!-- Quinta-feira -->
+                                       <div class="row align-items-center mb-4 horario-dia" data-dia="4">
+                                          <div class="col-md-2">
+                                             <label class="form-label fw-bold">Quinta-feira</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunrise"></i></span>
+                                                <input type="time" class="form-control horario-abertura" name="horario_abertura_4" placeholder="Abertura">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunset"></i></span>
+                                                <input type="time" class="form-control horario-fechamento" name="horario_fechamento_4" placeholder="Fechamento">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <div class="form-check">
+                                                <input class="form-check-input fechado-check" type="checkbox" name="fechado_4" id="fechado_4">
+                                                <label class="form-check-label" for="fechado_4">Fechado</label>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <button type="button" class="btn btn-sm btn-light-success btn-copy-horario" title="Copiar para todos os dias">
+                                                <i class="bi bi-copy"></i> Copiar
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <!-- Sexta-feira -->
+                                       <div class="row align-items-center mb-4 horario-dia" data-dia="5">
+                                          <div class="col-md-2">
+                                             <label class="form-label fw-bold">Sexta-feira</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunrise"></i></span>
+                                                <input type="time" class="form-control horario-abertura" name="horario_abertura_5" placeholder="Abertura">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunset"></i></span>
+                                                <input type="time" class="form-control horario-fechamento" name="horario_fechamento_5" placeholder="Fechamento">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <div class="form-check">
+                                                <input class="form-check-input fechado-check" type="checkbox" name="fechado_5" id="fechado_5">
+                                                <label class="form-check-label" for="fechado_5">Fechado</label>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <button type="button" class="btn btn-sm btn-light-success btn-copy-horario" title="Copiar para todos os dias">
+                                                <i class="bi bi-copy"></i> Copiar
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <!-- Sábado -->
+                                       <div class="row align-items-center mb-4 horario-dia" data-dia="6">
+                                          <div class="col-md-2">
+                                             <label class="form-label fw-bold">Sábado</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunrise"></i></span>
+                                                <input type="time" class="form-control horario-abertura" name="horario_abertura_6" placeholder="Abertura">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunset"></i></span>
+                                                <input type="time" class="form-control horario-fechamento" name="horario_fechamento_6" placeholder="Fechamento">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <div class="form-check">
+                                                <input class="form-check-input fechado-check" type="checkbox" name="fechado_6" id="fechado_6">
+                                                <label class="form-check-label" for="fechado_6">Fechado</label>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <button type="button" class="btn btn-sm btn-light-success btn-copy-horario" title="Copiar para todos os dias">
+                                                <i class="bi bi-copy"></i> Copiar
+                                             </button>
+                                          </div>
+                                       </div>
+
+                                       <!-- Domingo -->
+                                       <div class="row align-items-center mb-4 horario-dia" data-dia="0">
+                                          <div class="col-md-2">
+                                             <label class="form-label fw-bold">Domingo</label>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunrise"></i></span>
+                                                <input type="time" class="form-control horario-abertura" name="horario_abertura_0" placeholder="Abertura">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-3">
+                                             <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-sunset"></i></span>
+                                                <input type="time" class="form-control horario-fechamento" name="horario_fechamento_0" placeholder="Fechamento">
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <div class="form-check">
+                                                <input class="form-check-input fechado-check" type="checkbox" name="fechado_0" id="fechado_0">
+                                                <label class="form-check-label" for="fechado_0">Fechado</label>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-2">
+                                             <button type="button" class="btn btn-sm btn-light-success btn-copy-horario" title="Copiar para todos os dias">
+                                                <i class="bi bi-copy"></i> Copiar
+                                             </button>
+                                          </div>
+                                       </div>
+                                    </fieldset>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <!--end::Horários por dia da semana-->
+
+                        <!--begin::Delivery config-->
+                        <div class="form-group mt-8 fv-plugins-icon-container">
+                           <label class="form-label fw-bold">A loja faz delivery?</label>
+                           <div class="radio-inline">
+                              <label class="radio radio-square">
+                                 <input type="radio" name="delivery" value="True" {% if settings.delivery %}checked{% endif %}> 
+                                 <span></span> Sim
+                              </label>
+                              <label class="radio radio-square">
+                                 <input type="radio" name="delivery" value="False" {% if not settings.delivery %}checked{% endif %}> 
+                                 <span></span> Não
+                              </label>
+                           </div>
+                        </div>
+                        <!--end::Delivery config-->
+                        <div class="form-group mt-8">
+                           <label class="font-weight-bold">Fluxo de pedidos — Como sua empresa trabalha?</label>
+                           <div class="radio-list">
+                              <label class="radio"><input type="radio" name="tipo_operacao" value="delivery" {% if settings.tipo_operacao == 'delivery' %}checked{% endif %}><span></span> 🍔 Alimentação / Delivery — restaurantes, hamburguerias, pizzarias</label>
+                              <label class="radio"><input type="radio" name="tipo_operacao" value="varejo" {% if settings.tipo_operacao == 'varejo' %}checked{% endif %}><span></span> 🛍️ Comércio / Venda de produtos — roupas, calçados, eletrônicos</label>
+                           </div>
+                           <small class="form-text text-muted">A escolha vale para novos pedidos. Pedidos anteriores mantêm seu fluxo original.</small>
+                        </div>
+                        <div class="form-group mt-8">
+                           <label class="form-label fw-bold">Quer o bot ativo com IA?</label>
+                           <div class="radio-inline">
+                              <label class="radio radio-square">
+                                 <input type="radio" name="bot_ativo_ia" value="True" {% if settings.bot_ativo_ia %}checked{% endif %}>
+                                 <span></span> Sim
+                              </label>
+                              <label class="radio radio-square">
+                                 <input type="radio" name="bot_ativo_ia" value="False" {% if not settings.bot_ativo_ia %}checked{% endif %}>
+                                 <span></span> Não
+                              </label>
+                           </div>
+                           <span class="form-text text-muted">Sim: o chat abre automaticamente com uma saudação ao entrar na loja. Não: abre somente quando o cliente clicar.</span>
+                        </div>
+                        <div class="form-group mt-8 fv-plugins-icon-container">
+                           <label class="form-label fw-bold">Exibir botão Chamar no WhatsApp?</label>
+                           <div class="radio-inline">
+                              <label class="radio radio-square">
+                                 <input type="radio" name="chamar_whatsapp" value="True" {% if settings.chamar_whatsapp %}checked{% endif %}>
+                                 <span></span> Sim
+                              </label>
+                              <label class="radio radio-square">
+                                 <input type="radio" name="chamar_whatsapp" value="False" {% if not settings.chamar_whatsapp %}checked{% endif %}>
+                                 <span></span> Não
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  
+                  <!--end: Wizard Step 4-->
+                  <!--begin: Wizard Step 5-->
+                  <div class="pb-5" data-wizard-type="step-content">
+                     <input type="hidden" name="dummy_field_step5" value="valid">
+                     <h4 class="mb-10 font-weight-bold text-dark">Contatos</h4>
+                     <div class="form-group fv-plugins-icon-container">
+                        <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Será o número no qual você receberá os pedidos.</p>
+                        <label>WhatsApp:</label>
+                        <input type="text" class="form-control maskcel" name="whatsapp" value="{{ settings.whatsapp|default:'' }}">
+                     </div>
+                     <!--begin::Section-->
+                     <h6 class="font-weight-bolder mb-3">
+                        Redes sociais:
+                     </h6>
+                    <!--begin::Redes Sociais-->
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Facebook</label>
+                        <input type="url" class="form-control" name="facebook" placeholder="https://facebook.com/sua-pagina" value="{{ settings.facebook|default:'' }}">
+                        <span class="form-text text-muted">URL da sua página no Facebook</span>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Instagram</label>
+                        <input type="url" class="form-control" name="instagram" placeholder="https://instagram.com/seu-perfil" value="{{ settings.instagram|default:'' }}">
+                        <span class="form-text text-muted">URL do seu perfil no Instagram</span>
+                     </div>
+                     <!--end::Redes Sociais-->
+                    <!-- SEPARADOR -->
+                     <div class="separator separator-dashed my-5"></div>
+                     <h6 class="font-weight-bolder mb-3">
+                        Estátisticas e notificações:
+                     </h6>
+                       </h6>
+                    <!--begin::Estatisticas-->
+
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Google Tag Manager (configuração anterior)</label>
+                        <input type="text" class="form-control" name="googleanalytics" value="{{ settings.googleanalytics|default:'' }}" placeholder="GTM-XXXXXXXX">
+                        <span class="form-text text-muted">Se houver uma tag na etapa 6, ela terá prioridade.</span>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>ID de acompanhamento (Facebook pixel).</label>
+                        <input type="text" class="form-control" name="facebook_pixel" value="{{ settings.facebook_pixel|default:'' }}">
+                        <span class="form-text text-muted">ID do Facebook Pixel</span>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>ID de acompanhamento (Instagram pixel).</label>
+                        <input type="text" class="form-control" name="instagram_pixel" value="{{ settings.instagram_pixel|default:'' }}">
+                        <span class="form-text text-muted">ID do Instagram Pixel</span>
+                     </div>
+
+                     <!--end::Estatisticas-->
+                     <!-- <div class="form-group">
+                        <div class="checkbox-list">
+                           <label class="checkbox">
+                           <input type="checkbox" name="email_novos_pedidos" checked>
+                           <span></span>
+                           Novos pedidos recebidos
+                           </label>
+                           <label class="checkbox">
+                           <input type="checkbox" name="email_pagamentos" checked>
+                           <span></span>
+                           Confirmação de pagamentos
+                           </label>
+                           <label class="checkbox">
+                           <input type="checkbox" name="email_cancelamentos">
+                           <span></span>
+                           Cancelamentos de pedidos
+                           </label>
+                           <label class="checkbox">
+                           <input type="checkbox" name="email_avaliacoes">
+                           <span></span>
+                           Novas avaliações de clientes
+                           </label>
+                        </div>
+                     </div> -->
+                     
+                     <!--end::Section-->
+                     <!--begin::Section-->
+                     
+                     
+                     <!--end::Section-->
+                  </div>
+                  <!--end: Wizard Step 5-->
+                  <!--begin: Wizard Step 6-->
+                  <div class="pb-5" data-wizard-type="step-content">
+                     <input type="hidden" name="dummy_field_step6" value="valid">
+                     <!--begin::Section-->
+                     <h4 class="mb-10 font-weight-bold text-dark">Responsável e autenticação</h4>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Tag Google Analytics</label>
+                        <input type="text" class="form-control" name="tag_google_analytics" value="{{ settings.tag_google_analytics|default:'' }}" placeholder="G-XXXXXXXXXX ou GTM-XXXXXXXX">
+                        <span class="form-text text-muted">Informe um ID G-XXXXXXXXXX (Google Analytics 4) ou GTM-XXXXXXXX (Google Tag Manager) para enviar novos acessos da loja ao Google. O Relatório de acessos do painel é gerado pelo próprio sistema e continua disponível sem esta tag.</span>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>ID da propriedade GA4</label>
+                        <input type="text" inputmode="numeric" pattern="[0-9]+" class="form-control" name="google_analytics_property_id" value="{{ settings.google_analytics_property_id|default:'' }}" placeholder="Ex.: 123456789">
+                        <span class="form-text text-muted">ID numérico encontrado em Administrador → Detalhes da propriedade. Ele permite exibir os relatórios na rota /stats/.</span>
+                     </div>
+                     <h6 class="font-weight-bolder mb-3">
+                        Dados do responsável:
+                     </h6>
+                     <!-- SEPARADOR -->
+                     <div class="separator separator-dashed my-5"></div>
+                     <!--begin:: Dados do responsável-->
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Nome do responsável</label>
+                        <input type="text" class="form-control" name="nome_responsavel" placeholder="Nome do responsável" value="{{ settings.nome_responsavel|default:'' }}">
+                        <span class="form-text text-muted">Nome do responsável pela loja</span>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Data de nascimento</label>
+                        <input type="date" class="form-control" name="dt_nascimento" placeholder="Data de nascimento" value="{{ settings.dt_nascimento|date:'Y-m-d' }}">
+                        <span class="form-text text-muted">Data de nascimento do responsável pela loja</span>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Tipo de documento</label>
+                           <select name="cpf_ou_cnpj" class="form-control">
+                              <option value="CPF" selected="">CPF</option>
+                              <option value="CNPJ">CNPJ</option>                             
+                           </select>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Nr. Documento</label>
+                        <input type="text" class="form-control" name="documento" placeholder="Nr. Documento" value="{{ settings.documento|default:'' }}">
+                        <span class="form-text text-muted">Número do documento do responsável pela loja</span>
+                     </div>
+                     <h6 class="font-weight-bolder mb-3">
+                        Login e autenticação:
+                     </h6>
+                     <!-- SEPARADOR -->
+                     <div class="separator separator-dashed my-5"></div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>E-mail</label>
+                        <input type="email" class="form-control" name="email" value="{{ user.email|default:'' }}" disabled>
+                        <span class="form-text text-muted">Este será o email usado para login no sistema</span>
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Senha</label>
+                        <input type="password" class="form-control" name="password" autocomplete="off" data-form-type="other">
+                        <!-- <span class="form-text text-muted">Senha do responsável pela loja</span> -->
+                     </div>
+                     <div class="form-group fv-plugins-icon-container">
+                        <label>Confirme a senha</label>
+                        <input type="password" class="form-control" name="confirm_password" aautocomplete="off" data-form-type="other">
+                        <!-- <span class="form-text text-muted">Senha do responsável pela loja</span> -->
+                     </div>
+                     <!--end::Section-->
+                  </div>
+                  </div>
+                  <!--end: Wizard Step 6-->
+                  <!--begin: Wizard Actions-->
+                  <div class="d-flex justify-content-between border-top mt-5 pt-10">
+                     <div class="mr-2">
+                        <button type="button" class="btn btn-light-primary font-weight-bold text-uppercase px-9 py-4" data-wizard-type="action-prev">
+                        Anterior
+                        </button>
+                     </div>
+                     <div>
+                        <button type="submit" class="btn btn-success font-weight-bold text-uppercase px-9 py-4" data-wizard-type="action-submit" id="btn-submit-config" style="display: inline-block !important;">
+                        Salvar
+                        </button>
+                        <!-- Botão de teste alternativo -->
+                        <!-- <button type="submit" class="btn btn-warning font-weight-bold text-uppercase px-9 py-4" id="btn-test-submit" onclick="alert('Testando submit direto!'); this.form.submit();" style="display: inline-block !important; margin-left: 10px;">
+                        TESTE SUBMIT
+                        </button> -->
+                        <button type="button" class="btn btn-primary font-weight-bold text-uppercase px-9 py-4" data-wizard-type="action-next">
+                        Próximo
+                        </button>
+                     </div>
+                  </div>
+                  <!--end: Wizard Actions-->
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+               </form>
+               <!--end: Wizard Form-->
+            </div>
+         </div>
+         <!--end: Wizard Body-->
+      </div>
+      <!--end: Wizard-->
+   </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM carregado');
+    
+    // Funcionalidade de copiar horários
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-copy-horario') || e.target.closest('.btn-copy-horario')) {
+            e.preventDefault();
+            console.log('Botão copiar clicado');
+            
+            const botao = e.target.classList.contains('btn-copy-horario') ? e.target : e.target.closest('.btn-copy-horario');
+            const diaAtual = botao.closest('.horario-dia');
+            const abertura = diaAtual.querySelector('.horario-abertura').value;
+            const fechamento = diaAtual.querySelector('.horario-fechamento').value;
+            const fechado = diaAtual.querySelector('.fechado-check').checked;
+            
+            console.log('Valores encontrados:', { abertura, fechamento, fechado });
+            
+            if (abertura || fechamento || fechado) {
+                const todosDias = document.querySelectorAll('.horario-dia');
+                todosDias.forEach(function(dia) {
+                    dia.querySelector('.horario-abertura').value = abertura;
+                    dia.querySelector('.horario-fechamento').value = fechamento;
+                    dia.querySelector('.fechado-check').checked = fechado;
+                    
+                    // Trigger change event para desabilitar/habilitar campos
+                    const event = new Event('change');
+                    dia.querySelector('.fechado-check').dispatchEvent(event);
+                });
+                
+                alert('Horários copiados para todos os dias da semana!');
+            } else {
+                alert('Configure primeiro os horários neste dia para poder copiar.');
+            }
+        }
+    });
+    
+    // Desabilitar campos quando marcado como fechado
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('fechado-check')) {
+            const diaContainer = e.target.closest('.horario-dia');
+            const aberturaInput = diaContainer.querySelector('.horario-abertura');
+            const fechamentoInput = diaContainer.querySelector('.horario-fechamento');
+            
+            if (e.target.checked) {
+                aberturaInput.disabled = true;
+                aberturaInput.value = '';
+                fechamentoInput.disabled = true;
+                fechamentoInput.value = '';
+                diaContainer.classList.add('bg-light-warning');
+            } else {
+                aberturaInput.disabled = false;
+                fechamentoInput.disabled = false;
+                diaContainer.classList.remove('bg-light-warning');
+            }
+        }
+    });
+    
+    // Validação de horários
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('horario-abertura') || e.target.classList.contains('horario-fechamento')) {
+            const diaContainer = e.target.closest('.horario-dia');
+            const abertura = diaContainer.querySelector('.horario-abertura').value;
+            const fechamento = diaContainer.querySelector('.horario-fechamento').value;
+            
+            if (abertura && fechamento) {
+                // Converter para minutos para comparação
+                const aberturaMinutos = convertTimeToMinutes(abertura);
+                const fechamentoMinutos = convertTimeToMinutes(fechamento);
+                
+                // Remover warning anterior
+                const warningExistente = diaContainer.querySelector('.overnight-warning');
+                if (warningExistente) {
+                    warningExistente.remove();
+                }
+                
+                // Permitir horários overnight (fechamento no dia seguinte)
+                if (fechamentoMinutos <= aberturaMinutos) {
+                    // Assumir que o fechamento é no dia seguinte
+                    diaContainer.querySelector('.horario-fechamento').classList.add('border-warning');
+                    const warning = document.createElement('small');
+                    warning.className = 'text-warning overnight-warning';
+                    warning.textContent = 'Horário de fechamento no dia seguinte';
+                    diaContainer.appendChild(warning);
+                } else {
+                    diaContainer.querySelector('.horario-fechamento').classList.remove('border-warning');
+                }
+            }
+        }
+    });
+    
+    function convertTimeToMinutes(time) {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
+    
+    // Pré-carregar horários existentes se houver
+    {% if horarios_existentes %}
+    const horariosExistentes = {{ horarios_existentes|safe }};
+    if (horariosExistentes && Object.keys(horariosExistentes).length > 0) {
+        Object.keys(horariosExistentes).forEach(function(dia) {
+            const horario = horariosExistentes[dia];
+            const diaContainer = document.querySelector(`.horario-dia[data-dia="${dia}"]`);
+            
+            if (diaContainer) {
+                if (horario.fechado) {
+                    const fechadoCheck = diaContainer.querySelector('.fechado-check');
+                    fechadoCheck.checked = true;
+                    fechadoCheck.dispatchEvent(new Event('change'));
+                } else {
+                    diaContainer.querySelector('.horario-abertura').value = horario.abertura;
+                    diaContainer.querySelector('.horario-fechamento').value = horario.fechamento;
+                }
+            }
+        });
+    }
+    {% endif %}
+    
+    // ========== CARREGAR CIDADES QUANDO ESTADO MUDA ==========
+    // Função para carregar cidades
+    function carregarCidades(estadoSigla) {
+        const cidadeSelect = document.getElementById('cidade');
+        
+        console.log('🏛️ Carregando cidades para estado:', estadoSigla);
+        
+        if (!estadoSigla) {
+            cidadeSelect.innerHTML = '<option value="">Selecione primeiro o estado</option>';
+            cidadeSelect.disabled = true;
+            return Promise.resolve([]);
+        }
+        
+        // Mostra loading
+        cidadeSelect.innerHTML = '<option value="">Carregando cidades...</option>';
+        cidadeSelect.disabled = true;
+        
+        console.log('🌐 Buscando cidades na API do IBGE para estado:', estadoSigla);
+        
+        // Busca cidades na API do IBGE
+        return fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSigla}/municipios`)
+            .then(response => response.json())
+            .then(cidades => {
+                console.log(`📊 Recebidas ${cidades.length} cidades da API`);
+                
+                cidadeSelect.innerHTML = '<option value="">Selecione a cidade</option>';
+                
+                // Ordena as cidades alfabeticamente
+                cidades.sort((a, b) => a.nome.localeCompare(b.nome));
+                
+                // Adiciona as opções de cidade
+                cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.nome;
+                    option.text = cidade.nome;
+                    cidadeSelect.appendChild(option);
+                });
+                
+                cidadeSelect.disabled = false;
+                console.log(`✅ ${cidades.length} cidades carregadas para ${estadoSigla}`);
+                
+                // Disparar evento para notificar que as cidades foram carregadas
+                const cidadesCarregadasEvent = new CustomEvent('cidadesCarregadas', {
+                    detail: { estado: estadoSigla, quantidade: cidades.length }
+                });
+                document.dispatchEvent(cidadesCarregadasEvent);
+                
+                return cidades;
+            })
+            .catch(error => {
+                console.error('❌ Erro ao carregar cidades:', error);
+                cidadeSelect.innerHTML = '<option value="">Erro ao carregar cidades</option>';
+                cidadeSelect.disabled = false;
+                return [];
+            });
+    }
+
+    $(document).ready(function() {
+        // Registrar listener para mudanças no estado
+        $('#estado').on('change', function() {
+            carregarCidades(this.value);
+        });
+    });
+
+    // ========== LÓGICA PARA PRÉ-SELECIONAR CAMPOS DO FORMULÁRIO ==========
+    function preencherCamposFormulario() {
+        console.log('🔄 Preenchendo campos do formulário...');
+        
+        // Obter dados do settings via JSON do servidor
+        {% if settings_data %}
+        const settingsData = {{ settings_data|safe }};
+        console.log('📋 Settings data:', settingsData);
+        
+        // PRÉ-SELECIONAR ESTADO
+        if (settingsData.estado) {
+            const estadoSelect = document.getElementById('estado');
+            if (estadoSelect) {
+                estadoSelect.value = settingsData.estado;
+                console.log('✅ Estado selecionado:', settingsData.estado);
+                
+                // Força o carregamento das cidades
+                console.log('🔄 Forçando carregamento de cidades...');
+                carregarCidades(settingsData.estado).then(() => {
+                    console.log('🎯 Cidades carregadas, tentando selecionar cidade...');
+                    
+                    // Tentar selecionar a cidade após carregamento
+                    if (settingsData.cidade) {
+                        setTimeout(() => {
+                            selecionarCidadeSeCarregada(settingsData.cidade);
+                        }, 100);
+                    }
+                });
+            }
+        }
+        
+        // PRÉ-SELECIONAR CIDADE (aguardar evento de cidades carregadas)
+        if (settingsData.cidade) {
+            console.log('🏙️  Tentando pré-selecionar cidade:', settingsData.cidade);
+            
+            // Função para tentar selecionar a cidade
+            function selecionarCidade() {
+                const cidadeSelect = document.getElementById('cidade');
+                
+                if (!cidadeSelect) {
+                    console.log('❌ Select de cidade não encontrado');
+                    return false;
+                }
+                
+                console.log(`� Procurando cidade ${settingsData.cidade} entre ${cidadeSelect.options.length} opções`);
+                
+                // Verificar se as cidades já foram carregadas
+                if (cidadeSelect.options.length <= 1) {
+                    console.log('⏳ Cidades ainda não carregadas');
+                    return false;
+                }
+                
+                // Tentar selecionar a cidade
+                cidadeSelect.value = settingsData.cidade;
+                
+                if (cidadeSelect.value === settingsData.cidade) {
+                    console.log('✅ Cidade selecionada com sucesso:', settingsData.cidade);
+                    return true;
+                } else {
+                    console.log('❌ Falha ao selecionar cidade. Valor não encontrado nas opções.');
+                    // Listar algumas opções para debug
+                    Array.from(cidadeSelect.options).slice(0, 5).forEach((option, index) => {
+                        console.log(`   Opção ${index}: value="${option.value}", text="${option.text}"`);
+                    });
+                    return false;
+                }
+            }
+            
+            // Escutar o evento de cidades carregadas
+            document.addEventListener('cidadesCarregadas', function(event) {
+                console.log('🎉 Evento cidadesCarregadas recebido:', event.detail);
+                setTimeout(() => selecionarCidade(), 100);
+            });
+            
+            // Tentar imediatamente caso as cidades já estejam carregadas
+            setTimeout(() => {
+                if (!selecionarCidade()) {
+                    console.log('⚠️ Cidade não selecionada imediatamente, aguardando evento...');
+                }
+            }, 2000);
+        }
+        // PRÉ-SELECIONAR EXIBIÇÃO DE PRODUTOS
+        if (settingsData.exibicao_produtos) {
+            const exibicaoSelect = document.querySelector('select[name="exibicao_produtos"]');
+            if (exibicaoSelect) {
+                exibicaoSelect.value = settingsData.exibicao_produtos;
+                console.log('✅ Exibição produtos selecionada:', settingsData.exibicao_produtos);
+            }
+        }
+         // PRÉ-SELECIONAR SEGMENTO
+        if (settingsData.segmento) {
+            const segmentoSelect = document.querySelector('select[name="segmento"]');
+            if (segmentoSelect) {
+                segmentoSelect.value = settingsData.segmento;
+                console.log('✅ Segmento selecionado:', settingsData.segmento);
+            }
+        }
+        // PRÉ-SELECIONAR SEGMENTO
+        if (settingsData.segmento) {
+            const segmentoSelect = document.querySelector('select[name="segmento"]');
+            if (segmentoSelect) {
+                segmentoSelect.value = settingsData.segmento;
+                console.log('✅ Segmento selecionado:', settingsData.segmento);
+            }
+        }
+        
+        // PRÉ-SELECIONAR EXIBIÇÃO DE PRODUTOS - Step 2
+        if (settingsData.exibicao_produtos) {
+            const exibicaoSelect = document.querySelector('select[name="delivery"]');
+            if (exibicaoSelect) {
+                exibicaoSelect.value = settingsData.exibicao_produtos;
+                console.log('✅ Exibição produtos selecionada:', settingsData.exibicao_produtos);
+            }
+        }
+        
+        // PRÉ-SELECIONAR RADIO BUTTONS - DINHEIRO
+        if (settingsData.dinheiro !== null && settingsData.dinheiro !== undefined) {
+            const dinheiroRadios = document.querySelectorAll('input[name="dinheiro"]');
+            const valorDinheiro = settingsData.dinheiro ? 'True' : 'False';
+            dinheiroRadios.forEach(function(radio) {
+                if (radio.value === valorDinheiro) {
+                    radio.checked = true;
+                    console.log('✅ Dinheiro selecionado:', valorDinheiro);
+                }
+            });
+        }
+        
+        // PRÉ-SELECIONAR RADIO BUTTONS - DÉBITO
+        if (settingsData.debito !== null && settingsData.debito !== undefined) {
+            const debitoRadios = document.querySelectorAll('input[name="debito"]');
+            const valorDebito = settingsData.debito ? 'True' : 'False';
+            debitoRadios.forEach(function(radio) {
+                if (radio.value === valorDebito) {
+                    radio.checked = true;
+                    console.log('✅ Débito selecionado:', valorDebito);
+                }
+            });
+        }
+        
+        // PRÉ-SELECIONAR RADIO BUTTONS - CRÉDITO
+        if (settingsData.credito !== null && settingsData.credito !== undefined) {
+            const creditoRadios = document.querySelectorAll('input[name="credito"]');
+            const valorCredito = settingsData.credito ? 'True' : 'False';
+            creditoRadios.forEach(function(radio) {
+                if (radio.value === valorCredito) {
+                    radio.checked = true;
+                    console.log('✅ Crédito selecionado:', valorCredito);
+                }
+            });
+        }
+        
+        // PRÉ-SELECIONAR RADIO BUTTONS - PIX
+        if (settingsData.pix !== null && settingsData.pix !== undefined) {
+            const pixRadios = document.querySelectorAll('input[name="pix"]');
+            const valorPix = settingsData.pix ? 'True' : 'False';
+            pixRadios.forEach(function(radio) {
+                if (radio.value === valorPix) {
+                    radio.checked = true;
+                    console.log('✅ PIX selecionado:', valorPix);
+                }
+            });
+        }
+        
+        // PRÉ-SELECIONAR TIPO DE PIX
+        if (settingsData.nome_pix) {
+            const nomePix = document.querySelector('select[name="nome_pix"]');
+            if (nomePix) {
+                nomePix.value = settingsData.nome_pix;
+                console.log('✅ Tipo PIX selecionado:', settingsData.nome_pix);
+            }
+        }
+        
+        // PRÉ-SELECIONAR RADIO BUTTONS - DELIVERY (Step 4)
+        if (settingsData.delivery !== null && settingsData.delivery !== undefined) {
+            const deliveryRadios = document.querySelectorAll('input[name="delivery"]');
+            const valorDelivery = settingsData.delivery ? 'True' : 'False';
+            deliveryRadios.forEach(function(radio) {
+                if (radio.value === valorDelivery) {
+                    radio.checked = true;
+                    console.log('✅ Delivery selecionado:', valorDelivery);
+                }
+            });
+        }
+        
+        // PRÉ-SELECIONAR TIPO DE DOCUMENTO
+        if (settingsData.cpf_ou_cnpj) {
+            const cpfCnpjSelect = document.querySelector('select[name="cpf_ou_cnpj"]');
+            if (cpfCnpjSelect) {
+                cpfCnpjSelect.value = settingsData.cpf_ou_cnpj;
+                console.log('✅ Tipo documento selecionado:', settingsData.cpf_ou_cnpj);
+            }
+        }
+        
+        // PRÉ-SELECIONAR COR DO TEMA
+        if (settingsData.color_theme) {
+            const colorPicker = document.getElementById('color');
+            const colorHex = document.getElementById('colorHex');
+            const preview = document.getElementById('preview');
+            
+            if (colorPicker && colorHex && preview) {
+                const cor = settingsData.color_theme;
+                colorPicker.value = cor;
+                colorHex.value = cor;
+                preview.style.backgroundColor = cor;
+                console.log('✅ Cor tema selecionada:', cor);
+            }
+        }
+        
+        {% endif %}
+        
+        console.log('✅ Preenchimento de campos concluído!');
+    }
+    
+    // Executar o preenchimento após DOM carregar
+    preencherCamposFormulario();
+    
+    // SOLUÇÃO DEFINITIVA: Force submit no botão
+    console.log('🚀 Iniciando configuração do botão submit...');
+    
+    // Como o botão agora é type="submit", ele vai submeter automaticamente
+    // SOLUÇÃO DEFINITIVA PARA O BOTÃO SALVAR
+    const form = document.getElementById('kt_form');
+    const submitBtn = document.querySelector('#btn-submit-config');
+    
+    if (form && submitBtn) {
+        console.log('✅ Formulário e botão encontrados - configurando submit DEFINITIVO');
+        
+        // Garantir visibilidade
+        submitBtn.style.display = 'inline-block';
+        submitBtn.style.visibility = 'visible';
+        
+        // REMOVER ATRIBUTOS DO WIZARD PARA EVITAR INTERFERÊNCIA
+        submitBtn.removeAttribute('data-wizard-type');
+        submitBtn.type = 'button'; // Mudar de submit para button para controle total
+
+        function getCurrentWizardStepNumber() {
+            const stepContents = Array.from(form.querySelectorAll('[data-wizard-type="step-content"]'));
+            const currentStep = form.querySelector('[data-wizard-type="step-content"][data-wizard-state="current"]');
+
+            if (!currentStep) {
+                return null;
+            }
+
+            const currentIndex = stepContents.indexOf(currentStep);
+            return currentIndex >= 0 ? currentIndex + 1 : null;
+        }
+
+        function validarStepGeralSeAtivo() {
+            const currentStepNumber = getCurrentWizardStepNumber();
+
+            if (currentStepNumber !== 1) {
+                return true;
+            }
+
+            const camposObrigatoriosStep1 = [
+                { selector: 'input[name="name"]', label: 'Nome da loja' },
+                { selector: 'input[name="descricao_loja"]', label: 'Descrição da loja' },
+                { selector: 'select[name="estado"]', label: 'Estado' },
+                { selector: 'input[name="endereco"]', label: 'Rua' },
+                { selector: 'input[name="numero_endereco"]', label: 'Número' }
+            ];
+
+            const camposInvalidos = [];
+            let primeiroCampoInvalido = null;
+
+            camposObrigatoriosStep1.forEach(function(campoInfo) {
+                const campo = form.querySelector(campoInfo.selector);
+                if (!campo) {
+                    return;
+                }
+
+                const valor = (campo.value || '').trim();
+                const campoValido = valor.length > 0;
+
+                campo.classList.toggle('is-invalid', !campoValido);
+                campo.classList.toggle('is-valid', campoValido);
+
+                if (!campoValido) {
+                    camposInvalidos.push(campoInfo.label);
+                    if (!primeiroCampoInvalido) {
+                        primeiroCampoInvalido = campo;
+                    }
+                }
+            });
+
+            if (camposInvalidos.length === 0) {
+                return true;
+            }
+
+            const mensagem = `Preencha os campos obrigatórios da etapa Geral: ${camposInvalidos.join(', ')}.`;
+            if (typeof toastr !== 'undefined') {
+                toastr.error(mensagem, 'Validação', {
+                    timeOut: 5000,
+                    progressBar: true,
+                    positionClass: 'toast-top-right'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validação da etapa 1',
+                    text: mensagem,
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#28a745'
+                });
+            }
+
+            if (primeiroCampoInvalido) {
+                primeiroCampoInvalido.focus();
+            }
+
+            return false;
+        }
+        
+        // ADICIONAR EVENT LISTENER PRÓPRIO - SEM INTERFERÊNCIA DO WIZARD
+        submitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!validarStepGeralSeAtivo()) {
+                return;
+            }
+            
+            console.log('🔥 BOTÃO SALVAR CLICADO!');
+            
+            // Salvar estado original
+            const originalText = this.innerHTML;
+            const originalClass = this.className;
+            
+            // EFEITO RIPPLE NO CLIQUE
+            const rect = this.getBoundingClientRect();
+            const ripple = document.createElement('span');
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            this.appendChild(ripple);
+            
+            // Remover ripple após animação
+            setTimeout(() => ripple.remove(), 600);
+            
+            // FASE 1: LOADING INICIAL
+            this.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> Iniciando...';
+            this.disabled = true;
+            this.classList.add('loading');
+            
+            setTimeout(() => {
+                // FASE 2: VALIDANDO SENHAS
+                this.innerHTML = '<i class="fa fa-shield-alt mr-2"></i> Validando senhas...';
+                
+                // VALIDAÇÃO DE SEGURANÇA: COMPARAR SENHAS
+                const senhaInput = document.querySelector('input[name="password"]');
+                const confirmSenhaInput = document.querySelector('input[name="confirm_password"]');
+                
+                if (senhaInput && confirmSenhaInput) {
+                    const senha = senhaInput.value;
+                    const confirmSenha = confirmSenhaInput.value;
+                    
+                    console.log('🔐 Validando senhas...');
+                    
+                    // Verificar se as senhas foram preenchidas
+                    if (senha || confirmSenha) {
+                        // Se uma foi preenchida, ambas devem ser preenchidas
+                        if (!senha || !confirmSenha) {
+                            // ERRO - Campo vazio
+                            this.classList.remove('loading');
+                            this.classList.add('error');
+                            this.innerHTML = '<i class="fa fa-exclamation-triangle mr-2"></i> Erro de Validação!';
+                            
+                            if (typeof toastr !== 'undefined') {
+                                toastr.error('⚠️ Preencha tanto a senha quanto a confirmação da senha.', 'Validação', {
+                                    timeOut: 5000,
+                                    progressBar: true,
+                                    positionClass: 'toast-top-right'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Validação!',
+                                    text: '⚠️ Preencha tanto a senha quanto a confirmação da senha.',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#28a745'
+                                });
+                            }
+                            
+                            // Destacar campos com erro
+                            senhaInput.classList.add('is-invalid');
+                            confirmSenhaInput.classList.add('is-invalid');
+                            
+                            // Restaurar botão após delay
+                            setTimeout(() => {
+                                this.innerHTML = originalText;
+                                this.className = originalClass;
+                                this.disabled = false;
+                                this.classList.remove('error');
+                            }, 3000);
+                            
+                            return; // Parar execução
+                        }
+                        
+                        // Verificar se as senhas são iguais
+                        if (senha !== confirmSenha) {
+                            // ERRO - Senhas diferentes
+                            this.classList.remove('loading');
+                            this.classList.add('error');
+                            this.innerHTML = '<i class="fa fa-times mr-2"></i> Senhas Não Conferem!';
+                            
+                            if (typeof toastr !== 'undefined') {
+                                toastr.error('🔒 As senhas não conferem. Digite senhas idênticas.', 'Erro de Validação', {
+                                    timeOut: 5000,
+                                    progressBar: true,
+                                    positionClass: 'toast-top-right'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Senhas Não Conferem!',
+                                    text: '🔒 As senhas digitadas são diferentes. Digite senhas idênticas.',
+                                    confirmButtonText: 'Corrigir',
+                                    confirmButtonColor: '#28a745'
+                                });
+                            }
+                            
+                            // Destacar campos com erro
+                            senhaInput.classList.add('is-invalid');
+                            confirmSenhaInput.classList.add('is-invalid');
+                            
+                            // Focar no campo de senha
+                            senhaInput.focus();
+                            
+                            // Restaurar botão após delay
+                            setTimeout(() => {
+                                this.innerHTML = originalText;
+                                this.className = originalClass;
+                                this.disabled = false;
+                                this.classList.remove('error');
+                            }, 4000);
+                            
+                            return; // Parar execução
+                        }
+                        
+                        // Verificar força da senha (opcional)
+                        if (senha.length < 6) {
+                            // ALERTA - Senha fraca (mas permite continuar)
+                            if (typeof toastr !== 'undefined') {
+                                toastr.warning('⚠️ Recomendamos usar senhas com pelo menos 6 caracteres.', 'Dica de Segurança', {
+                                    timeOut: 4000,
+                                    progressBar: true,
+                                    positionClass: 'toast-top-right'
+                                });
+                            }
+                        }
+                        
+                        // Remover destaque de erro se tudo ok
+                        senhaInput.classList.remove('is-invalid');
+                        confirmSenhaInput.classList.remove('is-invalid');
+                        
+                        console.log('✅ Senhas validadas com sucesso!');
+                    }
+                }
+                
+                setTimeout(() => {
+                    // FASE 3: ENVIANDO
+                    this.innerHTML = '<i class="fa fa-upload mr-2"></i> Enviando...';
+                    
+                    // SUBMIT COM FETCH PARA CONTROLAR RESPOSTA
+                    const formData = new FormData(form);
+                    
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        }
+                    })
+                    .then(async response => {
+                        let payload = null;
+                        try {
+                            payload = await response.json();
+                        } catch (e) {
+                            payload = null;
+                        }
+
+                        if (response.ok && payload && payload.success) {
+                            // SUCESSO!
+                            this.classList.remove('loading');
+                            this.classList.add('success');
+                            this.innerHTML = '<i class="fa fa-check mr-2"></i> Configurações Salvas!';
+                            
+                            // NOTIFICAÇÃO DE SUCESSO
+                            if (typeof toastr !== 'undefined') {
+                                toastr.success('🎉 Todas as configurações foram salvas com sucesso!', 'Sucesso!', {
+                                    timeOut: 4000,
+                                    progressBar: true,
+                                    positionClass: 'toast-top-right',
+                                    preventDuplicates: true
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Perfeito!',
+                                    text: '🎉 Todas as configurações foram salvas com sucesso!',
+                                    showConfirmButton: false,
+                                    timer: 3000,
+                                    timerProgressBar: true
+                                });
+                            }
+                            
+                            // RESTAURAR BOTÃO APÓS DELAY
+                            setTimeout(() => {
+                                this.innerHTML = originalText;
+                                this.className = originalClass;
+                                this.disabled = false;
+                                this.classList.remove('success');
+                            }, 3000);
+                            
+                        } else {
+                            const backendMessage = payload && payload.message ? payload.message : '';
+                            const defaultMessage = 'Erro HTTP: ' + response.status;
+                            throw new Error(backendMessage || defaultMessage);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('❌ Erro ao salvar:', error);
+                        
+                        // ERRO!
+                        this.classList.remove('loading');
+                        this.classList.add('error');
+                        this.innerHTML = '<i class="fa fa-times mr-2"></i> Erro ao Salvar!';
+                        
+                        // NOTIFICAÇÃO DE ERRO
+                        const errorMessage = (error && error.message) ? error.message : 'Erro ao salvar configurações. Tente novamente.';
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(`❌ ${errorMessage}`, 'Erro!', {
+                                timeOut: 5000,
+                                progressBar: true,
+                                positionClass: 'toast-top-right'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Ops!',
+                                text: `❌ ${errorMessage}`,
+                                confirmButtonText: 'Tentar Novamente',
+                                confirmButtonColor: '#28a745'
+                            });
+                        }
+                        
+                        // RESTAURAR BOTÃO APÓS DELAY
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.className = originalClass;
+                            this.disabled = false;
+                            this.classList.remove('error');
+                        }, 4000);
+                    });
+                }, 800);
+            }, 600);
+        });
+        
+        console.log('✅ Botão SALVAR configurado com bypass do wizard!');
+    } else {
+        console.error('❌ Formulário ou botão não encontrados!');
+    }
+    
+    // ========== CONFIGURAÇÃO DO WIZARD (mantido para navegação) ==========
+    const wizard = document.getElementById('kt_wizard_v3');
+    if (wizard) {
+        // Apenas manter o botão submit sempre visível
+        function toggleSubmitButton() {
+            const submitBtn = wizard.querySelector('#btn-submit-config');
+            if (submitBtn) {
+                submitBtn.style.display = 'inline-block';
+                submitBtn.style.visibility = 'visible';
+            }
+        }
+        
+        // Executar uma vez no carregamento
+        toggleSubmitButton();
+    }
+    
+    // ========== VALIDAÇÃO EM TEMPO REAL DAS SENHAS ==========
+    const senhaInput = document.querySelector('input[name="password"]');
+    const confirmSenhaInput = document.querySelector('input[name="confirm_password"]');
+    
+    if (senhaInput && confirmSenhaInput) {
+        console.log('🔐 Configurando validação de senhas em tempo real');
+        
+        // Função para validar senhas
+        function validarSenhas() {
+            const senha = senhaInput.value;
+            const confirmSenha = confirmSenhaInput.value;
+            
+            // Remover classes de erro primeiro
+            senhaInput.classList.remove('is-invalid', 'is-valid');
+            confirmSenhaInput.classList.remove('is-invalid', 'is-valid');
+            
+            // Remover mensagens de erro antigas
+            const errorMsgs = document.querySelectorAll('.senha-error-msg');
+            errorMsgs.forEach(msg => msg.remove());
+            
+            if (senha || confirmSenha) {
+                // Se uma foi preenchida, validar ambas
+                if (senha && confirmSenha) {
+                    if (senha === confirmSenha) {
+                        // Senhas iguais - OK
+                        senhaInput.classList.add('is-valid');
+                        confirmSenhaInput.classList.add('is-valid');
+                        
+                        // Adicionar ícone de sucesso
+                        adicionarIconeSenha(confirmSenhaInput, 'success', '✅ Senhas conferem');
+                        
+                        if (senha.length < 6) {
+                            adicionarIconeSenha(senhaInput, 'warning', '⚠️ Recomendamos pelo menos 6 caracteres');
+                        } else {
+                            adicionarIconeSenha(senhaInput, 'success', '✅ Senha válida');
+                        }
+                    } else {
+                        // Senhas diferentes - ERRO
+                        senhaInput.classList.add('is-invalid');
+                        confirmSenhaInput.classList.add('is-invalid');
+                        
+                        adicionarIconeSenha(confirmSenhaInput, 'error', '❌ Senhas não conferem');
+                    }
+                } else {
+                    // Apenas uma preenchida - ALERTA
+                    if (senha && !confirmSenha) {
+                        adicionarIconeSenha(confirmSenhaInput, 'warning', '⚠️ Confirme a senha');
+                    } else if (!senha && confirmSenha) {
+                        adicionarIconeSenha(senhaInput, 'warning', '⚠️ Digite a senha');
+                    }
+                }
+            }
+        }
+        
+        // Função para adicionar ícones de feedback
+        function adicionarIconeSenha(input, tipo, mensagem) {
+            // Remover ícone antigo
+            const iconesAntigos = input.parentNode.querySelectorAll('.senha-icon');
+            iconesAntigos.forEach(icone => icone.remove());
+            
+            // Criar novo ícone
+            const icon = document.createElement('div');
+            icon.className = `senha-icon senha-error-msg`;
+            icon.style.cssText = `
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 12px;
+                z-index: 10;
+                pointer-events: none;
+            `;
+            
+            if (tipo === 'success') {
+                icon.style.color = '#28a745';
+                icon.innerHTML = '✅';
+                icon.title = mensagem;
+            } else if (tipo === 'error') {
+                icon.style.color = '#dc3545';
+                icon.innerHTML = '❌';
+                icon.title = mensagem;
+            } else if (tipo === 'warning') {
+                icon.style.color = '#ffc107';
+                icon.innerHTML = '⚠️';
+                icon.title = mensagem;
+            }
+            
+            // Posicionar relativamente o container
+            if (input.parentNode.style.position !== 'relative') {
+                input.parentNode.style.position = 'relative';
+            }
+            
+            input.parentNode.appendChild(icon);
+        }
+        
+        // Adicionar event listeners
+        senhaInput.addEventListener('input', validarSenhas);
+        senhaInput.addEventListener('blur', validarSenhas);
+        confirmSenhaInput.addEventListener('input', validarSenhas);
+        confirmSenhaInput.addEventListener('blur', validarSenhas);
+        
+        console.log('✅ Validação de senhas configurada!');
+    }
+    
+    // Navegação automática para step4 se a URL contém #step4
+    if (window.location.hash === '#step4') {
+        console.log('🎯 Detectada âncora #step4 - navegando para o passo 4');
+        
+        // Aguarda um pouco para o wizard carregar completamente
+        setTimeout(function() {
+            const wizard = KTWizard.getInstance(document.getElementById('kt_wizard_v3'));
+            if (wizard) {
+                // Navega para o step 4 (índice 3, pois começa em 0)
+                wizard.goTo(4);
+                console.log('✅ Navegado para o step 4');
+                
+                // Scroll suave para o elemento step4
+                const step4Element = document.getElementById('step4');
+                if (step4Element) {
+                    step4Element.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }
+            }
+        }, 500); // Aguarda 500ms para garantir que o wizard carregou
+    }
+});
+
+// ========== SOLUÇÃO ADICIONAL PARA CARREGAR CIDADE ==========
+setTimeout(function() {
+    console.log('🚀 Executando solução adicional para cidade...');
+    
+    const estadoSelect = document.getElementById('estado');
+    const cidadeSelect = document.getElementById('cidade');
+    
+    if (estadoSelect && cidadeSelect && estadoSelect.value) {
+        console.log('📍 Estado detectado:', estadoSelect.value);
+        console.log('🏙️ Opções de cidade atuais:', cidadeSelect.options.length);
+        
+        // Se só tem uma opção (placeholder), força carregamento
+        if (cidadeSelect.options.length <= 1) {
+            console.log('⚡ Forçando carregamento de cidades...');
+            
+            if (typeof carregarCidades === 'function') {
+                carregarCidades(estadoSelect.value);
+            } else {
+                // Fallback: dispara evento change manualmente
+                console.log('🔧 Usando fallback - disparando evento change');
+                $(estadoSelect).trigger('change');
+            }
+        }
+    }
+}, 3000); // Aguarda 3 segundos para tentar novamente
+</script>

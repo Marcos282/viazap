@@ -1,0 +1,860 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+   <head>
+      {% include "loja/includes/google_tag_head.html" %}
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+      <title>{{ config.nome_loja|default:'Loja' }} - viazap</title>
+      <meta name="description" content="{{ config.descricao_loja|default:'Confira os produtos da loja' }}">
+      <meta name="keywords" content="{{ config.nome_loja|default:'Loja' }}, viazap">
+      <meta property="og:title" content="{{ config.nome_loja|default:'Loja' }} - viazap">
+      <meta property="og:description" content="{{ config.descricao_loja|default:'Confira os produtos da loja' }}">
+      <meta property="og:image" content="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}">
+      <link rel="shortcut icon" href="{% if configuracao.favicon %}{{ configuracao.favicon.url }}{% else %}{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}{% endif %}"/>
+      <link rel="manifest" href="manifest.json">
+      <link rel="stylesheet" href="{% static '_core/_cdn/bootstrap/css/bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/class.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/forms.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/typography.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/template.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/theme.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/default.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/novo.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/lineicons/css/LineIcons.min.css' %}">
+      <link href="http://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="{% static '_core/_cdn/fonts/style.min.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/sidr/css/jquery.sidr.light.min.css' %}">
+      <link  href="{% static '_core/_cdn/fancybox/css/jquery.fancybox.min.css' %}" rel="stylesheet">
+      <link rel="stylesheet" href="{% static 'app/estabelecimento/css/style5aaa.css' %}">
+      <style>
+         :root { --theme-color: {{ color_theme|default:'#DD7B0A' }}; }
+         .colored,
+         .shop-bag i,
+         .naver .navbar a i,
+         .header .naver .navbar .social a:hover i,
+         .naver .navbar a:hover,
+         .user-menu i,
+         .search-bar-mobile button i,
+         .title-icon i,
+         .title-line i,
+         .back-button i,
+         .fake-select i,
+         .sidebar-info i { color: var(--theme-color) !important; }
+         .botao-acao,
+         .footer-info,
+         .sidebar .sidebar-header,
+         .minitop,
+         .floatbar { background: var(--theme-color) !important; }
+         .top { border-color: var(--theme-color) !important; }
+
+         @media (max-width: 991px) {
+            .top {
+               border-top: 0;
+               background: var(--theme-color) !important;
+            }
+
+            .user-menu i,
+            .shop-bag i {
+               color: #fff !important;
+            }
+         }
+      </style>
+      <script src="{% static '_core/_cdn/jquery/js/jquery.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/fancybox/js/jquery.fancybox.min.js' %}"></script>
+      <!-- <script src="https://demo6.lojazap.com/_core/_cdn/instantclick/js/instantclick.min.js' %}"></script> -->
+      <!-- <script src="{% static 'app/estabelecimento/js/scriptaf9f.php?insubdominiourl=demo6&amp;virtualpath=/home/lojaza04/public_html/app/estabelecimento' %}"></script> -->
+      <!-- HTML adicional -->
+      <!-- ProChaty -->
+      <script id="chat-init" src="https://app.prochaty.com/account/js/init.js?id=5357647"></script>
+      <!-- / HTML adicional -->
+   </head>
+   <body>
+      {% include "loja/includes/google_tag_body.html" %}
+      <div id="main" class="body-estabelecimento">
+         <div class="header">
+            <div class="minitop hidden-xs hidden-sm">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="info-badges-desktop">
+                           <div class="info-badge">
+                              <i class="lni lni-money-protection"></i> 
+                              <span>Pedido mínimo: R$ {{ config.pagamento_minimo|floatformat:"2g" }}</span>
+                           </div>
+                           <div class="info-badge">
+                              <i class="lni lni-user"></i> 
+                              <span>Olá Marcos Sousa</span>
+                              <div class="clear"></div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="funcionamento">
+                           <div class="aberto" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                              <i class="lni lni-checkmark-circle"></i>
+                              <span>Estabelecimento {{ loja_aberta|yesno:"aberto,fechado,fechado" }}</span>
+                              <a href="/painel/home" title="Painel de Controle" style="color: inherit; text-decoration: none; font-size: 1.1rem; display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.2);"><i class="lni lni-cog" style="margin-right: 0;"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="top">
+               <div class="container">
+                  <div class="row align-middle hidden-sm hidden-xs">
+                     <div class="col-md-3">
+                        <div class="brand">
+                           <a href="{% url 'loja' %}">
+                           {% if config.foto_perfil %}
+                              <img src="{{ config.foto_perfil.url }}" alt="{{ config.nome_loja }}"/>
+                           {% elif config.logo_url %}
+                              <img src="{{ config.logo_url }}" alt="{{ config.nome_loja }}"/>
+                           {% else %}
+                              <img src="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}" alt="{{ config.nome_loja }}"/>
+                           {% endif %}
+                           <span>{{ config.nome_loja }} <strong class="colored">.</strong></span>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-md-9">
+                        <div class="row">
+                           <div class="col-md-9">
+                              <div class="search-bar">
+                                 <div class="clear"></div>
+                                 <form class="align-middle" method="GET" action="https://x.vaidezap.com/loja">
+                                    <input type="text" name="busca" placeholder="Digite sua busca..." value=""/>
+                                    <input type="hidden" name="categoria" value=""/>
+                                    <button>
+                                    <i class="lni lni-search-alt"></i>
+                                    </button>
+                                    <div class="clear"></div>
+                                 </form>
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <a class="holder-shop-bag pull-right" href="https://x.vaidezap.com/loja" title="Minha sacola">
+                                 <span class="cash">Minha sacola</span>
+                                 <div>
+                                    <div class="shop-bag">
+                                       <i class="lni lni-cart"></i>
+                                       <span class="counter">1</span>
+                                    </div>
+                                 </div>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row align-middle-mobile visible-sm visible-xs">
+                     <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="user-menu pull-left">
+                           <a href="javascript:history.back(1)" title="Voltar">
+                           <i class="lni lni-arrow-left"></i>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-md-6 col-sm-6 col-xs-6 nopadd">
+                     </div>
+                     <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="user-info pull-right">
+                           <div class="holder-shop-bag pull-right">
+                              <a href="https://x.vaidezap.com/loja" title="Minha sacola">
+                                 <div class="shop-bag">
+                                    <i class="lni lni-cart"></i>
+                                    <span class="counter">1</span>
+                                 </div>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="navigator naver hidden-sm hidden-xs">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <nav class="navbar pull-left">
+                           <ul class="nav navbar-nav">
+                              <li class="active"><a href="https://x.vaidezap.com">Início</a></li>
+                              <li class="dropdown">
+                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                 Categorias
+                                 <i class="lni lni-chevron-down icon-right"></i>
+                                 </a>
+                                 <ul class="dropdown-menu">
+                                    <li><a href="https://x.vaidezap.com/categoria">Todas</a></li>
+                                    <li><a href="https://x.vaidezap.com/categoria">Lanches</a></li>
+                                 </ul>
+                              </li>
+                              <li><a href="https://x.vaidezap.com/categoria>Ofertas</a></li>
+                              <li><span class="sidrLeft">Fale conosco</span></li>
+                              <!-- <li class="visible-sm visible-xs"><a href="#">Suporte</a></li> -->
+                           </ul>
+                        </nav>
+                        <nav class="navbar pull-right hidden-xs hidden-sm">
+                           <div class="social">
+                              {% if config.whatsapp_numero %}<a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp da loja"><i class="lni lni-whatsapp"></i></a>{% endif %}
+                           </div>
+                        </nav>
+                        <div class="clear"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="sidebars">
+            <div id="sidebarLeft">
+               <div class="sidebar">
+                  <div class="sidebar-header">
+                     <i class="close-sidebar lni lni-close" onclick="$.sidr('close', 'sidrLeft');"></i>
+                     <div class="clear"></div>
+                  </div>
+                  <div class="sidebar-content">
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-cart-full"></i>
+                           <span>Meus Pedidos</span>
+                        </div>
+                        <div class="content">
+                           <a href="./pedidosabertos"><i class="lni lni-shift-right"></i> Abertos</a>
+                        </div>
+                        <div class="content">
+                           <a href="./pedidosfechados"><i class="lni lni-shift-right"></i> Finalizados</a>
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-alarm-clock"></i>
+                           <span>Funcionamento</span>
+                        </div>
+                        <div class="content">
+                           Aberto 24H					
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-map-marker"></i>
+                           <span>Endereço</span>
+                        </div>
+                        <div class="content">
+                           {{ config.endereco|default:'1250' }}, Nº {{ config.numero_endereco|default:'1000' }}, <br/>Bairro: {{ config.bairro|default:'SV' }}, CEP: {{ config.cep|default:'88300-000' }}, {{ config.cidade|default:'São Paulo' }}/{{ config.estado|default:'São Paulo' }}<br/>
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-headphone-alt"></i>
+                           <span>Contato</span>
+                        </div>
+                        <div class="content">
+                           <div class="listitem">
+                              <i class="lni lni-whatsapp"></i>
+                              <span>21990921092</span>
+                           </div>
+                           <div class="listitem">
+                              <i class="lni lni-envelope"></i>
+                              <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1d6e686d726f69785d7172777c677c6d337e7270">[email&#160;protected]</a></span>
+                           </div>
+                        </div>
+                        <div class="social">
+                           {% if config.whatsapp_numero %}<a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp da loja"><i class="lni lni-whatsapp"></i></a>{% endif %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="modalalerta" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="modalcarrinho" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal"><i class="lni lni-close"></i></button>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="header-interna">
+            <div class="locked-bar visible-xs visible-sm">
+               <div class="avatar">
+                  <div class="holder">
+                     <a href="{% url 'loja' %}">
+                     {% if config.foto_perfil %}
+                        <img src="{{ config.foto_perfil.url }}" alt="{{ config.nome_loja }}"/>
+                     {% elif config.logo_url %}
+                        <img src="{{ config.logo_url }}" alt="{{ config.nome_loja }}"/>
+                     {% else %}
+                        <img src="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}" alt="{{ config.nome_loja }}"/>
+                     {% endif %}
+                     </a>
+                  </div>
+               </div>
+            </div>
+            <div class="holder-interna holder-interna-nopadd holder-interna-sacola visible-xs visible-sm"></div>
+         </div>
+         <div class="minfit sceneElement">
+            <div class="middle">
+               <div class="container nopaddmobile">
+                  <div class="row rowtitle">
+                     <div class="col-md-12">
+                        <div class="title-icon">
+                           <span>Pedido Delivery</span>
+                        </div>
+                        <div class="bread-box">
+                           <div class="bread">
+                              <a href="https://x.lojazap.com/loja"><i class="lni lni-home"></i></a>
+                              <span>/</span>
+                              <a href="https://x.lojazap.com/loja/sacola.php">Minha sacola</a>
+                              <span>/</span>
+                              <a href="https://x.lojazap.com/loja/pedido.php">Pedido Delivery</a>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-12 hidden-xs hidden-sm">
+                        <div class="clearline"></div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-12">
+                     </div>
+                  </div>
+                  <div class="pedido">
+                     <form id="the_form" method="POST" action="{% url 'pedido_delivery' %}">
+                        {% csrf_token %}
+                        <div class="row">
+                           <div class="col-md-8 muda-checkout">
+                              <div class="titler">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="title-line mt-0 pd-0">
+                                          <i class="lni lni-user"></i>
+                                          <span>Dados do cliente</span>
+                                          <div class="clear"></div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="elemento-usuario">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="form-field-default">
+                                          <label>Nome completo:</label>
+                                          <input type="text" name="nome" placeholder="Nome:"  value="" >
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="form-field-default">
+                                          <label>Whatsapp:</label>
+                                          <input class="maskcel" type="text" name="whatsapp" placeholder="Whatsapp:" >
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="titler mtminus">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="title-line mt-0 pd-0">
+                                          <i class="lni lni-cart"></i>
+                                          <span>Entrega</span>
+                                          <div class="clear"></div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+<div class="elemento-entrega">
+<div class="row">
+<div class="col-md-6"><div class="form-field-default">
+<label for="input-estado">Estado</label>
+<div class="fake-select">
+<i class="lni lni-chevron-down"></i>
+<select id="input-estado" name="estado" required><option value="">Selecione o estado</option><option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option><option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option><option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option><option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option><option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option><option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option><option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option><option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option><option value="RR">Roraima</option><option value="SC">Santa Catarina</option><option value="SP">São Paulo</option><option value="SE">Sergipe</option><option value="TO">Tocantins</option></select>
+<div class="clear"></div>
+</div>
+</div></div>
+<div class="col-md-6"><div class="form-field-default">
+<label for="input-cidade">Cidade</label>
+<div class="fake-select">
+<i class="lni lni-chevron-down"></i>
+<select id="input-cidade" name="cidade" required><option value="">Selecione primeiro o estado</option></select>
+<div class="clear"></div>
+</div>
+<small id="cidade-status" role="status"></small>
+</div></div></div>
+                                 <div class="row">
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                       <div class="form-field-default">
+                                          <label>CEP</label>
+                                          <input class="maskcep" type="text" name="endereco_cep" id="endereco-cep" aria-describedby="cep-status" placeholder="00000-000" maxlength="9" inputmode="numeric" autocomplete="postal-code" value="" ><small id="cep-status" role="status"></small>
+                                       </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                       <div class="form-field-default">
+                                          <label>Nº</label>
+                                          <input type="text" name="endereco_numero" placeholder="Nº"  value="" >
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                   <div class="col-md-12"><div class="form-field-default">
+<label for="endereco-bairro">Bairro/Região</label>
+<input type="text" id="endereco-bairro" name="endereco_bairro" placeholder="Bairro" required autocomplete="address-level3">
+</div></div>
+                                    <div class="col-md-12">
+                                       <div class="form-field-default">
+                                          <label>Rua</label>
+                                          <input type="text" name="endereco_rua" id="endereco-rua" autocomplete="address-line1" placeholder="Rua" value="">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="form-field-default">
+                                          <label>Complemento</label>
+                                          <input type="text" name="endereco_complemento" placeholder="Complemento" value="">
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="form-field-default">
+                                          <label>Ponto de referência</label>
+                                          <input type="text" name="endereco_referencia" placeholder="Complemento" value="">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="titler mtminus">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="title-line mt-0 pd-0">
+                                          <i class="lni lni-coin"></i>
+                                          <span>Pagamento</span>
+                                          <div class="clear"></div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="elemento-forma-pagamento">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="form-field-default">
+                                          <label>Forma de pagamento:</label>
+                                          <div class="fake-select">
+                                             <i class="lni lni-chevron-down"></i>
+                                             <select id="input-forma-pagamento" name="forma_pagamento">
+                                                <option value="1" SELECTED>Dinheiro</option>
+                                                <option value="2">Cartão de Débito</option>
+                                                <option value="3">Cartão de Crédito</option>
+                                             </select>
+                                             <div class="clear"></div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="elemento-forma-pagamento-descricao">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="form-field-default">
+                                          <label>Deseja troco?</label>
+                                          <span class="form-tip" style="display: none;"></span>
+                                          <input type="text" name="forma_pagamento_informacao" placeholder="Deixe em branco se não precisar" value="">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-md-9">
+                                    <div class="form-field-default">
+                                       <label>Cupom de desconto:</label>
+                                       <input class="strupper" type="text" name="cupom" placeholder="Código do cupom" value="">
+                                    </div>
+                                 </div>
+                                 <div class="col-md-3">
+                                    <div class="form-field-default">
+                                       <label class="hidden-xs hidden-sm"> </label>
+                                       <span class="botao-acao botao-aplicar"><i class="lni lni-ticket"></i> Aplicar</span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-md-12">
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-4 muda-comprovante">
+                              <div class="titler titlerzero">
+                                 <div class="row">
+                                    <div class="col-md-12">
+                                       <div class="title-line mt-0 pd-0">
+                                          <i class="lni lni-ticket-alt"></i>
+                                          <span>Resumo do pedido</span>
+                                          <div class="clear"></div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="comprovante-parent grudado-desktop">
+                         <div class="comprovante">
+                           <div class="content">
+                              <strong>{{ config.nome_loja }}</strong>
+                              <br>
+                              ------
+                              <br>
+                              <strong>Pedido</strong><br>
+                              ------
+                              <br>
+                              {% if produtos_carrinho %}
+                                 {% for item in produtos_carrinho %}
+                                    <strong>{{ item.quantidade }} x</strong> #{{ item.referencia }} {{ item.nome }}<br>
+                                    <strong>Valor:</strong> R$ {{ item.valor|floatformat:2 }}<br>
+                                 {% endfor %}
+                              {% else %}
+                                 <em>Carrinho vazio</em><br>
+                              {% endif %}
+                              ------
+                              <br>
+                              <strong>Subtotal:</strong> R$ {{ subtotal|floatformat:2 }}<br>
+                              <strong>Entrega:</strong> R$ {{ taxa_entrega|floatformat:2 }}<br>
+                              ------<br>
+                              <strong>Forma de pagamento:</strong>
+                              <br>
+                              <br>
+                              <strong>Total:</strong> R$ {{ total|floatformat:2 }}<br>
+                              ------<br>
+                              <br>
+                           </div>
+                         </div>
+                                 <span class="alerta-comprovante">
+                                 O seu pedido será enviado para o
+                                 <br/>nosso Whatsapp
+                                 </span>
+                              </div>
+                              <div class="clear"></div>
+                           </div>
+                        </div>
+                        <div class="pedido-actions">
+                           <div class="row error-pedido-minimo">
+                              <div class="col-md-12">
+                                 <input type="text" class="hidden" name="vpedido" value="0.01"/>
+                                 <input type="text" class="fake-hidden" name="pedido_minimo" value="1"/>
+                              </div>
+                           </div>
+                           <div class="row">
+                              <div class="col-md-3 col-xs-5 col-sm-5">
+                                 <a class="back-button" href="https://x.lojazap.com/loja/sacola"><i class="lni lni-arrow-left"></i> <span>Alterar</span></a>
+                              </div>
+                              <div class="col-md-6 hidden-xs hidden-sm"></div>
+                              <div class="col-md-3 col-xs-7 col-sm-7">
+                                 <input type="hidden" name="formdata" value="1"/>
+                                 <button class="botao-acao"><i class="lni lni-whatsapp"></i> <span>Enviar pedido</span></button>
+                              </div>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="footer">
+            <div class="footer-info">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <span>{% include "loja/includes/endereco_rodape.html" %}</span>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-12">
+                        <div class="social">
+                           {% include "loja/includes/whatsapp_rodape.html" %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="copyright">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <a class="watermark" href="https://viazap.com/conheca" target="_blank">
+                        <img src="https://viazap.com/_core/_cdn/img/logo.png" alt="ViaZap Logo">
+                        </a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://demo6.lojazap.com/_core/_cdn/bootstrap/js/bootstrap.min.js"></script>
+      <script src="https://demo6.lojazap.com/_core/_cdn/sidr/js/jquery.sidr.min.js"></script>
+      <script src="https://demo6.lojazap.com/_core/_cdn/maskMoney/js/maskmoney.min.js"></script>
+      <script src="https://demo6.lojazap.com/_core/_cdn/maskedInput/js/jquery.maskedinput.min.js"></script>
+      <script src="https://demo6.lojazap.com/_core/_cdn/validate/js/jquery.validate.min.js"></script>
+      <script src="https://demo6.lojazap.com/_core/_cdn/sticky/js/jquery.sticky.min.js"></script>
+      <script src="https://demo6.lojazap.com/_core/_cdn/app/js/template.js"></script>
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f8178609612d4a0fa8656f39eac0fd7b","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+   </body>
+   <script>
+      if('serviceWorker' in navigator) {
+        navigator.serviceWorker
+                 .register('serviceworker.js')
+                 .then(function() { console.log('Service Worker Registered'); });
+      }
+      
+      let deferredPrompt;
+      
+      window.addEventListener('beforeinstallprompt', (e) => {
+      	deferredPrompt = e;
+      	addBtn.style.display = 'block';
+      	deferredPrompt.prompt();
+      	deferredPrompt.userChoice.then((choiceResult) => {
+      		if (choiceResult.outcome === 'accepted') {
+      			console.log('User accepted the A2HS prompt');
+      		} else {
+      			console.log('User dismissed the A2HS prompt');
+      		}
+      		deferredPrompt = null;
+      	});
+      });
+      
+   </script>
+</html>
+<script>
+   $( ".botao-aplicar" ).click(function() {
+   
+   	var cupom = $("input[name='cupom']").val();
+   	var gourl = "https://demo6.lojazap.com/pedido?cupom="+cupom;
+   	window.location.href = gourl;
+   
+   });
+   
+   $( window ).resize(function() {
+   
+   	var window_width = parseInt( $( window ).width(), 10);
+   	var height_muda_checkout = parseInt( ( $(".muda-checkout").height() - 150 ), 10);
+   	var height_muda_comprovante = parseInt( $(".comprovante").height(), 10);
+   	if( height_muda_comprovante == 0 ) {
+   		var height_muda_comprovante = parseInt( height_muda_checkout, 10);
+   	}
+   
+   	if( window_width >= 980 ) {
+   		var footer_height = $('.footer').height(); 
+   		var actions_height = $('.pedido-actions').height();
+   		var limit_bottom = ( actions_height + footer_height + 50 );
+   		if( height_muda_checkout > height_muda_comprovante  ) {
+   			$('.grudado-desktop').sticky({topSpacing:0, bottomSpacing:limit_bottom});
+   		} else {
+   			if( $(".sticky-wrapper").hasClass("is-sticky") ) {
+   				$('.grudado-desktop').unstick();
+   				$('.muda-comprovante').css("margin-bottom","64px");
+   			}
+   		}
+   	}
+   
+   });
+   
+   $( window ).trigger("resize");
+   
+   $(document).ready( function() {
+             
+     var form = $("#the_form");
+     form.validate({
+         focusInvalid: true,
+         invalidHandler: function() {
+         },
+         errorPlacement: function errorPlacement(error, element) { element.after(error); },
+         rules:{
+   
+           nome: {
+               required: true
+           },
+           whatsapp: {
+               required: true
+           },
+           estado: {
+               required: true
+           },
+           cidade: { required: true },
+           endereco_bairro: {
+               required: true
+           },
+           endereco_rua: {
+               required: true
+           },
+           forma_pagamento: {
+               required: true
+           },
+           pedido_minimo: {
+           	required: true
+           }
+         },
+         messages:{
+           nome: {
+               required: "Esse campo é obrigatório"
+           },
+           whatsapp: {
+               required: "Esse campo é obrigatório"
+           },
+           estado: {
+               required: "Esse campo é obrigatório"
+           },
+           endereco_bairro: {
+               required: "Esse campo é obrigatório"
+           },
+           endereco_rua: {
+               required: "Esse campo é obrigatório"
+           },
+           forma_pagamento: {
+               required: "Esse campo é obrigatório"
+           },
+           pedido_minimo: {
+               required: "Você deve ter no minimo R$ R$ 0,01 na sacola para poder efetuar a compra"
+           }
+         }
+     });
+   
+   });
+   
+</script>
+<script>
+
+    
+   
+   $( "#input-forma-entrega" ).change(function() {
+   
+   	var forma_entrega = $(this).val();
+   
+   	if( forma_entrega == "retirada" ) {
+   		$( ".elemento-entrega" ).hide();
+   	}
+   
+   	if( forma_entrega != "retirada" ) {
+   		$( ".elemento-entrega" ).show();
+   	}
+   
+   });
+   
+   $( "#input-forma-pagamento" ).change(function() {
+   
+   	var forma_pagamento = $(this).val();
+   
+   	if( forma_pagamento == "1" ) {
+   		$( ".elemento-forma-pagamento-descricao" ).show();
+   		$( ".elemento-forma-pagamento-descricao label" ).html("Deseja troco para:");
+   		$( ".elemento-forma-pagamento-descricao input" ).attr("placeholder","Deixe em branco caso não precise");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).hide();
+   	}
+   
+   	if( forma_pagamento == "2"  ) {
+   		$( ".elemento-forma-pagamento-descricao" ).show();
+   		$( ".elemento-forma-pagamento-descricao label" ).html("Bandeira do cartão:");
+   		$( ".elemento-forma-pagamento-descricao input" ).attr("placeholder","Bandeira do cartão:");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).html("Bandeiras aceitas: Visa, Mastercard e Elo");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).show();
+   	}
+   
+   	if( forma_pagamento == "3"  ) {
+   		$( ".elemento-forma-pagamento-descricao" ).show();
+   		$( ".elemento-forma-pagamento-descricao label" ).html("Bandeira do cartão:");
+   		$( ".elemento-forma-pagamento-descricao input" ).attr("placeholder","Bandeira do cartão:");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).html("Bandeiras aceitas: Visa, Mastercard e Elo");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).show();
+   	}
+   
+   	if( forma_pagamento == "4"  ) {
+   
+   		$( ".elemento-forma-pagamento-descricao" ).show();
+   		$( ".elemento-forma-pagamento-descricao label" ).html("Bandeira do ticket alimentação:");
+   		$( ".elemento-forma-pagamento-descricao input" ).attr("placeholder","Bandeira do ticket alimentação:");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).html("Bandeiras aceitas: ");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).show();
+   	}
+   
+   	if( forma_pagamento == "5"  ) {
+   		$( ".elemento-forma-pagamento-descricao" ).show();
+   		$( ".elemento-forma-pagamento-descricao label" ).html("Forma de pagamento:");
+   		$( ".elemento-forma-pagamento-descricao input" ).attr("placeholder","Forma de pagamento:");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).html("Formas aceitas: Cheque, transferência e permuta");
+   		$( ".elemento-forma-pagamento-descricao .form-tip" ).show();
+   	}
+   
+   	if( forma_pagamento == "6"  ) {
+   		$( ".elemento-forma-pagamento-descricao" ).hide();
+   	}		
+   
+   });
+   
+   $( "#input-forma-entrega" ).trigger("change");
+   $( ".muda-checkout" ).trigger("change");
+   $( "#input-forma-pagamento" ).trigger("change");
+   
+</script>
+
+
+<script>
+(function(){
+const uf=document.getElementById('input-estado'), city=document.getElementById('input-cidade'),
+cityStatus=document.getElementById('cidade-status'),
+cep=document.getElementById('endereco-cep'), status=document.getElementById('cep-status'),
+street=document.getElementById('endereco-rua'), district=document.getElementById('endereco-bairro');
+let cityVersion=0, cepVersion=0, timer;
+async function cities(selectedCity = ''){
+ const version=++cityVersion;
+ city.replaceChildren(new Option(uf.value ? 'Selecione a cidade' : 'Selecione primeiro o estado', ''));
+ if(!uf.value){cityStatus.textContent='';return;}
+ cityStatus.textContent='Carregando cidades...';
+ try{
+  const response=await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados/'+uf.value+'/municipios?orderBy=nome', {signal:AbortSignal.timeout(10000)});
+  if(!response.ok)throw Error();
+  const data=await response.json();
+  if(version!==cityVersion)return;
+  data.forEach(item=>city.appendChild(new Option(item.nome,item.nome)));
+  if(selectedCity)city.value=selectedCity;
+  cityStatus.textContent='Selecione uma cidade deste estado.';
+ }catch(error){if(version===cityVersion)cityStatus.textContent='Não foi possível carregar as cidades. Selecione o estado novamente para tentar.';}
+}
+uf.addEventListener('change',()=>{++cepVersion;city.value='';cities();});
+[city,street,district].forEach(field=>field.addEventListener('input',()=>{++cepVersion;}));
+let lastCepChecked='';
+function lookupCep(){
+ clearTimeout(timer);
+ const version=++cepVersion, digits=cep.value.replace(/\D/g,'');
+ status.textContent='';
+ if(digits.length!==8)return;
+ if(digits===lastCepChecked)return;
+ timer=setTimeout(async()=>{
+  status.textContent='Consultando CEP...';
+  try{
+   const response=await fetch('https://viacep.com.br/ws/'+digits+'/json/',{signal:AbortSignal.timeout(10000)});
+   if(!response.ok)throw Error();
+   const data=await response.json();
+   if(version!==cepVersion)return;
+   if(data.erro){status.textContent='CEP não encontrado. Confira ou preencha o endereço manualmente.';return;}
+   lastCepChecked=digits;
+   uf.value=data.uf;street.value=data.logradouro||'';district.value=data.bairro||'';
+   cities(data.localidade||'');
+   status.textContent='Confira o endereço e informe o número. Complete os campos que estiverem vazios.';
+  }catch(error){if(version===cepVersion)status.textContent='Não foi possível consultar o CEP. Preencha o endereço manualmente.';}
+ },350);
+}
+['input','keyup','change','blur'].forEach(evt=>cep.addEventListener(evt,lookupCep));
+})();
+</script>

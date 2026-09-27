@@ -1,0 +1,436 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | Burger</title>
+    {% if configuracao.favicon %}<link rel="icon" href="{{ configuracao.favicon.url }}">{% endif %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy-900: #071a2d;
+            --navy-800: #0c2542;
+            --navy-700: #133a60;
+            --orange-500: #ff8b2c;
+            --orange-600: #f2761a;
+            --orange-soft: #fff4ea;
+            --text: #142033;
+            --muted: #5e6d86;
+            --line: #e6edf8;
+            --bg: #f3f7ff;
+            --white: #ffffff;
+            --shadow: 0 28px 80px rgba(7, 26, 45, 0.14);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #edf4ff 0%, #f8fbff 45%, #eef3ff 100%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        .auth-shell {
+            width: min(1200px, 92vw);
+            min-height: 760px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            background: var(--white);
+            border: 1px solid rgba(19, 58, 96, 0.08);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .brand-panel {
+            position: relative;
+            background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 52%, var(--navy-700) 100%);
+            padding: 42px 42px 34px;
+            color: var(--white);
+        }
+
+        .brand-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 80% 20%, rgba(255, 139, 44, 0.2), transparent 22%);
+        }
+
+        .brand-panel > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 90px;
+            gap: 18px;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .brand-mark .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange-500), #ffd39b);
+            box-shadow: 0 0 20px rgba(255, 139, 44, 0.8);
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 14px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero-copy {
+            max-width: 520px;
+        }
+
+        .hero-copy h1 {
+            margin: 0 0 18px;
+            font-size: clamp(2.8rem, 4vw, 4.6rem);
+            line-height: 0.98;
+            letter-spacing: -0.08em;
+            font-weight: 800;
+        }
+
+        .hero-copy p {
+            margin: 0;
+            color: rgba(255,255,255,0.82);
+            font-size: 1.08rem;
+            line-height: 1.7;
+            max-width: 500px;
+        }
+
+        .hero-stats {
+            margin-top: 44px;
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            min-width: 160px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 18px 18px 16px;
+            backdrop-filter: blur(2px);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+            letter-spacing: -0.06em;
+        }
+
+        .stat span {
+            color: rgba(255,255,255,0.72);
+            font-size: 0.82rem;
+        }
+
+        .form-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #f9fbff 0%, #f2f6ff 100%);
+            padding: 32px;
+        }
+
+        .form-card {
+            width: min(100%, 430px);
+            background: var(--white);
+            border-radius: 24px;
+            padding: 32px 28px;
+            border: 1px solid rgba(17, 35, 62, 0.06);
+            box-shadow: 0 18px 40px rgba(10, 27, 46, 0.08);
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            font-size: 0.72rem;
+        }
+
+        h2 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 2vw, 2.5rem);
+            line-height: 1.1;
+            letter-spacing: -0.06em;
+            color: var(--navy-900);
+        }
+
+        .subtitle {
+            margin: 0 0 26px;
+            color: var(--muted);
+            font-size: 0.98rem;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            border-radius: 12px;
+            padding: 12px 14px;
+            background: #fff1f1;
+            border: 1px solid rgba(220, 38, 38, 0.12);
+            color: #a12626;
+            font-size: 0.92rem;
+        }
+
+        form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            color: var(--navy-800);
+            font-weight: 800;
+            font-size: 0.74rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            height: 56px;
+            background: #f8fbff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 0 16px;
+            font-size: 1rem;
+            color: var(--text);
+            transition: .2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(255, 139, 44, 0.8);
+            box-shadow: 0 0 0 4px rgba(255, 139, 44, 0.12);
+            background: var(--white);
+        }
+
+        .row-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .helper-link {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--orange-600);
+            text-decoration: none;
+        }
+
+        .primary-btn {
+            border: none;
+            border-radius: 14px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 16px 28px rgba(242, 118, 26, 0.25);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 32px rgba(242, 118, 26, 0.3);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin: 8px 0 6px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 1px solid var(--line);
+            background: var(--white);
+            color: var(--navy-900);
+            border-radius: 14px;
+            height: 54px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .google-btn span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #f0f4fb;
+            color: var(--navy-900);
+            font-size: 0.86rem;
+        }
+
+        .footer-text {
+            margin-top: 20px;
+            color: var(--muted);
+            font-size: 0.96rem;
+            text-align: center;
+        }
+
+        .footer-text a {
+            color: var(--orange-600);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+            .auth-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel {
+                min-height: 300px;
+                padding-bottom: 28px;
+            }
+
+            .form-panel {
+                padding: 24px 18px 28px;
+            }
+
+            .brand-top {
+                margin-bottom: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-shell">
+        <aside class="brand-panel">
+            <div class="brand-top">
+                <div class="brand-mark"><span class="dot"></span> Burger</div>
+                <div class="brand-badge">Acesso</div>
+            </div>
+
+            <div class="hero-copy">
+                <h1>Fácil de vender. Simples de gerenciar.</h1>
+                <p>
+                    Organize suas vendas, acompanhe pedidos e transforme sua loja em uma experiência moderna,
+                    rápida e profissional para cada cliente.
+                </p>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat">
+                    <strong>24h</strong>
+                    <span>pedidos ativos</span>
+                </div>
+                <div class="stat">
+                    <strong>10x</strong>
+                    <span>mais organização</span>
+                </div>
+                <div class="stat">
+                    <strong>100%</strong>
+                    <span>foco no cliente</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="form-panel">
+            <section class="form-card">
+                <p class="eyebrow">Bem-vindo</p>
+                <h2>Entrar</h2>
+                <p class="subtitle">Acesse sua conta para continuar.</p>
+
+                {% if error %}
+                    <div class="alert">{{ error }}</div>
+                {% endif %}
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert-success" style="margin-bottom: 20px; border-radius: 12px; padding: 12px 14px; background: #eefbf1; border: 1px solid rgba(22, 163, 74, 0.16); color: #15803d; font-size: 0.92rem;">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    <div class="field">
+                        <label for="id_email">E-mail</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="field">
+                        <div class="row-between">
+                            <label for="id_password">Senha</label>
+                            <a href="{% url 'password_reset_request' %}" class="helper-link">Esqueci</a>
+                        </div>
+                        {{ form.password }}
+                    </div>
+
+                    <button type="submit" class="primary-btn">Entrar</button>
+                </form>
+
+                <div class="divider">ou</div>
+
+                <button type="button" class="google-btn" aria-label="Entrar com Google">
+                    <span>G</span> Entrar com Google
+                </button>
+
+                <div class="footer-text">
+                    Ainda não tem conta? <a href="{% url 'register' %}">Criar conta</a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

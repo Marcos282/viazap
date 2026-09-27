@@ -1,0 +1,28 @@
+<div class="modal fade" id="modalEntrega{{ info.ordem.pk }}" tabindex="-1" role="dialog" aria-labelledby="entregaTitulo{{ info.ordem.pk }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content text-left">
+      <form class="order-action-form" action="{% url 'pedido_tipo_entrega' info.ordem.pk %}" method="post">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="entregaTitulo{{ info.ordem.pk }}">Entrega ou retirada — Pedido #{{ info.ordem.pk }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger order-form-error" role="alert" hidden></div>
+          <div class="form-group">
+            <label for="delivery-{{ info.ordem.pk }}">Como o cliente receberá o pedido?</label>
+            <select class="form-control" id="delivery-{{ info.ordem.pk }}" name="tipo_entrega" required>
+              <option value="">Selecione</option>
+              <option value="entrega" {% if info.ordem.tipo_entrega == 'entrega' %}selected{% endif %}>Entrega</option>
+              <option value="retirada" {% if info.ordem.tipo_entrega == 'retirada' %}selected{% endif %}>Retirada na loja</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar modalidade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

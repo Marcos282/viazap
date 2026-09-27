@@ -1,0 +1,280 @@
+{% load static %}
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+<style>
+.dropzone {
+    border: 2px dashed #3699ff !important;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+.dropzone .dz-preview {
+    position: relative;
+}
+.dropzone .dz-preview .dz-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    bottom: auto;
+    z-index: 30;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #c82333;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+.dropzone .dz-preview .dz-remove:hover {
+    color: #a71d2a;
+    text-decoration: underline;
+}
+</style>
+<div class="card card-custom">
+<!-- Modal de sucesso -->
+<div class="modal fade" id="modalSucesso" tabindex="-1" role="dialog" aria-labelledby="modalSucessoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSucessoLabel">Produto cadastrado</h5>
+            </div>
+            <div class="modal-body">
+                Produto cadastrado com sucesso!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnModalOk">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <form id="produtoForm" class="form" method="post" action="{% url 'painel_produtos_add' %}" enctype="multipart/form-data">
+        <div class="card-body">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nome_produto">Nome do produto</label>
+                <input type="text" class="form-control form-control-solid" id="nome_produto" name="nome" placeholder="Ex: Burger Especial" required>
+            </div>
+            <div class="form-group">
+                <label for="categoria_produto">Categoria</label>
+                <select class="form-control form-control-solid" id="categoria_produto" name="categoria" required>
+                    {% for categoria in categorias %}
+                        <option value="{{ categoria.id }}">{{ categoria.name }}</option>
+                    {% empty %}
+                        <option disabled>Nenhuma categoria disponível</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="preco_produto">Preço</label>
+                <input type="text" class="form-control form-control-solid maskmoney" id="preco_produto" name="preco"  required>
+            </div>
+            <!-- <div class="form-group">
+                <label for="ordem_produto">Ordem de exibição</label>
+                <input type="number" class="form-control form-control-solid" id="ordem_produto" name="ordem" placeholder="Ex: 1" required>
+            </div> -->
+            <div class="form-group">
+                 <!-- <h6>Visivel ?</h6> -->
+                <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Marque para aparecer em todo o site, caso contrário, irá aparecer apenas para quem você compartilhar o link.</p>
+         
+                <label>Visível?</label>
+                <div class="radio-inline">
+                    <label class="radio radio-square">
+                        <input type="radio" name="exibir" value="True" checked> <span></span> Sim
+                    </label>
+                    <label class="radio radio-square">
+                        <input type="radio" name="exibir" value="False"> <span></span> Não
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+            <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Marque não caso queira desabilitar o produto sem a necessidade de exclui-lo.</p>
+
+                <label>Ativo?</label>
+                <div class="radio-inline">
+                    <label class="radio radio-square">
+                        <input type="radio" name="status" value="True" checked> <span></span> Sim
+                    </label>
+                    <label class="radio radio-square">
+                        <input type="radio" name="status" value="False"> <span></span> Não
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+            <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Se habilitado o produto irá aparecer nas sacolinhas do instagram / facebook.</p>
+
+                <label>Produto integrado?</label>
+                <div class="radio-inline">
+                    <label class="radio radio-square">
+                        <input type="radio" name="integrado" value="True" checked> <span></span> Sim
+                    </label>
+                    <label class="radio radio-square">
+                        <input type="radio" name="integrado" value="False"> <span></span> Não
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Imagem principal (Somente 1 arquivo)</label>
+                 <div id="dropzoneImagemExtra" class="dropzone" style="max-width:200px; min-height:120px; margin:auto;"></div>
+                 <div id="imagemExtraErro" style="display:none; color:#856404; background:#fff3cd; border:1px solid #ffeeba; border-radius:6px; padding:8px 12px; margin-top:8px; font-size:0.95em;"></div>
+<style>
+/* Mensagem de erro lateral para Dropzone extra */
+#dropzoneImagemExtra .dz-max-files-reached {
+    position: absolute;
+    right: -220px;
+    top: 10px;
+    width: 200px;
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.95em;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+</style>
+            </div>
+            <div class="form-group">
+                <label>Imagens para a galeria (max 5)</label>
+                <div id="dropzoneImagem" class="dropzone"></div>
+            </div>
+            
+   <div class="form-group">
+				<label for="exampleTextarea">Descrição do produto</label>
+				<textarea name="description" class="form-control form-control-solid" rows="3"></textarea>
+			</div>
+
+        </div>
+
+     
+
+        <div class="card-footer d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back();">Voltar</button>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+    </form>
+</div>
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="{% static 'assets/js/scripts.bundle.js' %}"></script>
+<script>
+Dropzone.autoDiscover = false;
+var imagemDropzone = new Dropzone("#dropzoneImagem", {
+    url: "{% url 'painel_produtos_add' %}",
+    paramName: "imagens", // nome do campo no backend
+    maxFiles: 5, // múltiplas imagens
+    maxFilesize: 5, // MB
+    acceptedFiles: ".png,.jpg,.jpeg",
+    addRemoveLinks: true,
+    autoProcessQueue: false,
+    uploadMultiple: true,
+    parallelUploads: 5,
+    dictRemoveFile: "Remover arquivo",
+    dictDefaultMessage: "Arraste arquivos aqui para enviar <br> ou clique para selecionar",
+    dictMaxFilesExceeded: "Você não pode enviar mais arquivos.",
+});
+var imagemExtraDropzone = new Dropzone("#dropzoneImagemExtra", {
+    url: "{% url 'painel_produtos_add' %}",
+    paramName: "imagem_extra", // nome do campo no backend
+    maxFiles: 1,
+    maxFilesize: 5, // MB
+    acceptedFiles: ".png,.jpg,.jpeg",
+    addRemoveLinks: true,
+    autoProcessQueue: false,
+    dictRemoveFile: "Remover arquivo",
+    dictDefaultMessage: "Arraste arquivos aqui para enviar <br> ou clique para selecionar",
+    dictMaxFilesExceeded: "",
+});
+
+function mensagemErroUpload(file, message, xhr) {
+    if ((xhr && xhr.status === 413) || (typeof message === 'string' && message.includes('413'))) {
+        return 'A imagem ou o conjunto de imagens excede o limite permitido pelo servidor.';
+    }
+    if (file && file.size > 5 * 1024 * 1024) {
+        return 'Cada imagem deve ter no máximo 5 MB.';
+    }
+    return typeof message === 'string' && !message.trim().startsWith('<')
+        ? message
+        : 'Não foi possível enviar a imagem. Verifique o tamanho e tente novamente.';
+}
+
+imagemDropzone.on('error', function(file, message, xhr) {
+    if (!file.previewElement) return;
+    file.previewElement.querySelectorAll('[data-dz-errormessage]').forEach(function(element) {
+        element.textContent = mensagemErroUpload(file, message, xhr);
+    });
+});
+
+imagemExtraDropzone.on('error', function(file, message, xhr) {
+    var erroDiv = document.getElementById('imagemExtraErro');
+    erroDiv.textContent = mensagemErroUpload(file, message, xhr);
+    erroDiv.style.display = 'block';
+});
+
+// Exibe mensagem de erro abaixo do campo Dropzone
+imagemExtraDropzone.on('maxfilesexceeded', function(file) {
+    imagemExtraDropzone.removeFile(file);
+    var erroDiv = document.getElementById('imagemExtraErro');
+    erroDiv.textContent = 'Você não pode enviar mais de um arquivo aqui.';
+    erroDiv.style.display = 'block';
+    setTimeout(function(){ erroDiv.style.display = 'none'; }, 3500);
+});
+// Envia o form junto com as imagens em um único POST
+var form = document.getElementById('produtoForm');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var hasImage = imagemDropzone.getQueuedFiles().length > 0;
+    var hasExtra = imagemExtraDropzone.getQueuedFiles().length > 0;
+    if (hasImage || hasExtra) {
+        imagemDropzone.processQueue(); // processa tudo em um único POST
+    } else {
+        form.submit();
+    }
+});
+// imagemDropzone.on('sending', function(file, xhr, formData) {
+//     var inputs = form.querySelectorAll('input, select, textarea, radio');
+//     inputs.forEach(function(input) {
+//         if (input.type !== 'file') {
+//             formData.append(input.name, input.value);
+//         }
+//     });
+//     // Adiciona imagem extra (se houver) ao mesmo POST
+//     var extraFiles = imagemExtraDropzone.getQueuedFiles();
+//     if (extraFiles.length > 0) {
+//         formData.append('imagem_extra', extraFiles[0]);
+//     }
+// });
+
+// Modificado para considerar inputs do tipo radio
+imagemDropzone.on('sending', function(file, xhr, formData) {
+    var inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(function(input) {
+        if (input.type === 'radio') {
+            if (input.checked) {
+                formData.append(input.name, input.value);
+            }
+        } else if (input.type !== 'file') {
+            formData.append(input.name, input.value);
+        }
+    });
+    // Adiciona imagem extra (se houver) ao mesmo POST
+    var extraFiles = imagemExtraDropzone.getQueuedFiles();
+    if (extraFiles.length > 0) {
+        formData.append('imagem_extra', extraFiles[0]);
+    }
+});
+
+
+
+
+
+// Remove o envio separado da imagem extra
+imagemDropzone.on('success', function(file, response) {
+    // Exibe modal de sucesso ao cadastrar produto
+    $('#modalSucesso').modal('show');
+    document.getElementById('btnModalOk').onclick = function() {
+        window.location.href = '/painel/produtos/';
+    };
+});
+imagemExtraDropzone.on('success', function(file, response) {
+    window.location.reload();
+});
+</script>
+

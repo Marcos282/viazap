@@ -1,0 +1,7 @@
+{% if config.endereco or config.numero_endereco or config.bairro or config.cep or config.cidade or config.estado %}
+  {% if config.endereco %}{{ config.endereco }}{% endif %}{% if config.numero_endereco %}{% if config.endereco %}, {% endif %}Nº {{ config.numero_endereco }}{% endif %}
+  {% if config.bairro or config.cep or config.cidade or config.estado %}<br>{% endif %}
+  {% if config.bairro %}Bairro: {{ config.bairro }}{% endif %}{% if config.cep %}{% if config.bairro %}, {% endif %}CEP: {{ config.cep }}{% endif %}{% if config.cidade %}{% if config.bairro or config.cep %}, {% endif %}{{ config.cidade }}{% endif %}{% if config.estado %}{% if config.cidade %}/{{ config.estado }}{% elif config.bairro or config.cep %}, {{ config.estado }}{% else %}{{ config.estado }}{% endif %}{% endif %}
+{% else %}
+  Endereço não cadastrado
+{% endif %}

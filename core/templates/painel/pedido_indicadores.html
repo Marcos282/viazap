@@ -1,0 +1,83 @@
+<style>
+.order-indicators {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.order-indicators__card {
+  display: grid;
+  grid-template-rows: minmax(2.8em, auto) auto 1fr;
+  gap: 8px;
+  min-width: 0;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e4e6ef;
+  border-radius: 6px;
+}
+.order-indicators__title { font-weight: 500; line-height: 1.4; }
+.order-indicators__value { font-size: 1.75rem; line-height: 1.2; overflow-wrap: anywhere; }
+.order-indicators__note { color: #6c757d; line-height: 1.4; }
+@media (max-width: 991.98px) {
+  .order-indicators { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 575.98px) {
+  .order-indicators { gap: 12px; }
+  .order-indicators__card { padding: 14px; }
+  .order-indicators__value { font-size: 1.5rem; }
+}
+.order-revenue-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.order-revenue-toggle { border: 0; background: transparent; padding: 2px 4px; cursor: pointer; color: #6c757d; }
+.order-revenue-toggle:focus-visible { outline: 2px solid #3699ff; border-radius: 4px; }
+.order-revenue-mask, .order-revenue-toggle .fa-eye-slash { display: none; }
+.revenue-hidden .order-revenue-amount, .revenue-hidden .order-revenue-toggle .fa-eye { display: none; }
+.revenue-hidden .order-revenue-mask, .revenue-hidden .order-revenue-toggle .fa-eye-slash { display: inline; }
+</style>
+<div class="order-indicators" aria-label="Indicadores de pedidos">
+  <div class="order-indicators__card">
+    <span class="order-indicators__title">Novos</span>
+    <strong class="order-indicators__value">{{ indicadores.novos }}</strong>
+    <small class="order-indicators__note"></small>
+  </div>
+  <div class="order-indicators__card">
+    <span class="order-indicators__title">Em andamento</span>
+    <strong class="order-indicators__value">{{ indicadores.andamento }}</strong>
+    <small class="order-indicators__note">{{ indicadores.confirmados }} confirmado(s)</small>
+  </div>
+  <div class="order-indicators__card">
+    <span class="order-indicators__title">{% if tipo_operacao == 'delivery' %}Em preparação{% else %}Separando{% endif %}</span>
+    <strong class="order-indicators__value">{{ indicadores.processando }}</strong>
+    <small class="order-indicators__note"></small>
+  </div>
+  <div class="order-indicators__card">
+    <span class="order-indicators__title">{% if tipo_operacao == 'delivery' %}Prontos{% else %}Prontos para envio/retirada{% endif %}</span>
+    <strong class="order-indicators__value">{{ indicadores.prontos }}</strong>
+    <small class="order-indicators__note"></small>
+  </div>
+  <div class="order-indicators__card">
+    <span class="order-indicators__title">{% if tipo_operacao == 'delivery' %}Saiu para entrega{% else %}Enviados{% endif %}</span>
+    <strong class="order-indicators__value">{{ indicadores.enviados }}</strong>
+    <small class="order-indicators__note"></small>
+  </div>
+  <div class="order-indicators__card">
+    <span class="order-indicators__title">{% if tipo_operacao == 'delivery' %}Concluídos hoje{% else %}Entregues/retirados hoje{% endif %}</span>
+    <strong class="order-indicators__value">{{ indicadores.concluidos }}</strong>
+    <small class="order-indicators__note">Entregues e retirados</small>
+  </div>
+  <div class="order-indicators__card">
+    <span class="order-indicators__title">Cancelados</span>
+    <strong class="order-indicators__value">{{ indicadores.cancelados }}</strong>
+    <small class="order-indicators__note"></small>
+  </div>
+  <div class="order-indicators__card">
+    <div class="order-indicators__title order-revenue-heading">
+      <span>Faturamento hoje</span>
+      <button type="button" class="order-revenue-toggle" aria-label="Ocultar faturamento de hoje" aria-controls="order-revenue-value" aria-pressed="false" title="Ocultar faturamento de hoje">
+        <i class="fas fa-eye" aria-hidden="true"></i><i class="fas fa-eye-slash" aria-hidden="true"></i>
+      </button>
+    </div>
+    <strong class="order-indicators__value" id="order-revenue-value"><span class="order-revenue-amount">R$ {{ indicadores.faturamento|floatformat:"2g" }}</span><span class="order-revenue-mask" aria-label="Valor oculto">R$ •••••</span></strong>
+    <small class="order-indicators__note">Pedidos concluídos hoje, incluindo entrega. Não representa confirmação de pagamento.</small>
+  </div>
+</div>

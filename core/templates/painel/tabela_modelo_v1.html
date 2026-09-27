@@ -1,0 +1,113 @@
+{% load static %}
+<div class="col-lg-14">
+   <!--begin::Advance Table Widget 4-->
+   <div class="card card-custom card-stretch gutter-b">
+      <!--begin::Header-->
+      <div class="card-header border-0 py-5">
+         <h3 class="card-title align-items-start flex-column">
+            <span class="d-inline-flex align-items-center">
+            <span class="card-label font-weight-bolder text-dark" style="margin-right: 0.5em;">Registros:</span>
+            <span class="symbol-label font-weight-bolder font-size-h6" style="background: #f1f1f1; border-radius: 0.6em; padding: 0.2em 0.7em;">{{ qt_categoria }}</span>
+            </span>
+            <!-- <span class="text-muted mt-3 font-weight-bold font-size-sm">Mais de 400+ novos membros</span> -->
+         </h3>
+         <div class="card-toolbar">
+            <!-- <a href="#" class="btn btn-info font-weight-bolder font-size-sm mr-3">New Report</a> -->
+            <a href="#" class="btn btn-success font-weight-bolder font-size-sm">Adicionar +</a>
+         </div>
+      </div>
+      <!--end::Header-->
+      <!--begin::Body-->
+      <div class="card-body pt-0 pb-3">
+         <div class="tab-content">
+            <!--begin::Table-->
+            <div class="table-responsive table-responsive">
+               <table class="table table-hover rounded  ">
+                  <thead>
+                     <tr class="text-left text-uppercase thead-dark">
+                        <th style="min-width: 140px;">Categoria</th>
+                        <th style="min-width: 100px;">Visibilidade</th>
+                        <th style="min-width: 100px;">Status</th>
+                        <!-- inicio:: Acoes -->
+                        <th style="min-width: 80px;" class="d-none d-sm-table-cell"></th>
+                        <!-- fim:: Acoes -->
+                     </tr>
+                  </thead>
+                  <tbody>
+                  {% for cat in categoria %}
+                     <tr>
+                        <td class="pl-0 py-8">
+                           <div>
+                              <span class="text-dark-75  d-block font-size-xl" style="padding-left: 5px;">{{ cat.name }}</span>
+                           </div>
+                        </td>
+                        <td class="pl-0 py-8">
+                           <div>
+                              <span class="text-dark-75  d-block font-size-xl" style="padding-left: 5px;">{% if cat.exibir %}Visível{% else %}Não{% endif %}</span>
+                           </div>
+                        </td>
+                        <td class="pl-0 py-8">
+                           <div>
+                              <span class="text-dark-75  d-block font-size-xl" style="padding-left: 5px;">{% if cat.status %} Ativo{% else %} Inativo{% endif %}</span>
+                           </div>
+
+                        </td>
+                        <td class="pl-0 py-8 d-none d-sm-table-cell">
+                           
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                           <img src="{% static 'assets/imagens/svg/icons/Communication/Share.svg' %}"/>      <!-- SVG Settings -->
+                              </span>
+                           </a>
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                                 <img src="{% static 'assets/imagens/svg/icons/Communication/Write.svg' %}"/>
+                              </span>
+                           </a>
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                                 <img src="{% static 'assets/imagens/svg/icons/General/Trash.svg' %}"/>
+                              </span>
+                           </a>
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                                 <img src="{% static 'assets/imagens/svg/icons/Navigation/Check.svg' %}"/>
+                              </span>
+                           </a>
+                        </td>
+                     </tr>
+                     <tr class="d-sm-none" >
+                        <td colspan="3" class="pt-2 pb-3 text-center">
+                              <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                           <img src="{% static 'assets/imagens/svg/icons/Communication/Share.svg' %}"/>      <!-- SVG Settings -->
+                              </span>
+                           </a>
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                                 <img src="{% static 'assets/imagens/svg/icons/Communication/Write.svg' %}"/>
+                              </span>
+                           </a>
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                                 <img src="{% static 'assets/imagens/svg/icons/General/Trash.svg' %}"/>
+                              </span>
+                           </a>
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                                 <img src="{% static 'assets/imagens/svg/icons/Navigation/Check.svg' %}"/>
+                              </span>
+                           </a>
+                        </td>
+                     </tr>
+                  {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+            <!--end::Table-->
+         </div>
+      </div>
+      <!--end::Body-->
+   </div>
+   <!--end::Advance Table Widget 4-->
+</div>

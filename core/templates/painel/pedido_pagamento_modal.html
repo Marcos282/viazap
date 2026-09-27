@@ -1,0 +1,33 @@
+<div class="modal fade" id="modalPagamento{{ info.ordem.pk }}" tabindex="-1" role="dialog" aria-labelledby="pagamentoTitulo{{ info.ordem.pk }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content text-left">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pagamentoTitulo{{ info.ordem.pk }}">Pagamento — Pedido #{{ info.ordem.pk }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Status: <strong>{{ info.ordem.get_status_pagamento_display }}</strong></p>
+        <p>Forma: {{ info.ordem.formade_pagamento|default:"Não informada" }}</p>
+  <form class="order-action-form " action="{% url 'pedido_pagamento' info.ordem.pk %}" method="post">
+    {% csrf_token %}
+    <div class="alert alert-danger order-form-error" role="alert" hidden></div>
+    {% if info.ordem.status_pagamento == 'pendente' %}
+      <button type="submit" class="btn btn-light-success mr-2" name="status_pagamento" value="pago">Marcar como pago</button>
+      <button type="submit" class="btn btn-light-danger" name="status_pagamento" value="cancelado">Cancelar pagamento</button>
+    {% elif info.ordem.status_pagamento == 'pago' %}
+      <button type="submit" class="btn btn-light-danger" name="status_pagamento" value="estornado">Registrar estorno</button>
+    {% elif info.ordem.status_pagamento == 'cancelado' %}
+      <button type="submit" class="btn btn-light-primary" name="status_pagamento" value="pendente">Reabrir pagamento</button>
+    {% else %}
+      <p class="text-muted">Pagamento estornado.</p>
+    {% endif %}
+  </form>
+  <small>Registro manual. Estas ações não cobram nem estornam valores no banco.</small>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>

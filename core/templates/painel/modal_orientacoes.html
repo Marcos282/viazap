@@ -1,0 +1,142 @@
+<!--begin::Modal Orientações de Uso-->
+<div id="modalOrientacoesOverlay" class="modal-orientacoes-overlay">
+    <div class="modal-orientacoes-box">
+        <button type="button" id="modalOrientacoesFechar" class="modal-orientacoes-fechar" aria-label="Fechar">
+            &times;
+        </button>
+        <div class="modal-orientacoes-conteudo">
+            <h1>Orientações de Uso</h1>
+            <p>Usar o programa é simples. Basta seguir estas etapas:</p>
+
+            <h2>1. Botão Configurações</h2>
+            <ul>
+                <li>Preencha com atenção, especialmente os campos de <strong>logo</strong> e <strong>banner</strong>.</li>
+                <li class="dica">Dica: utilize ferramentas como <em>dola.com</em> ou <em>ChatGPT</em> para ajustar as dimensões corretas.</li>
+                <li>Informe corretamente o <strong>número de WhatsApp</strong>, pois é por ele que todo o ciclo de pedidos acontecerá.</li>
+            </ul>
+
+            <h2>2. Botão Categorias</h2>
+            <ul>
+                <li>Cadastre as categorias do seu negócio.</li>
+                <li class="dica">Exemplo: em uma hamburgueria, você pode criar categorias como <strong>LANCHES</strong>, <strong>REFRIGERANTES</strong> e <strong>SUCOS</strong>.</li>
+            </ul>
+
+            <h2>3. Cadastro de Produtos</h2>
+            <ul>
+                <li>Após criar as categorias, cadastre os produtos vinculando-os às respectivas categorias.</li>
+                <li class="dica">Dica: é muito importante que cada produto tenha <strong>mais de duas fotos</strong>.</li>
+            </ul>
+
+            <h2>4. QRCode</h2>
+            <ul>
+                <li>Compartilhe, imprima e divulgue o QRCode gerado para você.</li>
+                <li>Lembre-se: hoje tudo é digital, aproveite para divulgar em redes sociais e materiais online.</li>
+            </ul>
+
+            <h2>5. Botão Pedidos</h2>
+            <ul>
+                <li>Aguarde os pedidos chegarem pelo botão <strong>Pedidos</strong>.</li>
+            </ul>
+
+            <h2>⏱️ Tempo Estimado</h2>
+            <p>Todo esse processo leva menos de <strong>20 minutos</strong> e pode gerar retorno rápido, principalmente pela simplicidade do negócio.</p>
+        </div>
+    </div>
+</div>
+<!--end::Modal Orientações de Uso-->
+
+<style>
+    .modal-orientacoes-overlay {
+        display: flex;
+        position: fixed;
+        z-index: 10500;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 40px;
+        box-sizing: border-box;
+        background: rgba(0, 0, 0, 0.6);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-orientacoes-box {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+        max-height: 100%;
+        overflow-y: auto;
+        background: #fff;
+        border-radius: 24px;
+        padding: 30px 35px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-orientacoes-fechar {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: #f1f1f1;
+        color: #333;
+        font-size: 22px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease;
+    }
+
+    .modal-orientacoes-fechar:hover {
+        background: #e0e0e0;
+    }
+
+    .modal-orientacoes-conteudo {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+    }
+
+    .modal-orientacoes-conteudo h1 {
+        color: #333;
+    }
+
+    .modal-orientacoes-conteudo h2 {
+        color: #555;
+    }
+
+    .modal-orientacoes-conteudo ul {
+        margin-left: 20px;
+    }
+
+    .modal-orientacoes-conteudo li {
+        margin-bottom: 10px;
+    }
+
+    .modal-orientacoes-conteudo .dica {
+        color: #007BFF;
+        font-style: italic;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var overlay = document.getElementById('modalOrientacoesOverlay');
+        var fechar = document.getElementById('modalOrientacoesFechar');
+        if (!overlay || !fechar) {
+            return;
+        }
+        fechar.addEventListener('click', function () {
+            overlay.style.display = 'none';
+        });
+        overlay.addEventListener('click', function (event) {
+            if (event.target === overlay) {
+                overlay.style.display = 'none';
+            }
+        });
+    });
+</script>

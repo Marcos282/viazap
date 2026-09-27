@@ -1,0 +1,64 @@
+{% extends 'painel/base.html' %}
+{% block content4 %}{% include 'painel/hearder_mobile.html' %}{% endblock %}
+{% block content3 %}{% include 'painel/menu_wrapper.html' %}{% include 'painel/top_bar.html' %}{% endblock %}
+{% block content %}
+{% include 'painel/subheader.html' %}
+<div class="container-fluid">
+  <div class="card card-custom">
+    <div class="card-header">
+      <h3 class="card-title">Reduzir imagens</h3>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-warning" role="note" style="background-color: #fff3cd; border: 1px solid #ffeeba; color: #664d03; line-height: 1.5;">
+        O servidor exige imagens em tamanhos reduzidos com o objetivo de otimizar o desempenho do serviço. Imagens muito grandes não proporcionam benefícios significativos na navegação e, na maioria dos casos, apenas aumentam o tempo de carregamento.
+        <br><br>
+        Por esse motivo, disponibilizamos esta ferramenta para que vocês possam ajustar as imagens de acordo com a qualidade mínima necessária, garantindo uma boa resolução sem comprometer a performance e a experiência do usuário.
+      </div>
+      <p class="text-muted">Se você não souber quais dimensões usar, deixe os campos de largura e altura em branco. Nesse caso, a ferramenta manterá as dimensões originais da imagem.</p>
+      <p class="text-muted">Escolha o tamanho máximo e baixe as imagens comprimidas em WebP.</p>
+      {% if erro %}<div class="alert alert-danger">{{ erro }}</div>{% endif %}
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="limite_mb">Tamanho máximo por imagem (MB)</label>
+          <input id="limite_mb" name="limite_mb" type="number" class="form-control" min="0.05" max="20" step="0.05" value="{{ limite_mb }}" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="largura">Largura máxima (px)</label>
+            <input id="largura" name="largura" type="number" class="form-control" min="1" placeholder="Ex.: 1280" value="{{ largura }}">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="altura">Altura máxima (px)</label>
+            <input id="altura" name="altura" type="number" class="form-control" min="1" placeholder="Ex.: 1280" value="{{ altura }}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="imagens">Imagens</label>
+          <input id="imagens" name="imagens" type="file" class="form-control" accept="image/*" multiple required>
+        </div>
+        <button type="submit" class="btn btn-primary">Comprimir imagens</button>
+      </form>
+      {% if resultados %}
+      <hr>
+      <h5>Arquivos prontos</h5>
+      <div class="list-group">
+        {% for item in resultados %}
+          {% if item.data_url %}
+          <div class="list-group-item text-center">
+            <img src="{{ item.data_url }}" alt="Imagem comprimida" style="display:block;width:auto;max-width:100%;height:auto;max-height:360px;object-fit:contain;margin:0 auto;border:1px solid #e4e6ef;border-radius:4px;">
+            <div class="mt-3">
+              <div class="text-muted mb-2">{{ item.tamanho_kb }} KB</div>
+              <a class="btn btn-primary" download="{{ item.nome }}" href="{{ item.data_url }}">Baixar imagem</a>
+            </div>
+          </div>
+          {% else %}
+          <div class="list-group-item list-group-item-danger">{{ item.nome }}: {{ item.erro }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

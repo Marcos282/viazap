@@ -1,0 +1,251 @@
+
+
+{% load static %}
+
+<div class="card card-custom">
+
+   <!-- <div class="card-header">
+      <h3 class="card-title">
+         Input States
+      </h3>
+   </div> -->
+   <!--begin::Form-->
+   <form class="form" method="post" action="{% url 'painel_banners_add' %}" enctype="multipart/form-data">
+      <div class="card-body">
+        {% csrf_token %}
+        
+        <!-- Mensagens de feedback -->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %} alert-dismissible fade show" role="alert">
+           {{ message }}
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        <!-- Erros específicos do contexto -->
+        {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+           {{ error }}
+           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+           </button>
+        </div>
+        {% endif %}
+        
+        <!-- Modal para mostrar mensagem de sucesso quando cadastrado -->
+        {% if show_success_modal %}
+        <div class="modal fade show" id="successModal" tabindex="-1" role="dialog" style="display:block; background:rgba(0,0,0,0.3);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sucesso!</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Categoria cadastrada com sucesso!</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'painel_categorias' %}" class="btn btn-primary">OK</a>
+                </div>
+            </div>
+        </div>
+        </div>
+        {% endif %}
+
+         <div class="form-group">
+            <label>Titulo</label>
+            <input type="text" class="form-control form-control-solid" name="titulo" placeholder="Ex: Banner promocional" required/>
+         </div>
+         
+         <div class="form-group">
+            <label>Arte para computadores</label>
+            <div id="dropzoneBannerPc" class="dropzone" style="max-width:100%; min-height:150px; margin:auto; border: 2px dashed #ccc; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s ease;"></div>
+            <span class="form-text text-muted">Selecione sua capa clicando no campo ou arrastando o arquivo! Tamanho recomendado: 1280x300 pixels</span>
+            <!-- Input file oculto real -->
+            <input type="file" id="banner_pc_input" name="banner_pc" accept="image/*" style="display: none;">
+         </div>
+         
+         
+         <div class="form-group">
+            <label>Arte para dispositivos móveis</label>
+            <div id="dropzoneBannerMobile" class="dropzone" style="max-width:100%; min-height:150px; margin:auto; border: 2px dashed #ccc; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.3s ease;"></div>
+            <span class="form-text text-muted">Selecione sua capa clicando no campo ou arrastando o arquivo! Tamanho recomendado: 800x350 pixels</span>
+            <!-- Input file oculto real -->
+            <input type="file" id="banner_mobile_input" name="banner_mobile" accept="image/*" style="display: none;">
+         </div>
+
+         <div class="form-group">
+            <label>Ordem de Exibição</label>
+            <input type="number" class="form-control form-control-solid" name="ordem_exibicao" value="1" min="1" placeholder="1"/>
+            <span class="form-text text-muted">Ordem de exibição do banner (1 = primeiro)</span>
+         </div>
+
+         <div class="form-group">
+            <div class="checkbox-inline">
+               <label class="checkbox checkbox-square">
+                  <input type="checkbox" checked="checked" name="ativo"/>
+                  <span></span>
+                  Banner Ativo
+               </label>
+            </div>
+            <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Se habilitado o banner irá aparecer no site</p>
+         </div>
+         <div class="form-group">
+            <label>Link</label>
+            <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Link para algum endereço que voce queira apontar.</p>
+            <input type="url" class="form-control form-control-solid" name="link" placeholder="Ex: https://www.exemplo.com"/>
+         </div>
+         <!-- <span class="form-text text-muted">Some help text goes here</span> -->
+      </div>
+         <div class="card-footer d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back();">Voltar</button>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+         </div>
+   </form>
+   <!--end::Form-->
+</div>
+
+<style>
+   #dropzoneBannerPc, #dropzoneBannerMobile {
+      background-color: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+   }
+   #dropzoneBannerPc:hover, #dropzoneBannerMobile:hover {
+      border-color: #007bff;
+      background-color: #e7f3ff;
+   }
+   #dropzoneBannerPc .dz-message, #dropzoneBannerMobile .dz-message {
+      color: #6c757d;
+      font-size: 14px;
+      text-align: center;
+   }
+   #dropzoneBannerPc .dz-preview .dz-image img, #dropzoneBannerMobile .dz-preview .dz-image img {
+      width: 100% !important;
+      height: 150px !important;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #eee;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+   }
+   #dropzoneBannerPc .dz-preview .dz-image, #dropzoneBannerMobile .dz-preview .dz-image {
+      width: 100% !important;
+      height: 150px !important;
+   }
+   #dropzoneBannerPc .dz-preview, #dropzoneBannerMobile .dz-preview {
+      margin: 0 auto;
+   }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+
+<script>
+// Desabilita a descoberta automática do Dropzone
+Dropzone.autoDiscover = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Referências dos inputs file reais
+    const bannerPcInput = document.getElementById('banner_pc_input');
+    const bannerMobileInput = document.getElementById('banner_mobile_input');
+
+    // Inicializa o Dropzone para Banner PC
+    var bannerPcDropzone = new Dropzone("#dropzoneBannerPc", {
+        url: "#", // Dummy URL - não será usado
+        autoProcessQueue: false,
+        uploadMultiple: false,
+        maxFiles: 1,
+        maxFilesize: 5,
+        acceptedFiles: "image/*",
+        dictDefaultMessage: '<i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i><br><b>Clique aqui ou arraste a imagem para computadores</b><br><small class="text-muted">Tamanho recomendado: 1280x300px (máx. 5MB)</small>',
+        dictFallbackMessage: "Seu navegador não suporta upload de arquivos.",
+        dictFileTooBig: "Arquivo muito grande ({{filesize}}MB). Tamanho máximo: {{maxFilesize}}MB.",
+        dictInvalidFileType: "Você não pode enviar arquivos deste tipo.",
+        dictResponseError: "Servidor respondeu com código {{statusCode}}.",
+        dictCancelUpload: "Cancelar upload",
+        dictRemoveFile: "Remover arquivo",
+        dictMaxFilesExceeded: "Você só pode enviar {{maxFiles}} arquivo.",
+        addRemoveLinks: true,
+        init: function() {
+            this.on("addedfile", function(file) {
+                // Remove arquivo anterior se existir
+                if (this.files.length > 1) {
+                    this.removeFile(this.files[0]);
+                }
+                
+                // Transfere o arquivo para o input real
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                bannerPcInput.files = dataTransfer.files;
+                
+                console.log('Arquivo PC adicionado:', file.name);
+                console.log('Input PC files:', bannerPcInput.files.length);
+            });
+            
+            this.on("removedfile", function(file) {
+                // Limpa o input real
+                bannerPcInput.value = '';
+                console.log('Arquivo PC removido');
+            });
+        }
+    });
+
+    // Inicializa o Dropzone para Banner Mobile
+    var bannerMobileDropzone = new Dropzone("#dropzoneBannerMobile", {
+        url: "#", // Dummy URL - não será usado
+        autoProcessQueue: false,
+        uploadMultiple: false,
+        maxFiles: 1,
+        maxFilesize: 5,
+        acceptedFiles: "image/*",
+        dictDefaultMessage: '<i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i><br><b>Clique aqui ou arraste a imagem para dispositivos móveis</b><br><small class="text-muted">Tamanho recomendado: 800x350px (máx. 5MB)</small>',
+        dictFallbackMessage: "Seu navegador não suporta upload de arquivos.",
+        dictFileTooBig: "Arquivo muito grande ({{filesize}}MB). Tamanho máximo: {{maxFilesize}}MB.",
+        dictInvalidFileType: "Você não pode enviar arquivos deste tipo.",
+        dictResponseError: "Servidor respondeu com código {{statusCode}}.",
+        dictCancelUpload: "Cancelar upload",
+        dictRemoveFile: "Remover arquivo",
+        dictMaxFilesExceeded: "Você só pode enviar {{maxFiles}} arquivo.",
+        addRemoveLinks: true,
+        init: function() {
+            this.on("addedfile", function(file) {
+                // Remove arquivo anterior se existir
+                if (this.files.length > 1) {
+                    this.removeFile(this.files[0]);
+                }
+                
+                // Transfere o arquivo para o input real
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                bannerMobileInput.files = dataTransfer.files;
+                
+                console.log('Arquivo Mobile adicionado:', file.name);
+                console.log('Input Mobile files:', bannerMobileInput.files.length);
+            });
+            
+            this.on("removedfile", function(file) {
+                // Limpa o input real
+                bannerMobileInput.value = '';
+                console.log('Arquivo Mobile removido');
+            });
+        }
+    });
+
+    // Debug: Monitora o envio do formulário
+    document.querySelector('form').addEventListener('submit', function(e) {
+        console.log('Formulário enviado');
+        console.log('Banner PC files:', bannerPcInput.files.length);
+        console.log('Banner Mobile files:', bannerMobileInput.files.length);
+        
+        if (bannerPcInput.files.length === 0 && bannerMobileInput.files.length === 0) {
+            console.warn('Nenhum arquivo selecionado!');
+        }
+    });
+});
+</script>
+
+

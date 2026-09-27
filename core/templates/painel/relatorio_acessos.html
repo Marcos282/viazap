@@ -1,0 +1,33 @@
+{% extends 'painel/base.html' %}
+{% block content4 %}{% include 'painel/hearder_mobile.html' %}{% endblock %}
+{% block content3 %}{% include 'painel/menu_wrapper.html' %}{% include 'painel/top_bar.html' %}{% endblock %}
+{% block content %}
+{% include 'painel/subheader.html' %}
+<style>
+.access-report{padding-bottom:2rem}.access-report__header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem}.access-report__header h1{margin:0;font-size:1.6rem}.access-report__header p{margin:.35rem 0 0;color:#64748b}.access-report__periods{display:flex;gap:.4rem;flex-wrap:wrap}.access-report__periods a{padding:.55rem .8rem;border:1px solid #d8e1e8;border-radius:6px;color:#36566b;background:#fff;text-decoration:none}.access-report__periods a.active{border-color:#1d7890;background:#1d7890;color:#fff}.access-report__stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}.access-report__stat{padding:1.25rem;border-radius:8px;background:#fff;border:1px solid #e7edf1}.access-report__stat small{display:block;color:#64748b}.access-report__stat strong{display:block;margin-top:.3rem;color:#153f5b;font-size:1.8rem}.access-report__section{padding:1.25rem;border-radius:8px;background:#fff;border:1px solid #e7edf1;margin-bottom:1.5rem}.access-report__section h2{margin:0 0 1rem;font-size:1.05rem;color:#153f5b}.access-report__bars{display:grid;gap:.7rem}.access-report__bar{display:grid;grid-template-columns:5rem 1fr 3rem;align-items:center;gap:.7rem;font-size:.85rem}.access-report__track{height:1rem;border-radius:3px;background:#edf3f5;overflow:hidden}.access-report__fill{height:100%;min-width:2px;border-radius:3px;background:#1d7890}.access-report__table{width:100%;border-collapse:collapse}.access-report__table th,.access-report__table td{padding:.75rem .5rem;text-align:left;border-bottom:1px solid #edf1f3}.access-report__table th{color:#64748b;font-size:.8rem}.access-report__table td:last-child,.access-report__table th:last-child{text-align:right}@media(max-width:700px){.access-report__header{align-items:flex-start;flex-direction:column}.access-report__stats{grid-template-columns:1fr}.access-report__bar{grid-template-columns:4.5rem 1fr 2.5rem}.access-report__table{font-size:.85rem}}
+</style>
+<div class="container-fluid access-report">
+    <div class="access-report__header">
+        <div><h1>Relatórios de acesso</h1><p>Dados anônimos das páginas públicas da sua loja, registrados pelo próprio sistema. Não dependem da tag do Google Analytics.</p></div>
+        <nav class="access-report__periods" aria-label="Período do relatório">
+            <a href="{% url 'relatorio_acessos' %}?dias=7" class="{% if period_days == 7 %}active{% endif %}">7 dias</a>
+            <a href="{% url 'relatorio_acessos' %}?dias=30" class="{% if period_days == 30 %}active{% endif %}">30 dias</a>
+            <a href="{% url 'relatorio_acessos' %}?dias=90" class="{% if period_days == 90 %}active{% endif %}">90 dias</a>
+        </nav>
+    </div>
+    <div class="access-report__stats">
+        <div class="access-report__stat"><small>Visitantes únicos</small><strong>{{ total_visitors }}</strong></div>
+        <div class="access-report__stat"><small>Visualizações de página</small><strong>{{ total_views }}</strong></div>
+    </div>
+    <section class="access-report__section">
+        <h2>Visualizações por dia</h2>
+        {% if daily %}<div class="access-report__bars">{% for item in daily %}<div class="access-report__bar"><span>{{ item.dia|date:'d/m' }}</span><div class="access-report__track"><div class="access-report__fill" style="width:{% widthratio item.views max_daily_views 100 %}%"></div></div><strong>{{ item.views }}</strong></div>{% endfor %}</div>{% else %}<p class="text-muted mb-0">Ainda não há acessos registrados neste período.</p>{% endif %}
+    </section>
+    <section class="access-report__section">
+        <h2>Páginas mais visitadas</h2>
+        {% if pages %}<div class="table-responsive"><table class="access-report__table"><thead><tr><th>Página</th><th>Visitantes</th><th>Visualizações</th></tr></thead><tbody>{% for page in pages %}<tr><td>{{ page.pagina }}</td><td>{{ page.visitors }}</td><td>{{ page.views }}</td></tr>{% endfor %}</tbody></table></div>{% else %}<p class="text-muted mb-0">Ainda não há páginas registradas.</p>{% endif %}
+    </section>
+</div>
+{% endblock %}
+{% block footer %}{% include 'painel/footer.html' %}{% endblock %}
+{% block content2 %}{% include 'painel/user_painel.html' %}{% include 'painel/quick_cart.html' %}{% include 'painel/quick_panel.html' %}{% include 'painel/scroll_top.html' %}{% endblock %}

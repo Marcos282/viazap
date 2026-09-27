@@ -1,0 +1,517 @@
+{% extends 'painel/base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link href="{% static 'assets/css/pages/wizard/wizard-3.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+{% endblock %}
+
+{% block content4 %} 
+<!--begin::Header Mobile-->
+    {% include 'painel/hearder_mobile.html' %}
+<!--end::Header Mobile-->
+
+
+{% endblock %}
+
+
+
+{% block content3 %}
+<!--begin::Wrapper-->
+    {% include 'painel/menu_wrapper.html' %}
+<!--end::Wrapper-->
+
+<!--begin::Topbar-->
+    {% include 'painel/top_bar.html' %}
+<!--end::Topbar-->
+{% endblock %}
+
+
+
+{% block content %}
+<!--begin::Subheader-->
+    {% include 'painel/subheader.html' %}
+<!--end::Subheader-->
+
+<!--begin::Card_pedidos-->
+    {% include 'painel/conteudo_configuracao.html' %}
+<!--end::Card_pedidos-->
+{% endblock %}
+
+
+
+{% block footer %} 
+    <!--begin::Footer-->
+    {% include 'painel/footer.html' %}
+<!--end::Footer-->
+{% endblock %}
+
+
+
+{% block content2 %}
+<!-- begin::User Panel-->
+    {% include 'painel/user_painel.html' %}
+<!-- end::User Panel-->
+
+<!--begin::Quick Cart-->
+    {% include 'painel/quick_cart.html' %}
+<!--end::Quick Cart-->
+
+<!--begin::Quick Panel-->
+    {% include 'painel/quick_panel.html' %}
+<!--end::Quick Panel-->
+
+ <!--begin::Scrolltop-->
+    {% include 'painel/scroll_top.html' %}
+ <!--end::Scrolltop-->
+
+<!--begin::Chat Panel-->
+    {% include 'painel/chat_panel.html' %}
+<!--end::Chat Panel-->
+
+<!--begin::Demo Panel-->
+    {% include 'painel/demo_panel.html' %}
+<!--end::Demo Panel-->
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'assets/js/pages/custom/wizard/wizard-3.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+<script>
+// Desabilita a descoberta automática do Dropzone ANTES de qualquer coisa
+Dropzone.autoDiscover = false;
+
+$(document).ready(function() {
+    console.log('Script carregado. Dropzone disponível:', typeof Dropzone !== 'undefined');
+    // Máscara para CEP
+    $('#cep').on('input', function() {
+        let value = this.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+        
+        if (value.length <= 8) {
+            // Aplica a máscara 00000-000
+            value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+            this.value = value;
+        }
+    });
+    
+    // Valida CEP ao sair do campo
+    $('#cep').on('blur', function() {
+        const cep = this.value.replace(/\D/g, '');
+        
+        if (cep.length === 8) {
+            // CEP válido, consulta a API dos Correios
+            console.log('CEP válido:', cep);
+            
+            // Adiciona indicador de carregamento
+            const cepField = this;
+            const originalPlaceholder = cepField.placeholder;
+            cepField.placeholder = 'Consultando CEP...';
+            cepField.disabled = true;
+            
+            // Consultar API ViaCEP
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        // Preenche automaticamente os campos de endereço
+                        const cityField = document.querySelector('input[name="cidade"]');
+                        const stateField = document.querySelector('input[name="estado"]');
+                        const bairroField = document.querySelector('input[name="bairro"]');
+                        const enderecoField = document.querySelector('input[name="endereco"]');
+
+                        // Preenche o campo do endereço com o logradouro
+                        if (enderecoField && data.logradouro) {
+                            enderecoField.value = data.logradouro;
+                            console.log('Endereço preenchido:', data.logradouro);
+                        }
+
+                        if (cityField && data.localidade) {
+                            cityField.value = data.localidade;
+                        }
+                        if (stateField && data.uf) {
+                            stateField.value = data.uf;
+                        }
+                        if (bairroField && data.bairro) {
+                            bairroField.value = data.bairro;
+                        }
+                        
+                        // Preenche o select de estado
+                        const estadoSelect = document.querySelector('select[name="estado"]');
+                        if (estadoSelect && data.uf) {
+                            estadoSelect.value = data.uf;
+                            // Dispara o evento change para carregar as cidades
+                            $(estadoSelect).trigger('change');
+                            
+                            // Aguarda as cidades carregarem e seleciona a cidade
+                            setTimeout(() => {
+                                const cidadeSelect = document.querySelector('select[name="cidade"]');
+                                if (cidadeSelect && data.localidade) {
+                                    // Procura a opção da cidade e seleciona
+                                    const cidadeOptions = cidadeSelect.querySelectorAll('option');
+                                    for (let option of cidadeOptions) {
+                                        if (option.text.toLowerCase() === data.localidade.toLowerCase()) {
+                                            cidadeSelect.value = option.value;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }, 1500); // Aumentei o tempo para garantir que as cidades carregaram
+                        }
+                        
+                        // Feedback visual para o usuário
+                        console.log('Endereço preenchido automaticamente:', {
+                            cep: data.cep,
+                            endereco: data.logradouro,
+                            bairro: data.bairro,
+                            cidade: data.localidade,
+                            estado: data.uf
+                        });
+                    } else {
+                        console.log('CEP não encontrado na base dos Correios');
+                    }
+                })
+                .catch(error => {
+                    console.log('Erro ao consultar CEP:', error);
+                })
+                .finally(() => {
+                    // Remove indicador de carregamento
+                    cepField.placeholder = originalPlaceholder;
+                    cepField.disabled = false;
+                });
+        } else if (cep.length > 0) {
+            // CEP inválido
+            console.log('CEP inválido');
+        }
+    });
+    
+    // Carrega cidades quando o estado é selecionado
+    $('#estado').on('change', function() {
+        const estadoSigla = this.value;
+        const cidadeSelect = document.getElementById('cidade');
+        
+        if (!estadoSigla) {
+            cidadeSelect.innerHTML = '<option value="">Selecione primeiro o estado</option>';
+            cidadeSelect.disabled = true;
+            return;
+        }
+        
+        // Mostra loading
+        cidadeSelect.innerHTML = '<option value="">Carregando cidades...</option>';
+        cidadeSelect.disabled = true;
+        
+        // Busca cidades na API do IBGE
+        fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estadoSigla}/municipios`)
+            .then(response => response.json())
+            .then(cidades => {
+                cidadeSelect.innerHTML = '<option value="">Selecione a cidade</option>';
+                
+                // Ordena as cidades alfabeticamente
+                cidades.sort((a, b) => a.nome.localeCompare(b.nome));
+                
+                // Adiciona as opções de cidade
+                cidades.forEach(cidade => {
+                    const option = document.createElement('option');
+                    option.value = cidade.id;
+                    option.text = cidade.nome;
+                    cidadeSelect.appendChild(option);
+                });
+                
+                cidadeSelect.disabled = false;
+                console.log(`${cidades.length} cidades carregadas para ${estadoSigla}`);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar cidades:', error);
+                cidadeSelect.innerHTML = '<option value="">Erro ao carregar cidades</option>';
+                cidadeSelect.disabled = false;
+            });
+    });
+    
+    // Inicializa o Dropzone para upload de imagem de perfil com delay
+    setTimeout(function() {
+        const dropzoneElement = document.getElementById('dropzoneImagemPerfil');
+        if (dropzoneElement) {
+            // Se já existe um dropzone, destrói ele primeiro
+            if (dropzoneElement.dropzone) {
+                dropzoneElement.dropzone.destroy();
+            }
+            
+            var profileDropzone = new Dropzone("#dropzoneImagemPerfil", {
+            url: "{% url 'upload_foto_perfil' %}", // URL para onde enviar o arquivo
+            paramName: "foto_perfil", // Nome do campo que a view espera
+            maxFiles: 1,
+            maxFilesize: 3, // 3MB máximo
+            acceptedFiles: "image/*",
+            addRemoveLinks: true,
+            dictDefaultMessage: '<i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i><br><b>Clique aqui ou arraste uma imagem</b><br><small class="text-muted">PNG, JPG ou GIF (máx. 3MB)</small>',
+            dictRemoveFile: "Remover",
+            dictFileTooBig: "Não é possível enviar arquivo acima de 3 MB.",
+            dictInvalidFileType: "Tipo de arquivo não permitido.",
+            dictMaxFilesExceeded: "Você só pode enviar {{maxFiles}} arquivo por vez.",
+            
+            // Adiciona o token CSRF
+            headers: {
+                'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            
+            init: function() {
+                this.on("success", function(file, response) {
+                    console.log("Upload realizado com sucesso:", response);
+                    if (response.success) {
+                        // Atualiza a imagem de perfil na interface
+                        const profileImage = document.querySelector('.profile-image');
+                        if (profileImage) {
+                            profileImage.src = response.url;
+                        }
+                        
+                        // Mostra mensagem de sucesso
+                        alert("Foto de perfil atualizada com sucesso!");
+                    } else {
+                        alert("Erro: " + response.message);
+                    }
+                });
+                
+                this.on("error", function(file, errorMessage) {
+                    console.log("Erro no upload:", errorMessage);
+                    alert("Erro no upload: " + errorMessage);
+                });
+                
+                this.on("addedfile", function(file) {
+                    console.log("Arquivo adicionado:", file.name);
+                });
+                
+                this.on("removedfile", function(file) {
+                    console.log("Arquivo removido:", file.name);
+                });
+
+                {% if settings.foto_perfil %}
+                const mockFile = {
+                    name: "{{ settings.foto_perfil.name|default:'foto_perfil.jpg'|escapejs }}",
+                    size: 1024,
+                    type: "image/jpeg",
+                    status: Dropzone.ADDED,
+                    accepted: true
+                };
+                this.files.push(mockFile);
+                this.emit("addedfile", mockFile);
+                this.emit("thumbnail", mockFile, "{{ settings.foto_perfil.url|escapejs }}");
+                this.emit("complete", mockFile);
+                {% endif %}
+            }
+        });
+        }
+    }, 100); // Aguarda 100ms para garantir que todos os scripts foram carregados
+    
+    // Inicializa o Dropzone para upload de foto de capa
+    setTimeout(function() {
+        const dropzoneCapaElement = document.getElementById('dropzoneFotoCapa');
+        if (dropzoneCapaElement) {
+            // Se já existe um dropzone, destrói ele primeiro
+            if (dropzoneCapaElement.dropzone) {
+                dropzoneCapaElement.dropzone.destroy();
+            }
+            
+            var capaDropzone = new Dropzone("#dropzoneFotoCapa", {
+                url: "{% url 'upload_foto_capa' %}",
+                paramName: "foto_capa", // Nome do campo que o servidor espera
+                maxFiles: 1,
+                maxFilesize: 3, // 3MB máximo
+                acceptedFiles: "image/*",
+                addRemoveLinks: true,
+                dictDefaultMessage: '<i class="fas fa-image fa-3x text-primary mb-3"></i><br><b>Clique aqui ou arraste uma imagem de capa</b><br><small class="text-muted">PNG, JPG ou GIF (máx. 3MB)</small>',
+                dictRemoveFile: "Remover",
+                dictFileTooBig: "Não é possível enviar arquivo acima de 3 MB.",
+                dictInvalidFileType: "Tipo de arquivo não permitido.",
+                dictMaxFilesExceeded: "Você só pode enviar {{maxFiles}} arquivo por vez.",
+                
+                // Adiciona o token CSRF
+                headers: {
+                    'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+                },
+                
+                init: function() {
+                    this.on("sending", function(file, xhr, formData) {
+                        console.log("Enviando foto de capa:", file.name);
+                        console.log("FormData keys:", Array.from(formData.keys()));
+                    });
+                    
+                    this.on("success", function(file, response) {
+                        console.log("Upload da capa realizado com sucesso:", response);
+                        if (response.success) {
+                            // Remove mensagens de erro anteriores
+                            $('#fotoCapaErro').hide();
+                            // Mostra mensagem de sucesso
+                            alert("Foto de capa atualizada com sucesso!");
+                        } else {
+                            $('#fotoCapaErro').text(response.message).show();
+                            alert("Erro: " + response.message);
+                        }
+                    });
+                    
+                    this.on("error", function(file, errorMessage) {
+                        console.log("Erro no upload da capa:", errorMessage);
+                        $('#fotoCapaErro').text("Erro no upload: " + errorMessage).show();
+                        alert("Erro no upload: " + errorMessage);
+                    });
+                    
+                    this.on("addedfile", function(file) {
+                        console.log("Arquivo de capa adicionado:", file.name);
+                    });
+                    
+                    this.on("removedfile", function(file) {
+                        console.log("Arquivo de capa removido:", file.name);
+                    });
+
+                    {% if foto_capa %}
+                    const mockFile = {
+                        name: "{{ foto_capa.name|default:'foto_capa.jpg'|escapejs }}",
+                        size: 1024,
+                        type: "image/jpeg",
+                        status: Dropzone.ADDED,
+                        accepted: true
+                    };
+                    this.files.push(mockFile);
+                    this.emit("addedfile", mockFile);
+                    this.emit("thumbnail", mockFile, "{{ foto_capa.url|escapejs }}");
+                    this.emit("complete", mockFile);
+                    {% endif %}
+                }
+            });
+        }
+    }, 150); // Delay um pouco maior para evitar conflitos
+    
+});
+
+      
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const colorPicker = document.getElementById('color');
+    const colorHex = document.getElementById('colorHex');
+    const preview = document.getElementById('preview');
+    
+    // Função para atualizar o preview
+    function updatePreview(color) {
+        if (preview) {
+            preview.style.backgroundColor = color;
+        }
+    }
+    
+    // Função para validar se é uma cor hex válida
+    function isValidHex(hex) {
+        return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(hex);
+    }
+    
+    // Inicializa o preview com a cor atual
+    updatePreview(colorPicker.value);
+    
+    // Quando o color picker muda
+    colorPicker.addEventListener('input', function() {
+        const color = this.value;
+        colorHex.value = color;
+        updatePreview(color);
+    });
+    
+    // Quando o campo hex muda
+    colorHex.addEventListener('input', function() {
+        const hex = this.value;
+        if (isValidHex(hex)) {
+            colorPicker.value = hex;
+            updatePreview(hex);
+            this.style.borderColor = ''; // Remove estilo de erro
+        } else {
+            this.style.borderColor = '#dc3545'; // Borda vermelha para erro
+        }
+    });
+    
+    // Quando o campo hex perde o foco, força correção se necessário
+    colorHex.addEventListener('blur', function() {
+        const hex = this.value;
+        if (!isValidHex(hex)) {
+            // Se não for válido, volta para o valor do color picker
+            this.value = colorPicker.value;
+            this.style.borderColor = '';
+            updatePreview(colorPicker.value);
+        }
+    });
+    
+    // Máscara para celular (apenas 11 dígitos)
+    $('.maskcel').each(function() {
+        const input = this;
+        
+        $(this).on('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            
+            // Limitar a exatamente 11 dígitos
+            if (value.length > 11) {
+                value = value.substring(0, 11);
+            }
+            
+            // Aplicar formatação progressiva apenas para celular
+            if (value.length === 11) {
+                // Celular completo: (99) 99999-9999
+                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                this.style.borderColor = '#28a745'; // Verde quando completo
+                this.style.boxShadow = '0 0 0 0.2rem rgba(40, 167, 69, 0.25)';
+            } else if (value.length >= 7) {
+                // Formatação parcial: (99) 99999-
+                value = value.replace(/(\d{2})(\d{5})(\d*)/, '($1) $2-$3');
+                this.style.borderColor = '#ffc107'; // Amarelo quando incompleto
+                this.style.boxShadow = '0 0 0 0.2rem rgba(255, 193, 7, 0.25)';
+            } else if (value.length >= 3) {
+                // Formatação parcial: (99) 999
+                value = value.replace(/(\d{2})(\d+)/, '($1) $2');
+                this.style.borderColor = '#ffc107'; // Amarelo quando incompleto
+                this.style.boxShadow = '0 0 0 0.2rem rgba(255, 193, 7, 0.25)';
+            } else if (value.length >= 1) {
+                // Formatação parcial: (9
+                if (value.length === 2) {
+                    value = value.replace(/(\d{2})/, '($1) ');
+                }
+                this.style.borderColor = '#dc3545'; // Vermelho quando muito incompleto
+                this.style.boxShadow = '0 0 0 0.2rem rgba(220, 53, 69, 0.25)';
+            } else {
+                // Limpar estilos quando vazio
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+            }
+            
+            this.value = value;
+        });
+        
+        // Validação ao sair do campo
+        $(this).on('blur', function() {
+            const value = this.value.replace(/\D/g, '');
+            if (value.length > 0 && value.length < 11) {
+                this.style.borderColor = '#dc3545';
+                this.style.boxShadow = '0 0 0 0.2rem rgba(220, 53, 69, 0.25)';
+                
+                // Mostrar mensagem de erro
+                let errorMsg = $(this).siblings('.phone-error');
+                if (errorMsg.length === 0) {
+                    $(this).after('<small class="text-danger phone-error">Celular deve ter 11 dígitos (99) 99999-9999</small>');
+                }
+            } else {
+                // Remover mensagem de erro
+                $(this).siblings('.phone-error').remove();
+                if (value.length === 11) {
+                    this.style.borderColor = '#28a745';
+                    this.style.boxShadow = '0 0 0 0.2rem rgba(40, 167, 69, 0.25)';
+                }
+            }
+        });
+        
+        // Prevenir entrada quando já tiver 15 caracteres (formato completo)
+        $(this).on('keypress', function(e) {
+            if (this.value.length >= 15 && e.which !== 8 && e.which !== 46) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+
+

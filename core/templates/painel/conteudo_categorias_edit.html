@@ -1,0 +1,83 @@
+
+{% load static %}
+ sdgteteter
+<div class="card card-custom">
+
+   <!-- <div class="card-header">
+      <h3 class="card-title">
+         Input States
+      </h3>
+   </div> -->
+   <!--begin::Form-->
+   <form class="form" method="post" action="{% url 'painel_categorias_edit' categoria.id %}" enctype="multipart/form-data">
+      <div class="card-body">
+      {% csrf_token %}
+      <!-- Modal para mostrar mensagem de sucesso quando editado -->
+      {% if show_edit_success_modal %}
+      <div class="modal fade show" id="editSuccessModal" tabindex="-1" role="dialog" style="display:block; background:rgba(0,0,0,0.3);">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title">Sucesso!</h5>
+            </div>
+            <div class="modal-body">
+               <p>Categoria alterada com sucesso!</p>
+            </div>
+            <div class="modal-footer">
+               <a href="{% url 'painel_categorias' %}" class="btn btn-primary">OK</a>
+            </div>
+         </div>
+      </div>
+      </div>
+      {% endif %}
+
+         <div class="form-group">
+            <label>Nome da categoria</label>
+            <input type="text" class="form-control form-control-solid" name="name" value="{{ categoria.name }}" placeholder="Ex: Bebidas"/>
+         </div>
+
+        
+         <h6>Categoria Visivel ?</h6>
+         <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Se habilitado a categoria irá aparecer em todo site, caso contrário, irá aparecer apenas para quem você compartilhar o link.</p>
+         <div class="form-group">
+         <div class="radio-inline">
+            <label class="radio radio-square">
+            <input type="radio" name="exibir" value="True" {% if categoria.exibir %}checked{% endif %}/>
+            <span></span>
+            Sim
+            </label>
+            <label class="radio radio-square">
+            <input type="radio" name="exibir" value="False" {% if not categoria.exibir %}checked{% endif %}/>
+            <span></span>
+            Não
+            </label>        
+         </div>
+         </div>
+
+     <h6>Ativo ?</h6>
+         <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Marque caso deseje desativar sem ter que excluir.  Pois a exclusao de uma categoria implica em todos os itens vinculados a ela.</p>
+         <div class="form-group">
+         <div class="radio-inline">
+            <label class="radio radio-square">
+            <input type="radio" name="status" value="True" {% if categoria.status %}checked{% endif %}/>
+            <span></span>
+            Sim
+            </label>
+            <label class="radio radio-square">
+            <input type="radio" name="status" value="False" {% if not categoria.status %}checked{% endif %}/>
+            <span></span>
+            Não
+            </label>        
+         </div>
+         </div>
+         
+       
+         <!-- <span class="form-text text-muted">Some help text goes here</span> -->
+      </div>
+         <div class="card-footer d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back();">Voltar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+         </div>
+   </form>
+   <!--end::Form-->
+</div>

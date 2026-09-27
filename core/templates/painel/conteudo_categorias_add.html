@@ -1,0 +1,70 @@
+
+{% load static %}
+ 
+
+<div class="card card-custom">
+
+   <!-- <div class="card-header">
+      <h3 class="card-title">
+         Input States
+      </h3>
+   </div> -->
+   <!--begin::Form-->
+   <form class="form" method="post" action="{% url 'painel_categorias_add' %}" enctype="multipart/form-data">
+      <div class="card-body">
+        {% csrf_token %}
+        <!-- Modal para mostrar mensagem de sucesso quando cadastrado -->
+        {% if show_success_modal %}
+        <div class="modal fade show" id="successModal" tabindex="-1" role="dialog" style="display:block; background:rgba(0,0,0,0.3);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sucesso!</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Categoria cadastrada com sucesso!</p>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'painel_categorias' %}" class="btn btn-primary">OK</a>
+                </div>
+            </div>
+        </div>
+        </div>
+        {% endif %}
+
+         <div class="form-group">
+            <label>Nome da categoria</label>
+            <input type="text" class="form-control form-control-solid" name="name" placeholder="Ex: Bebidas"/>
+         </div>
+         <h6>Ordem de exibição</h6>
+            <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Ordem que será exibida no menu.  Quanto menor mais prioridade.</p>
+            
+         <div class="form-group">
+            <label>Valor (positivo ou negativo)</label>
+            <input type="number" class="form-control form-control-solid" name="ordem" placeholder="Ex: 1"/>
+         </div>
+         
+
+         <h6>Categoria Visivel ?</h6>
+         <p class="text-dark-50 bg-gray-100 font-size-sm" style="padding-left: 14px; border-left: 3px solid #070c3f;">Se habilitado a categoria irá aparecer em todo site, caso contrário, irá aparecer apenas para quem você compartilhar o link.</p>
+         <div class="radio-inline">
+            <label class="radio radio-square">
+            <input type="radio" checked="checked" name="exibir"/>
+            <span></span>
+            Sim
+            </label>
+            <label class="radio radio-square">
+            <input type="radio" name="exibir"/>
+            <span></span>
+            Não
+            </label>        
+         </div>
+         <!-- <span class="form-text text-muted">Some help text goes here</span> -->
+      </div>
+         <div class="card-footer d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back();">Voltar</button>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+         </div>
+   </form>
+   <!--end::Form-->
+</div>

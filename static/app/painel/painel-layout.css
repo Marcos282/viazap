@@ -1,0 +1,26 @@
+/* Layout compartilhado do painel, sem barra lateral. */
+.painel-layout #kt_wrapper {
+    min-width: 0;
+    padding-left: 0;
+}
+
+.painel-layout #kt_header,
+.painel-layout #kt_subheader {
+    left: 0;
+}
+
+.painel-layout #kt_content {
+    background: #fff;
+}
+
+.painel-layout .painel-content {
+    min-width: 0;
+}
+
+/* Os conteúdos internos acompanham a largura e o alinhamento do painel. */
+.painel-layout .painel-content .container {
+    width: 100%;
+    max-width: none;
+    padding-right: 0;
+    padding-left: 0;
+}

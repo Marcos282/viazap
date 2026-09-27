@@ -1,0 +1,84 @@
+/* Mobile fixes for footer overlap issue */
+
+@media (max-width: 991.98px) {
+    /* Add padding bottom to content on mobile to prevent footer overlap */
+    .content {
+        padding-bottom: 80px !important;
+    }
+    
+    /* Ensure footer doesn't overlap on mobile */
+    .footer {
+        position: relative !important;
+        height: auto !important;
+        left: auto !important;
+        bottom: auto !important;
+        box-shadow: none !important;
+    }
+    
+    /* Additional spacing for products page specifically */
+    .card-custom {
+        margin-bottom: 20px;
+    }
+    
+    /* Ensure wrapper has enough bottom margin on mobile */
+    .wrapper {
+        margin-bottom: 20px;
+    }
+}
+
+/* Ensure proper spacing for mobile devices */
+@media (max-width: 767.98px) {
+    .content {
+        padding-bottom: 100px !important;
+    }
+    
+    /* Table responsiveness improvements */
+    .table-responsive {
+        margin-bottom: 20px;
+    }
+}
+
+/* Fix footer spacing issue on all devices */
+.footer {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+}
+
+/* Remove extra spacing from footer container */
+.footer .container-fluid {
+    padding: 10px 0 !important;
+    margin: 0 !important;
+}
+
+/* Ensure page structure is tight */
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.wrapper {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+/* Ensure footer stays at bottom without extra space */
+#kt_footer {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Override default Bootstrap padding on footer */
+.footer.py-4 {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+/* Remove bottom spacing from body */
+body {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmação de e-mail | Burger</title>
+</head>
+<body>
+    {% if confirmed %}
+        <h1>E-mail confirmado</h1>
+        <p>Sua conta foi ativada.</p>
+        <a href="{% url 'login' %}">Ir para o login</a>
+    {% else %}
+        <h1>Link inválido</h1>
+        <p>Este link de confirmação é inválido ou expirou.</p>
+        <a href="{% url 'register' %}">Voltar para o cadastro</a>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,212 @@
+
+{% load static %}
+<div class="col-lg-14">
+   <div class="card card-custom card-stretch gutter-b">
+      <div class="card-header border-0 py-5">
+         <h3 class="card-title align-items-start flex-column">
+            <span class="d-inline-flex align-items-center">
+            <span class="card-label font-weight-bolder text-dark" style="margin-right: 0.5em;">Produtos:</span>
+            </span>
+         </h3>
+         <div class="card-toolbar">
+            <a href="{% url 'painel_produtos_add' %}" class="btn btn-success font-weight-bolder font-size-sm">Adicionar +</a>
+         </div>
+      </div>
+      <div class="card-body pt-0 pb-3">
+         <div class="tab-content">
+            <div class="table-responsive table-responsive">
+               <table class="table table-hover rounded">
+                  <thead>
+                     <tr class="text-left text-uppercase thead-dark">
+                        <th style="min-width: 140px;">Nome</th>
+                        <th style="min-width: 100px;">Categoria</th>
+                        <th style="min-width: 100px;">Preço</th>
+                        <th style="min-width: 100px;">Status</th>
+                        <th style="min-width: 80px;" class="d-none d-sm-table-cell">Ações</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                  {% for produto in produtos %}
+                     <tr>
+                        <td class="pl-0 py-8">
+                     <div style="display: flex; align-items: center;">
+                        {% if produto.imagem_extra and produto.imagem_extra.url %}
+                           <img src="{{ produto.imagem_extra.url }}" alt="thumb" style="width:40px; height:40px; object-fit:cover; border-radius:6px; margin-right:8px; border:1px solid #eee;" 
+                                onerror="this.src='{% url 'image_placeholder' %}'; this.onerror=null;" />
+                        {% elif produto.image and produto.image.url %}
+                           <img src="{{ produto.image.url }}" alt="thumb" style="width:40px; height:40px; object-fit:cover; border-radius:6px; margin-right:8px; border:1px solid #eee;" 
+                                onerror="this.src='{% url 'image_placeholder' %}'; this.onerror=null;" />
+                        {% else %}
+                           <img src="{% url 'image_placeholder' %}" alt="thumb" style="width:40px; height:40px; object-fit:cover; border-radius:6px; margin-right:8px; border:1px solid #eee;" />
+                        {% endif %}
+                        <span class="text-dark-75 d-block font-size-xl">{{ produto.nome }}</span>
+                     </div>
+                        </td>
+                        <td class="pl-0 py-8">
+                           <span class="text-dark-75 d-block font-size-xl" style="padding-left: 5px;">{{ produto.category.name }}</span>
+                        </td>
+                        <td class="pl-0 py-8">
+                           <span class="text-dark-75 d-block font-size-xl" style="padding-left: 5px;">R$ {{ produto.price|floatformat:2 }}</span>
+                        </td>
+                        <td class="pl-0 py-8">
+                           <span class="text-dark-75 d-block font-size-xl" style="padding-left: 5px;">{% if produto.digital %}Digital{% else %}Físico{% endif %}</span>
+                        </td>
+                        <td class="pl-0 py-8 d-none d-sm-table-cell">
+                              <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm btn-remover-produto" data-produto-id="{{ produto.id }}">
+                                 <span class="svg-icon svg-icon-md svg-icon-primary">
+                                    <img src="{% static 'assets/imagens/svg/icons/General/Trash.svg' %}"/>
+                                    
+                                 </span>
+                              </a>
+                       <a href="{% url 'painel_produtos_edit' produto.id %}" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3">
+                         <span class="svg-icon svg-icon-md svg-icon-primary">
+                            <img src="{% static 'assets/imagens/svg/icons/Communication/Write.svg' %}"/>
+                         </span>
+                       </a>
+                        </td>
+                     </tr>
+
+
+
+                     
+              {% empty %}
+                <tr><td colspan="5" class="text-center">Nenhum produto encontrado.</td></tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            <!-- Bloco de paginação -->
+            <div class="pagination" style="margin: 24px 0; text-align: center;">
+               <nav aria-label="Navegação de páginas">
+                  <ul class="pagination justify-content-center">
+                     {% if produtos.has_previous %}
+                        <li class="page-item">
+                           <a class="page-link" href="{% url 'painel_produtos' %}?page={{ produtos.previous_page_number }}">Anterior</a>
+                        </li>
+                     {% else %}
+                        <li class="page-item disabled">
+                           <span class="page-link">Anterior</span>
+                        </li>
+                     {% endif %}
+
+                     {% for num in produtos.paginator.page_range %}
+                        {% if num == produtos.number %}
+                           <li class="page-item active">
+                              <span class="page-link">{{ num }}</span>
+                           </li>
+                        {% elif num >= produtos.number|add:'-2' and num <= produtos.number|add:'2' %}
+                           <li class="page-item">
+                              <a class="page-link" href="{% url 'painel_produtos' %}?page={{ num }}">{{ num }}</a>
+                           </li>
+                        {% elif num == 1 or num == produtos.paginator.num_pages %}
+                           <li class="page-item">
+                              <a class="page-link" href="{% url 'painel_produtos' %}?page={{ num }}">{{ num }}</a>
+                           </li>
+                        {% elif num == produtos.number|add:'-3' or num == produtos.number|add:'3' %}
+                           <li class="page-item disabled">
+                              <span class="page-link">...</span>
+                           </li>
+                        {% endif %}
+                     {% endfor %}
+
+                     {% if produtos.has_next %}
+                        <li class="page-item">
+                           <a class="page-link" href="{% url 'painel_produtos' %}?page={{ produtos.next_page_number }}">Próxima</a>
+                        </li>
+                     {% else %}
+                        <li class="page-item disabled">
+                           <span class="page-link">Próxima</span>
+                        </li>
+                     {% endif %}
+                  </ul>
+               </nav>
+            </div>
+<!-- Modal de confirmação de remoção -->
+<div class="modal fade" id="modalRemoverProduto" tabindex="-1" role="dialog" aria-labelledby="modalRemoverProdutoLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="modalRemoverProdutoLabel">Remover produto</h5>
+         </div>
+         <div class="modal-body">
+            Tem certeza que deseja remover este produto?
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" id="btnConfirmarRemocao">Remover</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<!-- Modal de sucesso -->
+<div class="modal fade" id="modalSucesso" tabindex="-1" role="dialog" aria-labelledby="modalSucessoLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+         <div class="modal-header bg-success">
+            <h5 class="modal-title text-white" id="modalSucessoLabel">
+               <i class="fas fa-check-circle mr-2"></i>Sucesso!
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body text-center">
+            <div class="text-success mb-3">
+               <i class="fas fa-check-circle fa-3x"></i>
+            </div>
+            <h6 class="text-dark">Produto atualizado com sucesso!</h6>
+            <p class="text-muted">As alterações foram salvas no sistema.</p>
+         </div>
+         <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+         </div>
+      </div>
+   </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+var produtoIdParaRemover = null;
+
+// Exibir modal de sucesso se houver mensagens
+{% if messages %}
+   {% for message in messages %}
+      {% if message.tags == 'success' %}
+         $(document).ready(function() {
+            $('#modalSucesso').modal('show');
+         });
+      {% endif %}
+   {% endfor %}
+{% endif %}
+
+$(document).on('click', '.btn-remover-produto', function(e) {
+   e.preventDefault();
+   produtoIdParaRemover = $(this).data('produto-id');
+   $('#modalRemoverProduto').modal('show');
+});
+
+$('#btnConfirmarRemocao').on('click', function() {
+   if (produtoIdParaRemover) {
+      $.ajax({
+         url: '/painel/produtos/deletar/' + produtoIdParaRemover + '/',
+         type: 'POST',
+         data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+         },
+         success: function(response) {
+            window.location.reload();
+         },
+         error: function() {
+            alert('Erro ao remover produto.');
+         }
+      });
+   }
+});
+</script>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

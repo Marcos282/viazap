@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Acesso aos relatórios | ViaZap</title>
+  <link rel="stylesheet" href="{% static 'assets/plugins/global/plugins.bundle.css' %}">
+  <link rel="stylesheet" href="{% static 'assets/css/style.bundle.css' %}">
+  <style>body{background:linear-gradient(135deg,#eef5ff,#f5f7fa);min-height:100vh}.pin-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}.pin-card{width:100%;max-width:410px;background:#fff;border-radius:16px;box-shadow:0 14px 45px rgba(0,0,0,.09);padding:38px;text-align:center}.pin-icon{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;background:#e8f0fe;color:#4285f4;font-size:28px}.pin-input{text-align:center;font-size:2rem;letter-spacing:14px;font-weight:700;padding-left:25px}</style>
+</head>
+<body>
+  <main class="pin-wrap">
+    <section class="pin-card">
+      <div class="pin-icon"><i class="fas fa-lock"></i></div>
+      <h2 class="font-weight-bolder">Relatórios protegidos</h2>
+      <p class="text-muted">Digite o PIN de quatro dígitos para acessar as estatísticas.</p>
+      {% if pin_error %}<div class="alert alert-danger">{{ pin_error }}</div>{% endif %}
+      <form method="post" action="{% url 'google_stats' %}" autocomplete="off">
+        {% csrf_token %}
+        <input class="form-control form-control-lg pin-input mb-5" type="password" name="stats_pin" inputmode="numeric" pattern="[0-9]{4}" minlength="4" maxlength="4" required autofocus aria-label="PIN de acesso">
+        <button class="btn btn-primary btn-lg btn-block font-weight-bolder" type="submit">Acessar estatísticas</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

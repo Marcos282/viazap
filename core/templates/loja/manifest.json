@@ -1,0 +1,15 @@
+{
+  "background_color": "#ff5900",
+  "description": "Tiger Burger ",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "name": "Tiger Burger ",
+  "short_name": "Tiger Burger ",
+  "start_url": "/"
+}

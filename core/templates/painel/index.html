@@ -1,0 +1,364 @@
+{% extends 'painel/base.html' %}
+{% load static %}
+
+
+{% block content4 %} 
+<!--begin::Header Mobile-->
+    {% include 'painel/hearder_mobile.html' %}
+<!--end::Header Mobile-->
+
+
+{% endblock %}
+
+
+
+{% block content3 %}
+<!--begin::Wrapper-->
+    {% include 'painel/menu_wrapper.html' %}
+<!--end::Wrapper-->
+
+<!--begin::Topbar-->
+    {% include 'painel/top_bar.html' %}
+<!--end::Topbar-->
+{% endblock %}
+
+
+
+{% block content %}
+<!--begin::Subheader-->
+    {% include 'painel/subheader.html' %}
+<!--end::Subheader-->
+
+<!--begin::Card_pedidos-->
+<div id="order-feedback" class="alert mx-4" role="status" hidden></div>
+<div id="card-pedidos-container">
+    <script>
+        try {
+            if (localStorage.getItem('viazap:hideRevenue:{{ user.tenant_id|escapejs }}') === '1') {
+                document.getElementById('card-pedidos-container').classList.add('revenue-hidden');
+            }
+        } catch (error) {}
+    </script>
+    {% include 'painel/card_pedidos.html' %}
+</div>
+<!--end::Card_pedidos-->
+
+<div id="pending-audio-widget" style="position: fixed; right: 16px; bottom: 16px; z-index: 1050; display: none;">
+    <button id="enable-pending-audio" type="button" class="btn btn-danger font-weight-bold shadow-sm">
+        🔇 Parar de tocar pedidos
+    </button>
+</div>
+
+<script>
+    (function () {
+        var pendingCount = Number("{{ novos_count|default:0 }}") || 0;
+        var audioContext = null;
+        var beepTimer = null;
+        var audioMuted = false;
+        var widget = document.getElementById('pending-audio-widget');
+        var enableBtn = document.getElementById('enable-pending-audio');
+
+        function ensureAudioContext() {
+            if (!audioContext) {
+                var AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) {
+                    return null;
+                }
+                audioContext = new AudioCtx();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().catch(function () {});
+            }
+            return audioContext;
+        }
+
+        function beepOnce() {
+            var ctx = ensureAudioContext();
+            if (!ctx || ctx.state === 'suspended') return;
+
+            function playBellTone(startAt, freq, duration, peakGain) {
+                var oscillator = ctx.createOscillator();
+                var gain = ctx.createGain();
+
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(freq, startAt);
+
+                gain.gain.setValueAtTime(0.0001, startAt);
+                gain.gain.exponentialRampToValueAtTime(peakGain, startAt + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+
+                oscillator.connect(gain);
+                gain.connect(ctx.destination);
+                oscillator.start(startAt);
+                oscillator.stop(startAt + duration + 0.02);
+            }
+
+            var now = ctx.currentTime;
+
+            // Padrão "campainha de balcão": dois toques rápidos e fortes.
+            playBellTone(now, 900, 0.16, 0.45);
+            playBellTone(now, 1200, 0.16, 0.30);
+
+            playBellTone(now + 0.24, 900, 0.16, 0.45);
+            playBellTone(now + 0.24, 1200, 0.16, 0.30);
+        }
+
+        function startBeepLoop() {
+            if (audioMuted || pendingCount <= 0 || beepTimer) return;
+            beepOnce();
+            beepTimer = setInterval(function () {
+                if (pendingCount > 0 && !audioMuted) {
+                    beepOnce();
+                } else {
+                    stopBeepLoop();
+                }
+            }, 2200);
+        }
+
+        function stopBeepLoop() {
+            if (!beepTimer) return;
+            clearInterval(beepTimer);
+            beepTimer = null;
+        }
+
+        function syncSoundState() {
+            if (!widget || !enableBtn) return;
+
+            if (pendingCount > 0) {
+                widget.style.display = 'block';
+                var ctx = ensureAudioContext();
+
+                if (!audioMuted) {
+                    if (ctx && ctx.state === 'suspended') {
+                        enableBtn.className = 'btn btn-warning font-weight-bold shadow-lg animate-pulse';
+                        enableBtn.innerHTML = '🔔 ' + pendingCount + ' pedido(s) novo(s)! Clique em qualquer lugar para liberar o som';
+                    } else {
+                        enableBtn.className = 'btn btn-danger font-weight-bold shadow-sm';
+                        enableBtn.innerHTML = '🔇 Parar de tocar pedidos (' + pendingCount + ')';
+                        startBeepLoop();
+                    }
+                } else {
+                    enableBtn.className = 'btn btn-secondary font-weight-bold shadow-sm';
+                    enableBtn.innerHTML = '🔔 Reativar som de pedidos (' + pendingCount + ')';
+                    stopBeepLoop();
+                }
+            } else {
+                widget.style.display = 'none';
+                stopBeepLoop();
+                audioMuted = false;
+            }
+        }
+
+        function toggleAudio() {
+            var ctx = ensureAudioContext();
+            if (ctx && ctx.state === 'suspended') {
+                ctx.resume().then(function () {
+                    audioMuted = false;
+                    syncSoundState();
+                });
+                return;
+            }
+            audioMuted = !audioMuted;
+            syncSoundState();
+        }
+
+        if (enableBtn) {
+            enableBtn.addEventListener('click', toggleAudio);
+        }
+
+        function unlockAudioOnInteraction() {
+            if (pendingCount > 0 && !audioMuted) {
+                var ctx = ensureAudioContext();
+                if (ctx && ctx.state === 'suspended') {
+                    ctx.resume().then(function () {
+                        syncSoundState();
+                    });
+                } else {
+                    syncSoundState();
+                }
+            }
+        }
+
+        ['click', 'keydown', 'pointerdown', 'touchstart', 'focus'].forEach(function (evt) {
+            document.addEventListener(evt, unlockAudioOnInteraction, { passive: true });
+        });
+
+        function syncRevenueVisibility() {
+            const container = document.getElementById('card-pedidos-container');
+            const button = container.querySelector('.order-revenue-toggle');
+            if (!button) return;
+            const hidden = container.classList.contains('revenue-hidden');
+            const label = hidden ? 'Mostrar faturamento de hoje' : 'Ocultar faturamento de hoje';
+            button.setAttribute('aria-label', label);
+            button.setAttribute('title', label);
+            button.setAttribute('aria-pressed', String(hidden));
+        }
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.order-revenue-toggle')) return;
+            const container = document.getElementById('card-pedidos-container');
+            const hidden = container.classList.toggle('revenue-hidden');
+            try { localStorage.setItem('viazap:hideRevenue:{{ user.tenant_id|escapejs }}', hidden ? '1' : '0'); } catch(error) {}
+            syncRevenueVisibility();
+        });
+        syncRevenueVisibility();
+
+        var fetching = false;
+        var mutating = false;
+        var refreshAfterFetch = false;
+        var orderVersion = 0;
+        function fetchPedidos(force) {
+            if (fetching) {
+                if (force) refreshAfterFetch = true;
+                return Promise.resolve();
+            }
+            if (mutating || (!force && document.hidden)) return Promise.resolve();
+            const version = orderVersion;
+            fetching = true;
+            // URL absoluta (origin + path) para evitar que a tag <base> do layout resolva o caminho errado.
+            var url = window.location.origin + "{% url 'painel_pedidos_dados' %}";
+            return fetch(url, {
+                method: 'GET',
+                credentials: 'same-origin',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Falha ao buscar pedidos');
+                }
+                return response.json();
+            })
+            .then(function (data) {
+                if (version !== orderVersion || mutating) return;
+                pendingCount = Number(data.novos_count || 0);
+                syncSoundState();
+
+                // Evita substituir o HTML se o usuário estiver com algum modal aberto (para não fechar o modal na cara dele e travar o fundo escuro)
+                var isModalOpen = document.body.classList.contains('modal-open') || !!document.querySelector('.modal.show');
+
+                var container = document.getElementById('card-pedidos-container');
+                if (container && typeof data.html === 'string' && !isModalOpen) {
+                    container.innerHTML = data.html;
+                    syncRevenueVisibility();
+                }
+            })
+            .catch(function () {
+                // Mantém a tabela atual se houver falha temporária.
+            }).finally(function () {
+                fetching = false;
+                if (refreshAfterFetch) {
+                    refreshAfterFetch = false;
+                    fetchPedidos(true);
+                }
+            });
+        }
+
+        // Quando o modal for fechado, limpa fundos pendentes e atualiza a tabela
+        if (typeof $ !== 'undefined') {
+            $(document).on('hidden.bs.modal', function () {
+                if (!$('.modal.show').length) {
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('padding-right', '');
+                    fetchPedidos();
+                }
+            });
+        }
+
+        document.addEventListener('submit', async function(event) {
+            const form = event.target.closest('.order-action-form');
+            if (!form) return;
+            event.preventDefault();
+            if (mutating) return;
+            if (form.dataset.confirm && !window.confirm(form.dataset.confirm)) return;
+            const feedback = document.getElementById('order-feedback');
+            const formError = form.querySelector('.order-form-error');
+            if (formError) formError.hidden = true;
+            const payload = new FormData(form);
+            if (event.submitter && event.submitter.name) payload.set(event.submitter.name, event.submitter.value);
+            const buttons = form.querySelectorAll('button');
+            buttons.forEach(button => button.disabled = true);
+            mutating = true;
+            orderVersion++;
+            try {
+                const response = await fetch(form.action, {method:'POST', body:payload, credentials:'same-origin'});
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Não foi possível atualizar o pedido.');
+                feedback.className = 'alert alert-success mx-4';
+                feedback.textContent = 'Pedido atualizado.';
+                feedback.hidden = false;
+                if (typeof $ !== 'undefined') $('.modal.show').modal('hide');
+            } catch (error) {
+                feedback.className = 'alert alert-danger mx-4';
+                feedback.textContent = error.message;
+                feedback.hidden = false;
+                if (formError) { formError.textContent = error.message; formError.hidden = false; }
+            } finally {
+                mutating = false;
+                buttons.forEach(button => button.disabled = false);
+                await fetchPedidos(true);
+            }
+        });
+        document.addEventListener('click', async function(event) {
+            const button = event.target.closest('.order-history');
+            if (!button) return;
+            const target = document.getElementById(button.dataset.target);
+            target.textContent = 'Carregando histórico...';
+            try {
+                const response = await fetch(button.dataset.url, {credentials:'same-origin'});
+                if (!response.ok) throw new Error();
+                const data = await response.json();
+                target.replaceChildren();
+                if (!data.history.length) target.textContent = 'Nenhuma mudança registrada. Pedidos antigos não possuem histórico anterior à implantação.';
+                data.history.forEach(entry => {
+                    const line = document.createElement('p');
+                    line.textContent = new Date(entry.data).toLocaleString('pt-BR') + ' — ' + entry.anterior + ' → ' + entry.novo + ' — ' + entry.usuario;
+                    target.appendChild(line);
+                });
+            } catch(error) { target.textContent = 'Não foi possível carregar o histórico.'; }
+        });
+
+        syncSoundState();
+        setInterval(fetchPedidos, 10000);
+    })();
+</script>
+{% endblock %}
+
+
+
+{% block footer %} 
+    <!--begin::Footer-->
+    {% include 'painel/footer.html' %}
+<!--end::Footer-->
+{% endblock %}
+
+
+
+{% block content2 %}
+<!-- begin::User Panel-->
+    {% include 'painel/user_painel.html' %}
+<!-- end::User Panel-->
+
+<!--begin::Quick Cart-->
+    {% include 'painel/quick_cart.html' %}
+<!--end::Quick Cart-->
+
+<!--begin::Quick Panel-->
+    {% include 'painel/quick_panel.html' %}
+<!--end::Quick Panel-->
+
+ <!--begin::Scrolltop-->
+    {% include 'painel/scroll_top.html' %}
+ <!--end::Scrolltop-->
+
+<!--begin::Chat Panel-->
+    {% include 'painel/chat_panel.html' %}
+<!--end::Chat Panel-->
+
+<!--begin::Demo Panel-->
+    {% include 'painel/demo_panel.html' %}
+<!--end::Demo Panel-->
+{% endblock %}
+
+
+

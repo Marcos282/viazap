@@ -1,0 +1,934 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+   <head>
+      {% include "loja/includes/google_tag_head.html" %}
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+      <title>{{ product_share.title }} | {{ product_share.site_name }}</title>
+      <meta name="description" content="{{ product_share.description }}">
+      <meta property="og:type" content="product">
+      <meta property="og:title" content="{{ product_share.title }}">
+      <meta property="og:description" content="{{ product_share.description }}">
+      <meta property="og:image" content="{{ product_share.image }}">
+      <meta property="og:url" content="{{ product_share.url }}">
+      <meta property="og:site_name" content="{{ product_share.site_name }}">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="{{ product_share.title }}">
+      <meta name="twitter:description" content="{{ product_share.description }}">
+      <meta name="twitter:image" content="{{ product_share.image }}">
+      <link rel="shortcut icon" href="{% if configuracao.favicon %}{{ configuracao.favicon.url }}{% else %}{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}{% endif %}"/>
+      <link rel="manifest" href="manifest.json">
+      <link rel="stylesheet" href="{% static '_core/_cdn/bootstrap/css/bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/class.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/forms.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/typography.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/template.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/theme.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/default.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/novo.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/lineicons/css/LineIcons.min.css' %}">
+      <link href="http://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="{% static '_core/_cdn/fonts/style.min.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/sidr/css/jquery.sidr.light.min.css' %}">
+      <link  href="{% static '_core/_cdn/fancybox/css/jquery.fancybox.min.css' %}" rel="stylesheet">
+      <link rel="stylesheet" href="{% static 'app/estabelecimento/css/style5aaa.css' %}">
+      <!-- 🎨 CSS DINÂMICO - TEMA DE CORES (mesmo tema usado nas demais páginas da loja) -->
+      <style>
+         :root {
+            --theme-color: {{ color_theme }};
+         }
+
+         .colored,
+         .shop-bag i,
+         .naver .navbar a i,
+         .header .naver .navbar .social a:hover i,
+         .naver .navbar a:hover,
+         .user-menu i,
+         .search-bar-mobile button i,
+         .categoria .vertudo i,
+         .categoria .counter,
+         .bread i,
+         .produto-detalhes .categoria a,
+         .campo-numero i,
+         .sacola-table .sacola-remover i,
+         .sacola-table .sacola-change i,
+         .adicionado .checkicon,
+         .title-line i,
+         .back-button i,
+         .sidebar-info i,
+         .filter-select .outside,
+         .filter-select .fake-select i,
+         .pagination i,
+         .funcionamento-mobile i,
+         .fake-select i,
+         .search-bar button i,
+         .holder-shop-bag i {
+            color: var(--theme-color) !important;
+         }
+
+         .top {
+            border-color: var(--theme-color) !important;
+         }
+
+         .footer-info,
+         .categoria .produto .detalhes,
+         .cover,
+         .carousel-indicators .active,
+         .botao-acao,
+         .sidebar .sidebar-header,
+         .minitop,
+         .opcoes .opcao.active .check,
+         .floatbar {
+            background: var(--theme-color) !important;
+         }
+
+         .pagination > li > a:hover,
+         .pagination > .active > a,
+         .pagination > .active > a:focus,
+         .pagination > .active > a:hover,
+         .pagination > .active > span,
+         .pagination > .active > span:focus,
+         .pagination > .active > span:hover {
+            background: var(--theme-color) !important;
+            color: #fff !important;
+         }
+
+         .tv-infinite-menu a.active,
+         .tv-infinite-menu a:hover,
+         .fancybox-thumbs__list a::before {
+            border-color: var(--theme-color) !important;
+         }
+
+         .novoproduto .plus,
+         .novoproduto .plus-desc {
+            background: var(--theme-color) !important;
+         }
+
+         @media (max-width: 991px) {
+            .top {
+               border-top: 0;
+               background: var(--theme-color) !important;
+            }
+         }
+      </style>
+      <style>
+         /* Setas do modal Fancybox sempre visíveis, sem depender de hover/mousemove */
+         .fancybox-navigation .fancybox-button {
+            opacity: 1 !important;
+            visibility: visible !important;
+         }
+         /* Setas maiores e circulares, ao invés do botão quadrado padrão */
+         .fancybox-button--arrow_left,
+         .fancybox-button--arrow_right {
+            width: 56px !important;
+            height: 56px !important;
+            border-radius: 50% !important;
+            background: rgba(30, 30, 30, 0.75) !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+        }
+         .fancybox-button--arrow_left:hover,
+         .fancybox-button--arrow_right:hover {
+            background: rgba(0, 0, 0, 0.9) !important;
+         }
+         .fancybox-button--arrow_left div,
+         .fancybox-button--arrow_right div {
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+         }
+         .fancybox-button--arrow_left svg,
+         .fancybox-button--arrow_right svg {
+            width: 28px !important;
+            height: 28px !important;
+         }
+         .galeria-thumbs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+         }
+         .galeria-thumb-item {
+            display: block;
+            width: 64px;
+            height: 64px;
+            flex: 0 0 auto;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer;
+         }
+         .galeria-thumb-item.active {
+            border-color: #f64e60;
+         }
+         .galeria-thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+         }
+         @media (max-width: 767px) {
+            .galeria-thumb-item {
+               width: 52px;
+               height: 52px;
+            }
+         }
+      </style>
+      <script src="{% static '_core/_cdn/jquery/js/jquery.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/fancybox/js/jquery.fancybox.min.js' %}"></script>
+      <!-- <script src="https://demo6.lojazap.com/_core/_cdn/instantclick/js/instantclick.min.js' %}"></script> -->
+      <!-- <script src="{% static 'app/estabelecimento/js/scriptaf9f.php?insubdominiourl=demo6&amp;virtualpath=/home/lojaza04/public_html/app/estabelecimento' %}"></script> -->
+      <!-- HTML adicional -->
+      <!-- ProChaty -->
+      <script id="chat-init" src="https://app.prochaty.com/account/js/init.js?id=5357647"></script>
+      <!-- / HTML adicional -->
+   {% include "loja/includes/ai_chat_styles.html" %}
+   </head>
+   <body>
+      {% include "loja/includes/google_tag_body.html" %}
+      <div id="main" class="body-estabelecimento">
+         <div class="header">
+            <div class="minitop hidden-xs hidden-sm">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="info-badges-desktop">
+                           <div class="info-badge">
+                              <i class="lni lni-money-protection"></i> 
+                              <span>Pedido minímo: R$ 0,01</span>
+                           </div>
+                           <div class="info-badge">
+                              <i class="lni lni-user"></i> 
+                              <span>Olá </span>
+                              <div class="clear"></div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="funcionamento">
+                           <div class="aberto" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                              <i class="lni lni-checkmark-circle"></i>
+                              <span>Estabelecimento {{ loja_aberta|yesno:"aberto,fechado,fechado" }}</span>
+                              <a href="/painel/home" title="Painel de Controle" style="color: inherit; text-decoration: none; font-size: 1.1rem; display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.2);"><i class="lni lni-cog" style="margin-right: 0;"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="top">
+               <div class="container">
+                  <div class="row align-middle hidden-sm hidden-xs">
+                     <div class="col-md-3">
+                        <div class="brand">
+                           <a href="{% url 'loja' %}">
+                           {% if config.foto_perfil %}
+                              <img src="{{ config.foto_perfil.url }}" alt="{{ config.nome_loja }}"/>
+                           {% elif config.logo_url %}
+                              <img src="{{ config.logo_url }}" alt="{{ config.nome_loja }}"/>
+                           {% elif configuracao.logo %}
+                              <img src="{{ configuracao.logo.url }}" alt="{{ config.nome_loja }}"/>
+                           {% else %}
+                              <img src="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}" alt="{{ config.nome_loja }}"/>
+                           {% endif %}
+                           <span>{{ config.nome_loja }} <strong class="colored">.</strong></span>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-md-9">
+                        <div class="row">
+                           <div class="col-md-9">
+                              <div class="search-bar">
+                                 <div class="clear"></div>
+                                 <!-- <form class="align-middle" method="GET" action="https://demo6.lojazap.com/categoria">
+                                    <input type="text" name="busca" placeholder="Digite sua busca..." value=""/>
+                                    <input type="hidden" name="categoria" value=""/>
+                                    <button>
+                                    <i class="lni lni-search-alt"></i>
+                                    </button>
+                                    <div class="clear"></div>
+                                 </form> -->
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <a class="holder-shop-bag pull-right" href="{% url 'sacola' %}" title="Minha sacola">
+                                 <span class="cash">Minha sacola</span>
+                                 <div>
+                                    <div class="shop-bag">
+                                       <i class="lni lni-cart"></i>
+                                       <span class="counter">{{ cart_count }}</span>
+                                    </div>
+                                 </div>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row align-middle-mobile visible-sm visible-xs">
+                     <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="user-menu pull-left">
+                           <a href="javascript:history.back(1)" title="Voltar">
+                           <i class="lni lni-arrow-left"></i>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-md-6 col-sm-6 col-xs-6 nopadd">
+                     </div>
+                     <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="user-info pull-right">
+                           <div class="holder-shop-bag pull-right">
+                              <a href="{% url 'sacola' %}" title="Minha sacola">
+                                 <div class="shop-bag">
+                                    <i class="lni lni-cart"></i>
+                                    <span class="counter">{{ cart_count }}</span>
+                                 </div>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="navigator naver hidden-sm hidden-xs">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <nav class="navbar pull-left">
+                           <ul class="nav navbar-nav">
+                              <li class="active"><a href="{% url 'loja' %}">Início</a></li>
+                              <li class="dropdown">
+                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                 Categorias
+                                 <i class="lni lni-chevron-down icon-right"></i>
+                                 </a>
+                                 <ul class="dropdown-menu">
+                                    <li><a href="../categoria.html">Todas</a></li>
+                                    <li><a href="../categoria/65699.html">Lanches</a></li>
+                                 </ul>
+                              </li>
+                              <li><a href="../categoriab4a6.html?filtro=4">Ofertas</a></li>
+                              <li><span class="sidrLeft">Fale conosco</span></li>
+                              <li class="visible-sm visible-xs"><a href="#" data-toggle="modal" data-target="#modalSuporte">Suporte</a></li>
+                           </ul>
+                        </nav>
+                        <nav class="navbar pull-right hidden-xs hidden-sm">
+                           <div class="social">
+                              {% if config.whatsapp_numero %}<a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp da loja"><i class="lni lni-whatsapp"></i></a>{% endif %}
+                           </div>
+                        </nav>
+                        <div class="clear"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="sidebars">
+            <div id="sidebarLeft">
+               <div class="sidebar">
+                  <div class="sidebar-header">
+                     <i class="close-sidebar lni lni-close" onclick="$.sidr('close', 'sidrLeft');"></i>
+                     <div class="clear"></div>
+                  </div>
+                  <div class="sidebar-content">
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-cart-full"></i>
+                           <span>Meus Pedidos</span>
+                        </div>
+                        <div class="content">
+                           <a href="pedidosabertos.html"><i class="lni lni-shift-right"></i> Abertos</a>
+                        </div>
+                        <div class="content">
+                           <a href="pedidosfechados.html"><i class="lni lni-shift-right"></i> Finalizados</a>
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-alarm-clock"></i>
+                           <span>Funcionamento</span>
+                        </div>
+                        <div class="content">
+                           Aberto 24H					
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-map-marker"></i>
+                           <span>Endereço</span>
+                        </div>
+                        <div class="content">
+                           1250, Nº 1000, <br/>Bairro: SV, CEP: 88300-000, São Paulo/São Paulo<br/>					
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-headphone-alt"></i>
+                           <span>Contato</span>
+                        </div>
+                        <div class="content">
+                           <div class="listitem">
+                              <i class="lni lni-whatsapp"></i>
+                              <span>{{ config.whatsapp|default:'WhatsApp não cadastrado' }}</span>
+                           </div>
+                           <div class="listitem">
+                              <i class="lni lni-envelope"></i>
+                              <span><a href="../cdn-cgi/l/email-protection.html" class="__cf_email__" data-cfemail="9feceaeff0edebfadff3f0f5fee5feefb1fcf0f2">[email&#160;protected]</a></span>
+                           </div>
+                        </div>
+                        <div class="social">
+                           {% if config.whatsapp_numero %}<a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp da loja"><i class="lni lni-whatsapp"></i></a>{% endif %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="modalalerta" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="modalcarrinho" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal"><i class="lni lni-close"></i></button>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="modalSuporte" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <h5 class="modal-title">Fale com o suporte</h5>
+                     <button type="button" class="close" data-dismiss="modal"><i class="lni lni-close"></i></button>
+                  </div>
+                  <div class="modal-body">
+                     {% if config.whatsapp_numero %}
+                     <p>Prefere WhatsApp? Fale direto: <a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer">{{ config.whatsapp }}</a></p>
+                     {% endif %}
+                     <form id="formSuporte">
+                        <div class="line">
+                           <label for="suporte_nome">Nome</label>
+                           <input id="suporte_nome" type="text" name="nome" class="form-control" required/>
+                        </div>
+                        <div class="line">
+                           <label for="suporte_email">E-mail</label>
+                           <input id="suporte_email" type="email" name="email" class="form-control" required/>
+                        </div>
+                        <div class="line">
+                           <label for="suporte_assunto">Assunto</label>
+                           <textarea id="suporte_assunto" name="assunto" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <div id="suporte_feedback"></div>
+                        <button type="submit" class="botao-acao">Enviar</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="sceneElement">
+            <div class="header-interna">
+               <div class="locked-bar visible-xs visible-sm">
+                  <div class="avatar">
+                     <div class="holder">
+                        <a href="{% url 'loja' %}">
+                        {% if config.foto_perfil %}
+                           <img src="{{ config.foto_perfil.url }}" alt="{{ config.nome_loja }}"/>
+                        {% elif config.logo_url %}
+                           <img src="{{ config.logo_url }}" alt="{{ config.nome_loja }}"/>
+                        {% elif configuracao.logo %}
+                           <img src="{{ configuracao.logo.url }}" alt="{{ config.nome_loja }}"/>
+                        {% else %}
+                           <img src="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}" alt="{{ config.nome_loja }}"/>
+                        {% endif %}
+                        </a>
+                     </div>
+                  </div>
+               </div>
+               <div class="holder-interna holder-interna-nopadd visible-xs visible-sm"></div>
+            </div>
+            <div class="middle">
+               <div class="container nopaddmobile">
+                  <div class="row rowtitle hidden-xs hidden-sm">
+                     <div class="col-md-12">
+                        <div class="title-icon">
+                           <span>{{ produto.nome }}</span>
+                        </div>
+                        <div class="bread-box">
+                           <div class="bread">
+                              <a href="{% url 'loja' %}" aria-label="Início"><i class="lni lni-home"></i></a>
+                              {% if produto.category %}
+                              <span>/</span>
+                              <a href="{% url 'loja' %}?categoria_id={{ produto.category_id }}">{{ produto.category.name }}</a>
+                              {% endif %}
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-12 hidden-xs hidden-sm">
+                        <div class="clearline"></div>
+                     </div>
+                  </div>
+                  <div class="single-produto nost">
+                     <div class="row">
+                        <div class="col-md-5">
+                           <div class="galeria">
+                              <div class="row">
+                                 <div class="col-md-12">
+                                    <div id="carouselgaleria" class="carousel slide">
+                                       <div class="carousel-inner">
+                                          {% if imagens_galeria %}
+                                             {% if produto.image %}
+                                             <div class="item zoomer active">
+                                                <a data-fancybox="galeria-{{ produto.id }}" href="{{ produto.image.url }}">
+                                                <img src="{{ produto.image.url }}" alt="{{ produto.nome }}" title="{{ produto.nome }}"/>
+                                                </a>
+                                             </div>
+                                             {% endif %}
+                                             {% for imagem in imagens_galeria %}
+                                             <div class="item zoomer{% if not produto.image and forloop.first %} active{% endif %}">
+                                                <a data-fancybox="galeria-{{ produto.id }}" href="{{ imagem.imagem.url }}">
+                                                <img src="{{ imagem.imagem.url }}" alt="{{ produto.nome }}" title="{{ produto.nome }}"/>
+                                                </a>
+                                             </div>
+                                             {% endfor %}
+                                          {% elif produto.imagem_extra %}
+                                             <div class="item zoomer active">
+                                                <a data-fancybox="galeria-{{ produto.id }}" href="{{ produto.imagem_extra.url }}">
+                                                <img src="{{ produto.imagem_extra.url }}" alt="{{ produto.nome }}" title="{{ produto.nome }}"/>
+                                                </a>
+                                             </div>
+                                          {% elif produto.image %}
+                                             <div class="item zoomer active">
+                                                <a data-fancybox="galeria-{{ produto.id }}" href="{{ produto.image.url }}">
+                                                <img src="{{ produto.image.url }}" alt="{{ produto.nome }}" title="{{ produto.nome }}"/>
+                                                </a>
+                                             </div>
+                                          {% endif %}
+                                       </div>
+                                    </div>
+                                    {% if imagens_galeria %}
+                                    <div class="galeria-thumbs">
+                                       {% if produto.image %}
+                                       <a data-fancybox="galeria-{{ produto.id }}" href="{{ produto.image.url }}" class="galeria-thumb-item active" data-slide-to="0">
+                                          <img src="{{ produto.image.url }}" alt="{{ produto.nome }}"/>
+                                       </a>
+                                       {% endif %}
+                                       {% for imagem in imagens_galeria %}
+                                       <a data-fancybox="galeria-{{ produto.id }}" href="{{ imagem.imagem.url }}" class="galeria-thumb-item{% if not produto.image and forloop.first %} active{% endif %}" data-slide-to="{% if produto.image %}{{ forloop.counter }}{% else %}{{ forloop.counter0 }}{% endif %}">
+                                          <img src="{{ imagem.imagem.url }}" alt="{{ produto.nome }}"/>
+                                       </a>
+                                       {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-md-7">
+                           <div class="padd-container-mobile">
+                              <div class="produto-detalhes">
+                                 <div class="row visible-xs visible-sm">
+                                    <div class="col-md-12">
+                                       <div class="nome">
+                                          <span>{{ produto.name }}</span>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-md-3 hidden-xs hidden-sm">
+                                       <span class="thelabel thelabel-normal">Link do Produto:</span>
+                                    </div>
+                                    <div class="col-md-9">
+                                       <div class="row">
+                                          <div class="col-md-12">
+                                             <div class="ref">
+                                                <span><a id="shareProductWhatsApp" href="{{ share_whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-sm" style="color:#FFFFFF"><i class="lni lni-whatsapp"></i> Compartilhar no WhatsApp</a></span>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-md-3 hidden-xs hidden-sm">
+                                       <span class="thelabel thelabel-normal">REF:</span>
+                                    </div>
+                                    <div class="col-md-9">
+                                       <div class="row">
+                                          <div class="col-md-12">
+                                             <div class="ref">
+                                                <span>{{ produto.referencia }}</span>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="row">
+                                    <div class="col-md-3 hidden-xs hidden-sm">
+                                       <span class="thelabel thelabel-normal">Detalhes:</span>
+                                    </div>
+                                    <div class="col-md-9">
+                                       <div class="row">
+                                          <div class="col-md-12">
+                                             <div class="descricao">
+                                                <span>{{ produto.description }}</span>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <div class="row">
+                                          <div class="col-md-12">
+                                             <div class="valor_anterior">
+                                                <span> Apenas</span>
+                                             </div>
+                                             <div class="valor">
+                                                <span>{{ valor_br }}</span>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <form id="the_form" method="POST">
+                                 <div class="comprar">
+                                    <div class="line quantidade">
+                                       <div class="row">
+                                          <div class="col-md-3 col-sm-2 col-xs-2">
+                                             <span class="thelabel hidden-xs hidden-sm">Quantidade:</span>
+                                             <span class="thelabel visible-xs visible-sm">Qntd:</span>
+                                          </div>
+                                          <div class="col-md-9 col-sm-10 col-xs-10">
+                                             <div class="campo-numero pull-right">
+                                                <i class="decrementar lni lni-minus" ></i>
+                                                <input id="quantidade" type="number" name="quantidade" value="1"/>
+                                                <i class="incrementar lni lni-plus" ></i>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="line observacoes">
+                                       <div class="row">
+                                          <div class="col-md-3 col-sm-2 col-xs-2">
+                                             <span class="thelabel hidden-xs hidden-sm">Observações:</span>
+                                             <span class="thelabel visible-xs visible-sm">Obs:</span>
+                                          </div>
+                                          <div class="col-md-9 col-sm-10 col-xs-10">
+                                             <textarea id="observacoes" rows="5" name="observacoes" placeholder="Observações:"></textarea>
+                                          </div>
+                                       </div>
+                                    </div>
+
+                                    <div class="line botoes subtotal-adicionar" data-produto-id="{{ produto.id }}">
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="subtotal">
+                                             <strong >Total:</strong>
+                                             <span id="total">{{ valor_br}}</span>
+                                          </div>
+                                       </div>
+                                       <div class="col-md-6">
+                                          <!-- Botão que vai adicionar ao carrinho -->
+                                          <span class="sacola-adicionar botao-acao pull-right">
+                                             <i class="lni lni-cart"></i> <span>Adicionar a sacola</span>
+                                          </span>
+                                       </div>
+                                    </div>
+                                 </div>
+
+                                    <!--
+                                    <div class="line botoes subtotal-adicionar">
+                                       <div class="row">
+                                          <div class="col-md-6">
+                                             <div class="subtotal">
+                                                <strong>Valor:</strong>
+                                                <span>R$ {{ produto.price|floatformat:2 }}</span>
+                                             </div>
+                                          </div>
+                                          <div class="col-md-6">
+                                             <span class="sacola-adicionar botao-acao pull-right"><i class="lni lni-cart"></i> <span>Adicionar a sacola</span></span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    -->
+                                 </div>
+                              </form>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- <div class="container relacionados">
+               <div class="categoria">
+                  <div class="row">
+                     <div class="col-md-10 col-sm-10 col-xs-10">
+                        <span class="title">Veja também</span>
+                     </div>
+                     <div class="col-md-2 col-sm-2 col-xs-2">
+                        <a class="vertudo" href="../categoria/65699.html"><i class="lni lni-arrow-right"></i></a>
+                     </div>
+                  </div>
+                  <div class="produtos">
+                     <div class="row tv-grid">
+                        <div class="tv-infinite">
+                           <div class="col-md-3 col-infinite">
+                              <div class="produto">
+                                 <a href="196966.html" title="Predador">
+                                    <div class="capa" style="background: url({% static '_core/_uploads/68/2023/11/0959241123gj2f0h71e1.webp' %}) no-repeat center center;">
+                                       <span class="nome">Predador</span>
+                                    </div>
+                                    <span class="apenas apenas-single">
+                                    Por <br/> apenas											</span>
+                                    <span class="valor">R$ 21,90</span>
+                                    <div class="detalhes"><i class="lni lni-cart"></i> <span>Comprar</span></div>
+                                 </a>
+                              </div>
+                           </div>
+                           <div class="col-md-3 col-infinite">
+                              <div class="produto">
+                                 <a href="196964.html" title="Poderoso">
+                                    <div class="capa" style="background: url({% static '_core/_uploads/68/2023/11/09582411232ga0bj59df.webp' %}) no-repeat center center;">
+                                       <span class="nome">Poderoso</span>
+                                    </div>
+                                    <span class="apenas apenas-single">
+                                    Por <br/> apenas											</span>
+                                    <span class="valor">R$ 0,01</span>
+                                    <div class="detalhes"><i class="lni lni-cart"></i> <span>Comprar</span></div>
+                                 </a>
+                              </div>
+                           </div>
+                           <div class="col-md-3 col-infinite">
+                              <div class="produto">
+                                 <a href="196960.html" title="Selvagem">
+                                    gi<div class="capa" style="background: url({% static '_core/_uploads/68/2023/11/0957241123fdbc0bkh2e.webp' %}) no-repeat center center;">
+                                       <span class="nome">Selvagem</span>
+                                    </div>
+                                    <span class="apenas apenas-single">
+                                    Por <br/> apenas											</span>
+                                    <span class="valor">R$ 15,90</span>
+                                    <div class="detalhes"><i class="lni lni-cart"></i> <span>Comprar</span></div>
+                                 </a>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div> -->
+         </div>
+         <div class="footer">
+            <div class="footer-info">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <span>{% include "loja/includes/endereco_rodape.html" %}</span>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-12">
+                        <div class="social">
+                           {% include "loja/includes/whatsapp_rodape.html" %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="copyright">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        {% include "loja/includes/logo_rodape.html" %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+     <!--<script src="{% static '_core/_cdn/car/js/carItens.js' %}"></script>-->
+      <script src="{% static '_core/_cdn/bootstrap/js/bootstrap.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/sidr/js/jquery.sidr.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/maskMoney/js/maskmoney.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/maskedInput/js/jquery.maskedinput.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/validate/js/jquery.validate.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/sticky/js/jquery.sticky.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/app/js/template.js' %}"></script>
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f8178609612d4a0fa8656f39eac0fd7b","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+   {% include "loja/includes/ai_chat.html" %}
+   </body>
+   <!-- INSTALAR COMO APP
+   <script>
+      if('serviceWorker' in navigator) {
+        navigator.serviceWorker
+                 .register("{% static 'serviceworker.html' %}")
+                 .then(function() { console.log('Service Worker Registered'); });
+      }
+      
+      let deferredPrompt;
+      
+      window.addEventListener('beforeinstallprompt', (e) => {
+      	deferredPrompt = e;
+      	addBtn.style.display = 'block';
+      	deferredPrompt.prompt();
+      	deferredPrompt.userChoice.then((choiceResult) => {
+      		if (choiceResult.outcome === 'accepted') {
+      			console.log('User accepted the A2HS prompt');
+      		} else {
+      			console.log('User dismissed the A2HS prompt');
+      		}
+      		deferredPrompt = null;
+      	});
+      });
+      
+   </script>
+   -->
+
+<script>
+  $(document).ready(function() {
+    // Garante setas de navegação sempre visíveis no modal (sem esconder por inatividade)
+    if (window.jQuery && $.fancybox) {
+      $.fancybox.defaults.arrows = true;
+      $.fancybox.defaults.keyboard = true;
+      $.fancybox.defaults.idleTime = false;
+
+      // Reposiciona as setas coladas nas bordas da imagem (em vez das bordas da tela)
+      function posicionarSetasNaImagem(instance) {
+        if (!instance || !instance.current) return;
+        var $content = instance.current.$content;
+        if (!$content || !$content.length) return;
+
+        var rect = $content.get(0).getBoundingClientRect();
+        var $left = instance.$refs.container.find('.fancybox-button--arrow_left');
+        var $right = instance.$refs.container.find('.fancybox-button--arrow_right');
+        var btnWidth = 56;
+        var btnHeight = 56;
+        var top = rect.top + (rect.height / 2) - (btnHeight / 2);
+
+        $left.css({ left: Math.max(rect.left - (btnWidth / 2), 0) + 'px', right: 'auto', top: top + 'px' });
+        $right.css({ right: Math.max(window.innerWidth - rect.right - (btnWidth / 2), 0) + 'px', left: 'auto', top: top + 'px' });
+      }
+
+      $.fancybox.defaults.afterShow = posicionarSetasNaImagem;
+      $.fancybox.defaults.afterLoad = posicionarSetasNaImagem;
+      $.fancybox.defaults.onUpdate = posicionarSetasNaImagem;
+
+      $(window).on('resize', function() {
+        if ($.fancybox.getInstance()) {
+          posicionarSetasNaImagem($.fancybox.getInstance());
+        }
+      });
+    }
+
+    // Sincroniza clique na miniatura com a imagem principal do carrossel (o Fancybox cuida do modal)
+    $('.galeria-thumb-item').on('click', function() {
+      var idx = $(this).data('slide-to');
+      $('.galeria-thumb-item').removeClass('active');
+      $(this).addClass('active');
+      $('#carouselgaleria .item').removeClass('active').eq(idx).addClass('active');
+    });
+
+    // Envio do formulário de suporte (modal)
+    $('#formSuporte').on('submit', function(e) {
+      e.preventDefault();
+      var $form = $(this);
+      var $feedback = $('#suporte_feedback');
+
+      $.post("{% url 'enviar_suporte' %}", {
+        nome: $('#suporte_nome').val(),
+        email: $('#suporte_email').val(),
+        assunto: $('#suporte_assunto').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      }).done(function(data) {
+        if (data.status === 'ok') {
+          $feedback.html('<p style="color: green;">Mensagem enviada com sucesso!</p>');
+          $form[0].reset();
+        } else {
+          $feedback.html('<p style="color: red;">' + (data.message || 'Erro ao enviar mensagem.') + '</p>');
+        }
+      }).fail(function() {
+        $feedback.html('<p style="color: red;">Erro ao enviar mensagem.</p>');
+      });
+    });
+
+    // preço unitário vindo do Django
+    var precoUnitario = Number("{{ produto.price|floatformat:"2u" }}");
+
+    // sempre que a quantidade mudar
+    $('#quantidade').on('input change', function() {
+      var qtd = parseInt($(this).val()) || 1;
+      var total = precoUnitario * qtd;
+
+      // atualiza no span (duas casas decimais)
+       $('#total').text('R$' + total.toFixed(2).replace('.', ','));
+    });
+  });
+</script>
+
+   
+   <script>
+   $(".sacola-adicionar").click(function() {
+    // Pega ID do produto e quantidade do form
+    var produto_id = $("input[name='produto_id']").val() || "{{ produto.id }}";
+    var quantidade = $("#quantidade").val();
+
+    // Mostra loading no modal
+    $("#modalcarrinho .modal-body").html('<div class="adicionado"><i class="loadingicon lni lni-reload rotating"></i></div>');
+
+    // POST pro Django
+    $.post("{% url 'add_to_cart' %}", { produto_id: produto_id, quantidade: quantidade, csrfmiddlewaretoken: '{{ csrf_token }}' })
+        .done(function(data) {
+            if(data.status === "ok"){
+                const body = $("#modalcarrinho .modal-body").empty();
+                $("<h4>").text("Produto adicionado à sacola!").appendTo(body);
+                const summary = $("<div>").css({display: "flex", gap: "16px", alignItems: "center", margin: "20px 0"}).appendTo(body);
+                const photo = document.querySelector("#carouselgaleria .item.active img");
+                if (photo) {
+                    $("<img>").attr({src: photo.src, alt: data.produto.nome})
+                        .css({width: "96px", height: "96px", objectFit: "contain", borderRadius: "8px"}).appendTo(summary);
+                }
+                const details = $("<div>").appendTo(summary);
+                $("<strong>").text(data.produto.nome).appendTo(details);
+                $("<p>").text("Quantidade na sacola: " + data.produto.quantidade).appendTo(details);
+                const subtotal = Number(data.produto.subtotal).toLocaleString("pt-BR", {style: "currency", currency: "BRL"});
+                $("<p>").text("Subtotal do item: " + subtotal).appendTo(details);
+                const actions = $("<div>").css({display: "flex", flexWrap: "wrap", gap: "12px"}).appendTo(body);
+                $("<button>").attr({type: "button", "data-dismiss": "modal"})
+                    .addClass("btn btn-default").text("Continuar comprando").appendTo(actions);
+                $("<a>").attr("href", "{% url 'sacola' %}")
+                    .addClass("btn btn-success").text("Ver sacola").appendTo(actions);
+
+                // Atualiza contador da sacola
+                $(".shop-bag .counter").text(data.cart_count);
+            } else {
+                $("#modalcarrinho .modal-body").html('<p>Erro ao adicionar ao carrinho</p>');
+            }
+        })
+        .fail(function(){
+            $("#modalcarrinho .modal-body").html('<p>Erro ao adicionar ao carrinho</p>');
+        });
+
+    // Abre modal
+    $("#modalcarrinho").modal("show");
+});
+      </script>
+
+
+
+
+
+</html>
+
+<div class="releaseclick"></div>
+ 

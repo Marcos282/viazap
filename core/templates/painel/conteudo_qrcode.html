@@ -1,0 +1,221 @@
+<div class="card card-custom gutter-b">
+	<div class="card-header">
+		<div class="card-title">
+			<h3 class="card-label">Divulgação</h3>
+		</div>
+		<div class="card-toolbar">
+            <span class="badge badge-info">Compartilhe sua loja com seus clientes</span>
+        </div>
+	</div>
+    <div class="card-body text-center">
+        <div class="mb-8 mx-auto" style="max-width: 480px;">
+            <div class="text-left mb-5 shadow-sm" style="border-radius: 20px; overflow: hidden; background: #00665e;">
+                <div style="background: #fff; aspect-ratio: 1 / 1;">
+                    <img src="{{ store_share.image }}" alt="Foto de perfil de {{ store_share.title }}" style="display: block; width: 100%; height: 100%; object-fit: contain;">
+                </div>
+                <div class="p-5">
+                    <h4 style="color: #fff; font-weight: 700; overflow-wrap: anywhere;">{{ store_share.title }}</h4>
+                    <p style="color: #e0f2ef; overflow-wrap: anywhere;">{{ store_share.description }}</p>
+                    <a href="{{ store_share.url }}" target="_blank" rel="noopener noreferrer" style="color: #fff; overflow-wrap: anywhere;">
+                        <i class="fas fa-link mr-2" style="color: inherit;" aria-hidden="true"></i>{{ store_share.url }}
+                    </a>
+                </div>
+            </div>
+            <a href="{{ store_share.whatsapp_url }}" class="btn btn-success" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp"></i> Compartilhar loja no WhatsApp
+            </a>
+        </div>
+        <!-- QR Code Display -->
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="text-center mb-5">
+                    <h5 class="mb-4">Escaneie para acessar a loja</h5>
+                    <div class="qr-code-container p-4 bg-white border rounded shadow-sm d-inline-block">
+                        <img src="data:image/png;base64,{{ qr_code_base64 }}" alt="QR Code da Loja" class="img-fluid" style="max-width: 300px;">
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-muted mb-2">URL da Loja:</p>
+                        <div class="input-group">
+                            <input type="text" class="form-control text-center" value="{{ loja_url }}" readonly id="loja-url">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button" onclick="copyToClipboard()">
+                                    <i class="fa fa-copy"></i> Copiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn btn-success mr-2" onclick="downloadQRCode()">
+                            <i class="fa fa-download"></i> Baixar QR Code
+                        </button>
+                        <button class="btn btn-info" onclick="printQRCode()">
+                            <i class="fa fa-print"></i> Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard() {
+    const urlInput = document.getElementById('loja-url');
+    urlInput.select();
+    document.execCommand('copy');
+    
+    // Feedback visual
+    Swal.fire({
+        title: 'URL Copiada!',
+        text: 'A URL da loja foi copiada para a área de transferência.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+    });
+}
+
+function downloadQRCode() {
+    try {
+        const qrCodeImg = document.querySelector('.qr-code-container img');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Aguarda a imagem carregar se ainda não carregou
+        if (!qrCodeImg.complete) {
+            qrCodeImg.onload = function() {
+                downloadImage();
+            };
+        } else {
+            downloadImage();
+        }
+        
+        function downloadImage() {
+            canvas.width = qrCodeImg.naturalWidth || 300;
+            canvas.height = qrCodeImg.naturalHeight || 300;
+            
+            // Desenha fundo branco
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Desenha a imagem
+            ctx.drawImage(qrCodeImg, 0, 0);
+            
+            // Cria o link de download
+            const link = document.createElement('a');
+            link.download = 'qrcode-loja.png';
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Feedback visual
+            Swal.fire({
+                title: 'QR Code baixado!',
+                text: 'O arquivo foi salvo como qrcode-loja.png',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao baixar QR Code:', error);
+        Swal.fire({
+            title: 'Erro!',
+            text: 'Não foi possível baixar o QR Code. Tente novamente.',
+            icon: 'error'
+        });
+    }
+}
+
+function printQRCode() {
+    try {
+        const qrCodeImg = document.querySelector('.qr-code-container img');
+        const loja_url = '{{ loja_url|escapejs }}';
+        const nome_loja = '{{ settings.nome_loja|default:"Minha Loja"|escapejs }}';
+        
+        // Aguarda a imagem carregar se ainda não carregou
+        if (!qrCodeImg.complete) {
+            qrCodeImg.onload = function() {
+                openPrintWindow();
+            };
+        } else {
+            openPrintWindow();
+        }
+        
+        function openPrintWindow() {
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <title>QR Code - ${nome_loja}</title>
+                        <style>
+                            body { 
+                                font-family: Arial, sans-serif; 
+                                text-align: center; 
+                                margin: 50px;
+                                padding: 20px;
+                            }
+                            .qr-container { 
+                                border: 3px solid #000; 
+                                padding: 30px; 
+                                display: inline-block; 
+                                background: white;
+                                margin: 20px 0;
+                            }
+                            h1 { 
+                                color: #333; 
+                                margin-bottom: 20px;
+                                font-size: 28px;
+                            }
+                            .url { 
+                                margin-top: 20px; 
+                                font-size: 16px; 
+                                color: #666;
+                                word-break: break-all;
+                            }
+                            .instructions {
+                                margin-top: 30px; 
+                                font-size: 14px;
+                                color: #555;
+                                font-style: italic;
+                            }
+                            @media print {
+                                body { margin: 0; }
+                                .qr-container { border: 2px solid #000; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>${nome_loja}</h1>
+                        <div class="qr-container">
+                            <img src="${qrCodeImg.src}" alt="QR Code" style="max-width: 300px; height: auto;">
+                            <div class="url">${loja_url}</div>
+                        </div>
+                        <p class="instructions">Escaneie o QR Code para acessar nossa loja online</p>
+                    </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            
+            // Aguarda o documento carregar antes de imprimir
+            printWindow.onload = function() {
+                setTimeout(function() {
+                    printWindow.focus();
+                    printWindow.print();
+                }, 500);
+            };
+        }
+        
+    } catch (error) {
+        console.error('Erro ao imprimir QR Code:', error);
+        Swal.fire({
+            title: 'Erro!',
+            text: 'Não foi possível abrir a janela de impressão. Tente novamente.',
+            icon: 'error'
+        });
+    }
+}
+</script>

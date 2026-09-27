@@ -1,0 +1,146 @@
+{% extends 'painel/base.html' %}
+{% block content4 %}{% include 'painel/hearder_mobile.html' %}{% endblock %}
+{% block content3 %}{% include 'painel/menu_wrapper.html' %}{% include 'painel/top_bar.html' %}{% endblock %}
+{% block content %}
+{% include 'painel/subheader.html' %}
+<div class="container-fluid mb-3">
+  <div class="d-flex justify-content-between align-items-center flex-wrap p-4 bg-white border rounded">
+    <p class="text-muted mb-2">Conversas da loja: <strong>{{ chat_account_tenant.name }}</strong> ({{ chat_account_tenant.subdomain }})</p>
+    <button type="button" class="btn btn-primary btn-lg mb-2" id="openAiOrientations">
+      <i class="fas fa-cog mr-2"></i> Configurar orientações da IA
+    </button>
+  </div>
+</div>
+<div class="container-fluid mb-3">
+  <div class="p-4 bg-white border rounded">
+    <h5>Consumo de tokens da IA</h5>
+    <div class="d-flex flex-wrap">
+      <div class="mr-8">Entrada: <strong id="aiInputTokens">{{ chat_token_usage.input_tokens }}</strong></div>
+      <div class="mr-8">Saída: <strong id="aiOutputTokens">{{ chat_token_usage.output_tokens }}</strong></div>
+      <div>Total: <strong id="aiTotalTokens">{{ chat_token_usage.total_tokens }}</strong></div>
+    </div>
+    <small class="text-muted">Acumulado desta loja desde a ativação da contagem, conforme informado pela API. Conversas anteriores e respostas locais não entram no total.</small>
+  </div>
+</div>
+<div id="aiOrientationsModal" class="ai-orientations-modal" hidden>
+  <div class="ai-orientations-dialog" role="dialog" aria-modal="true" aria-labelledby="aiOrientationsTitle">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="mb-0" id="aiOrientationsTitle">Orientações da IA</h4>
+      <button type="button" class="close" id="closeAiOrientations" aria-label="Fechar">&times;</button>
+    </div>
+    <p class="text-muted">Escreva regras e informações que a IA deve seguir no atendimento desta loja.</p>
+    <form id="aiOrientationsForm">
+      {% csrf_token %}
+      <textarea class="form-control" id="aiOrientations" name="ai_orientations" rows="10" placeholder="Ex.: Sempre informe que, após receber o telefone, entraremos em contato em breve.">{{ chat_orientations }}</textarea>
+      <div class="d-flex justify-content-end align-items-center mt-4">
+        <span class="text-success mr-3" id="aiOrientationsStatus" role="status"></span>
+        <button type="submit" class="btn btn-primary" id="saveAiOrientations">Salvar orientações</button>
+      </div>
+    </form>
+  </div>
+</div>
+<style>
+.ai-orientations-modal{position:fixed;inset:0;z-index:1050;background:rgba(0,0,0,.45);padding:8vh 1rem;overflow:auto}
+.ai-orientations-dialog{max-width:720px;margin:auto;background:#fff;border-radius:6px;padding:2rem;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+</style>
+<div class="container-fluid"><div class="card card-custom gutter-b"><div class="card-header border-0 pt-5"><h3 class="card-title align-items-start flex-column"><span class="card-label font-weight-bolder text-dark">Atendimento IA / Operador</span><span class="text-muted mt-1 font-weight-bold font-size-sm">Conversas por número de sessão, do maior para o menor.</span></h3></div><div class="card-body pt-2"><div class="row"><div class="col-lg-4 mb-4 mb-lg-0"><div class="border rounded h-100 bg-light"><div class="p-4 border-bottom d-flex justify-content-between"><strong>Conversas ativas</strong><span class="label label-light-primary label-inline" id="sessionCount">0</span></div><div id="chatSessions" style="max-height:520px;overflow-y:auto">{% for session in chat_sessions %}{% if session.mode != 'closed' %}<button type="button" class="btn btn-block text-left p-4 rounded-0 border-bottom" data-session-id="{{ session.session_id }}" data-session-mode="{{ session.mode }}" data-session-number="{{ session.session_number }}"><strong>Sessão #{{ session.session_number }}</strong><small class="d-block text-muted">{{ session.message_count }} mensagem(ns)</small></button>{% endif %}{% endfor %}</div><p id="sessionLoadError" class="text-danger p-3 mb-0" role="status" hidden></p></div></div><div class="col-lg-8"><div class="border rounded h-100 d-flex flex-column" style="min-height:560px"><div class="p-4 border-bottom d-flex justify-content-between align-items-center"><div><h5 class="mb-1 font-weight-bolder" id="conversationTitle">Selecione uma conversa</h5><span class="text-muted small" id="conversationStatus">Escolha um cliente para visualizar o histórico.</span></div><button class="btn btn-primary btn-sm" id="toggleSession" type="button" disabled>Assumir sessão</button><button class="btn btn-danger btn-sm ml-2" id="closeSession" type="button" disabled>Encerrar sessão</button></div><div class="p-4 flex-grow-1 bg-light" id="chatMessages" style="overflow-y:auto;max-height:400px"><p class="text-muted text-center mt-5">Nenhuma conversa selecionada.</p></div><form class="p-3 border-top" id="operatorChatForm"><div class="input-group"><input class="form-control" id="operatorMessage" maxlength="1000" autocomplete="off" placeholder="Selecione uma conversa para responder" disabled><div class="input-group-append"><button class="btn btn-primary" type="submit" id="sendMessage" disabled>Enviar</button></div></div></form></div></div></div></div></div></div>
+<div class="container-fluid mb-5">
+  <div class="card card-custom">
+    <div class="card-body">
+      <label for="chatSessionSelect" class="font-weight-bold">Abrir mensagens pelo número da sessão</label>
+      <select id="chatSessionSelect" class="form-control" disabled aria-describedby="chatSessionHelp">
+        <option value="">Carregando sessões...</option>
+      </select>
+      <small id="chatSessionHelp" class="form-text text-muted">Selecione uma sessão para consultar o histórico abaixo.</small>
+      <section id="sessionHistory" class="border rounded mt-4" hidden aria-labelledby="sessionHistoryTitle">
+        <h5 id="sessionHistoryTitle" class="p-4 border-bottom mb-0">Histórico da sessão</h5>
+        <div id="sessionHistoryMessages" class="p-4 bg-light" style="max-height:450px;overflow-y:auto" aria-live="polite"></div>
+      </section>
+    </div>
+  </div>
+</div>
+{{ chat_sessions|json_script:"initialChatSessions" }}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+const orientationsModal=document.getElementById('aiOrientationsModal'), orientationsForm=document.getElementById('aiOrientationsForm'), orientationsStatus=document.getElementById('aiOrientationsStatus'), saveOrientations=document.getElementById('saveAiOrientations');
+function openAiOrientations(){orientationsModal.hidden=false;document.getElementById('aiOrientations').focus()}
+const topOrientationsButton=document.getElementById('openAiOrientations');
+if(topOrientationsButton)topOrientationsButton.onclick=openAiOrientations;
+document.getElementById('closeAiOrientations').onclick=()=>{orientationsModal.hidden=true};
+orientationsModal.onclick=e=>{if(e.target===orientationsModal)orientationsModal.hidden=true};
+orientationsForm.onsubmit=e=>{e.preventDefault();saveOrientations.disabled=true;orientationsStatus.textContent='';fetch('{{ chat_orientations_url|escapejs }}',{method:'POST',headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(orientationsForm))}).then(r=>r.json()).then(data=>{if(data.status!=='ok')throw new Error();orientationsStatus.textContent=data.message}).catch(()=>{orientationsStatus.className='text-danger mr-3';orientationsStatus.textContent='Não foi possível salvar as orientações.'}).finally(()=>saveOrientations.disabled=false)};
+const sessionsEl=document.getElementById('chatSessions'), messagesEl=document.getElementById('chatMessages'), countEl=document.getElementById('sessionCount'), titleEl=document.getElementById('conversationTitle'), statusEl=document.getElementById('conversationStatus'), inputEl=document.getElementById('operatorMessage'), sendEl=document.getElementById('sendMessage'), toggleEl=document.getElementById('toggleSession');
+const urls={sessions:'{{ chat_sessions_url|escapejs }}',messages:'{{ chat_messages_url|escapejs }}',send:'{{ chat_send_url|escapejs }}',toggle:'{% url "painel_bot_alternar_sessao" %}'}, csrf='{{ csrf_token }}'; let selected=null, mode='bot', lastId=0, messagesTimer=null;
+const closeEl=document.getElementById('closeSession');
+const sessionSelect=document.getElementById('chatSessionSelect');
+let availableSessions=[], sessionOptionsSignature='', historySelected=null, historyRequest=0;
+const historyEl=document.getElementById('sessionHistory'), historyTitle=document.getElementById('sessionHistoryTitle'), historyMessages=document.getElementById('sessionHistoryMessages');
+function updateSessionSelect(list){
+    availableSessions=list;
+    const signature=JSON.stringify(list.map(s=>[s.session_id,s.session_number]));
+    if(signature!==sessionOptionsSignature){
+        sessionOptionsSignature=signature;
+        sessionSelect.replaceChildren(new Option(list.length?'Selecione o número da sessão':'Nenhuma sessão disponível',''));
+        list.forEach(s=>sessionSelect.add(new Option('Sessão #'+s.session_number+(s.mode==='closed'?' — Encerrada':''),s.session_id)));
+    }
+    sessionSelect.disabled=!list.length;
+    sessionSelect.value=historySelected||'';
+}
+sessionSelect.addEventListener('change',function(){
+    const session=availableSessions.find(s=>s.session_id===this.value);
+    const request=++historyRequest;
+    historySelected=session?session.session_id:null;
+    historyEl.hidden=!session;
+    if(!session)return;
+    historyTitle.textContent='Histórico — Sessão #'+session.session_number;
+    historyMessages.textContent='Carregando histórico...';
+    historyEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+    api(urls.messages+'?session_id='+encodeURIComponent(session.session_id)+'&after_id=0')
+        .then(d=>{
+            if(request!==historyRequest)return;
+            if(d.status!=='ok')throw new Error('Falha ao carregar');
+            historyMessages.replaceChildren();
+            if(!d.messages.length)historyMessages.textContent='Esta sessão ainda não possui mensagens.';
+            d.messages.forEach(m=>message(m,historyMessages));
+            historyMessages.scrollTop=0;
+        }).catch(()=>{
+            if(request===historyRequest)historyMessages.textContent='Não foi possível carregar o histórico. Selecione a sessão novamente para tentar.';
+        });
+});
+function api(url,opt){return fetch(url,opt).then(r=>r.json())} function sessions(list){updateSessionSelect(list);list=list.filter(s=>s.mode!=='closed');countEl.textContent=list.length;sessionsEl.replaceChildren();if(!list.length){sessionsEl.innerHTML='<p class="p-4 text-muted text-center mb-0">Nenhuma conversa ativa.</p>';return}list.forEach(s=>{let b=document.createElement('button'),n=document.createElement('strong'),badge=document.createElement('span'),detail=document.createElement('small');b.type='button';b.className='btn btn-block text-left p-4 rounded-0 border-bottom '+(s.session_id===selected?'bg-white':'');n.textContent='Sessão #'+s.session_number;badge.className='label label-inline float-right '+(s.mode==='operator'?'label-success':'label-warning');badge.textContent=s.mode==='operator'?'Humano':'Bot';detail.className='d-block text-muted mt-2 text-truncate';detail.textContent=s.message_count+' mensagem(ns)';b.append(n,badge,detail);b.onclick=()=>select(s.session_id,s.mode,s.session_number);sessionsEl.append(b)})}
+function message(m,target=messagesEl){let w=document.createElement('div'),l=document.createElement('small'),b=document.createElement('div'),out=m.sender==='operator';w.className='d-flex flex-column mb-4 '+(out?'align-items-end':'align-items-start');l.className='text-muted mb-1';l.textContent=out?'Operador':m.sender==='bot'?'IA':'Cliente';b.className='rounded p-3 '+(out?'bg-primary text-white':'bg-white');b.style.maxWidth='80%';b.textContent=m.message;w.append(l,b);target.append(w)}
+function select(id,newMode,number){if(messagesTimer)clearInterval(messagesTimer);selected=id;closeEl.disabled=false;mode=newMode||'bot';lastId=0;messagesEl.replaceChildren();if(number!==undefined)titleEl.textContent='Sessão #'+number;statusEl.textContent=mode==='operator'?'Atendimento humano ativo':'O bot está atendendo esta conversa';toggleEl.disabled=false;toggleEl.textContent=mode==='operator'?'Liberar para o bot':'Assumir sessão';inputEl.disabled=false;inputEl.placeholder='Escreva uma mensagem...';sendEl.disabled=false;loadMessages(true);messagesTimer=setInterval(()=>loadMessages(false),2000);loadSessions()}
+function loadSessions(){
+    api(urls.sessions).then(d=>{
+        if(d.status!=='ok')throw new Error('Falha ao atualizar sessões');
+        sessions(d.sessions);
+        if(d.token_usage){
+            document.getElementById('aiInputTokens').textContent=d.token_usage.input_tokens.toLocaleString('pt-BR');
+            document.getElementById('aiOutputTokens').textContent=d.token_usage.output_tokens.toLocaleString('pt-BR');
+            document.getElementById('aiTotalTokens').textContent=d.token_usage.total_tokens.toLocaleString('pt-BR');
+        }
+        document.getElementById('sessionLoadError').hidden=true;
+    }).catch(()=>{
+        const error=document.getElementById('sessionLoadError');
+        error.textContent='Não foi possível atualizar as conversas. Verifique sua conexão e se está conectado à conta desta loja.';
+        error.hidden=false;
+    });
+} function loadMessages(reset){if(!selected)return;const requestedSession=selected;api(urls.messages+'?session_id='+encodeURIComponent(selected)+'&after_id='+(reset?0:lastId)).then(d=>{if(d.status!=='ok'||requestedSession!==selected)return;if(reset)messagesEl.replaceChildren();d.messages.forEach(m=>{message(m);lastId=Math.max(lastId,m.id)});messagesEl.scrollTop=messagesEl.scrollHeight})}
+document.getElementById('operatorChatForm').onsubmit=e=>{e.preventDefault();let text=inputEl.value.trim();if(!selected||!text)return;sendEl.disabled=true;api(urls.send,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':csrf},body:new URLSearchParams({session_id:selected,message:text})}).then(d=>{if(d.status==='ok'){inputEl.value='';mode='operator';loadMessages(false);loadSessions()}}).finally(()=>sendEl.disabled=false)};
+closeEl.onclick=()=>{
+    if(!selected)return;
+    const id=selected;
+    closeEl.disabled=true;
+    api(urls.toggle,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':csrf},body:new URLSearchParams({session_id:id,action:'encerrar'})})
+      .then(d=>{
+        if(d.status!=='ok')throw new Error(d.message||'Não foi possível encerrar.');
+        if(selected===id){if(messagesTimer)clearInterval(messagesTimer);messagesTimer=null;selected=null;mode='closed';statusEl.textContent='Sessão encerrada. Histórico disponível abaixo.';toggleEl.disabled=true;inputEl.disabled=true;sendEl.disabled=true;}
+        loadSessions();
+      }).catch(()=>{statusEl.textContent='Não foi possível encerrar a sessão. Tente novamente.';closeEl.disabled=!selected;});
+};
+toggleEl.onclick=()=>{if(!selected)return;let action=mode==='operator'?'liberar':'assumir';api(urls.toggle,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded','X-CSRFToken':csrf},body:new URLSearchParams({session_id:selected,action:action})}).then(d=>{if(d.status==='ok')select(selected,d.mode)})}; sessions(JSON.parse(document.getElementById('initialChatSessions').textContent));loadSessions();setInterval(loadSessions,4000);
+});
+</script>
+{% endblock %}
+{% block footer %}{% include 'painel/footer.html' %}{% endblock %}
+{% block content2 %}{% include 'painel/user_painel.html' %}{% include 'painel/quick_cart.html' %}{% include 'painel/quick_panel.html' %}{% include 'painel/scroll_top.html' %}{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'painel/base.html' %}
+{% load static %}
+
+
+{% block content4 %} 
+<!--begin::Header Mobile-->
+    {% include 'painel/hearder_mobile.html' %}
+<!--end::Header Mobile-->
+
+
+{% endblock %}
+
+
+
+{% block content3 %}
+<!--begin::Wrapper-->
+    {% include 'painel/menu_wrapper.html' %}
+<!--end::Wrapper-->
+
+<!--begin::Topbar-->
+    {% include 'painel/top_bar.html' %}
+<!--end::Topbar-->
+{% endblock %}
+
+
+
+{% block content %}
+<!--begin::Subheader-->
+    {% include 'painel/subheader.html' %}
+<!--end::Subheader-->
+
+
+
+<!--begin:: Conteudo home-->
+    {% include 'painel/conteudo_home.html' %}
+<!--end:: Conteudo home-->
+{% endblock %}
+
+
+
+{% block footer %} 
+    <!--begin::Footer-->
+    {% include 'painel/footer.html' %}
+<!--end::Footer-->
+{% endblock %}
+
+
+
+{% block content2 %}
+<!-- begin::User Panel-->
+    {% include 'painel/user_painel.html' %}
+<!-- end::User Panel-->
+
+<!--begin::Quick Cart-->
+    {% include 'painel/quick_cart.html' %}
+<!--end::Quick Cart-->
+
+<!--begin::Quick Panel-->
+    {% include 'painel/quick_panel.html' %}
+<!--end::Quick Panel-->
+
+ <!--begin::Scrolltop-->
+    {% include 'painel/scroll_top.html' %}
+ <!--end::Scrolltop-->
+
+<!--begin::Chat Panel-->
+    {% include 'painel/chat_panel.html' %}
+<!--end::Chat Panel-->
+
+<!--begin::Demo Panel-->
+    {% include 'painel/demo_panel.html' %}
+<!--end::Demo Panel-->
+
+{% if mostrar_modal_orientacoes %}
+<!--begin::Modal Orientações de Uso-->
+    {% include 'painel/modal_orientacoes.html' %}
+<!--end::Modal Orientações de Uso-->
+{% endif %}
+{% endblock %}
+
+
+

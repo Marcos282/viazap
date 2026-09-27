@@ -1,0 +1,168 @@
+{% load static %}
+<div class="subheader py-2 py-lg-4  subheader-solid " id="kt_subheader">
+   <div class=" container-fluid  d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
+      <!--begin::Details-->
+      <div class="d-flex align-items-center flex-wrap mr-2">
+         <!--begin::Title-->
+         <h5 class="text-dark font-weight-bold mt-2 mb-2 mr-5">
+            <a href="{% url 'painel_home' %}">
+            <span class="svg-icon svg-icon-primary svg-icon-2x align-middle" style="vertical-align: middle;">
+               <!--begin::Svg Icon | path:assets/media/svg/icons/Home/House.svg-->
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3L2 12h3v7a1 1 0 001 1h4a1 1 0 001-1v-4h2v4a1 1 0 001 1h4a1 1 0 001-1v-7h3L12 3z" fill="#3699ff"/>
+               </svg>
+               <!--end::Svg Icon-->
+            </span>
+                <span class="text-primary font-weight-bold align-middle ml-1">Home</span>
+            </a>
+            <!--begin::separador-->
+            <div class="subheader-separator subheader-separator-ver bg-gray-200" style="display: inline-block; vertical-align: middle; margin: 0 2px 0 0; height: 24px;"></div>
+            
+            <!--begin::breadcrumb-->
+            {% if localizacao %}
+                {% if localizacao.0.n1 %}
+                    <!-- Array de breadcrumb -->
+                    {% for item in localizacao %}
+                        {% if item.n1 %}
+                            <a href="{% url item.url %}" class="text-primary font-weight-bold align-middle">{{ item.n1 }}</a>
+                            {% if not forloop.last %}
+                                <span class="text-muted align-middle mx-2">/</span>
+                            {% endif %}
+                        {% elif item.n2 %}
+                            {% if item.url and item.id %}
+                                <a href="{% url item.url item.id %}" class="text-dark font-weight-bold align-middle">{{ item.n2 }}</a>
+                            {% else %}
+                                <span class="text-dark font-weight-bold align-middle">{{ item.n2 }}</span>
+                            {% endif %}
+                            {% if not forloop.last %}
+                                <span class="text-muted align-middle mx-2">/</span>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <!-- String simples -->
+                    <span class="align-middle">{{ localizacao }}</span>
+                {% endif %}
+            {% endif %}
+            <!--end::breadcrumb-->
+         </h5>
+            <!--begin::Actions-->
+            <!-- <div class="subheader-separator subheader-separator-ver mt-2 mb-2 mr-4 bg-gray-200"></div>
+
+            <span class="text-muted font-weight-bold mr-4">#XRS-45670</span>
+
+            <a href="#" class="btn btn-light-warning font-weight-bolder btn-sm">
+                Add New
+            </a> -->
+            <!--end::Actions-->
+         <!--end::Title-->
+         <!--begin::Search Form-->
+         <!--end::Search Form-->
+         <!--begin::Group Actions-->
+         <div class="d-flex- align-items-center flex-wrap mr-2 d-none" id="kt_subheader_group_actions">
+            <div class="text-dark-50 font-weight-bold">
+               <span id="kt_subheader_group_selected_rows">23</span> Selected:
+            </div>
+            <div class="d-flex ml-6">
+               <div class="dropdown mr-2" id="kt_subheader_group_actions_status_change">
+                  <button type="button" class="btn btn-light-primary font-weight-bolder btn-sm dropdown-toggle" data-toggle="dropdown">
+                  Update Status
+                  </button>
+                  <div class="dropdown-menu p-0 m-0 dropdown-menu-sm">
+                     <ul class="navi navi-hover pt-3 
+                        <li class="navi-header font-weight-bolder text-uppercase text-primary font-size-lg pb-0">
+                           Change status to:
+                        </li>
+                        <li class="navi-item">
+                           <a href="#" class="navi-link" data-toggle="status-change" data-status="1">
+                           <span class="navi-text"><span class="label label-light-success label-inline font-weight-bold">Approved</span></span>
+                           </a>
+                        </li>
+                        <li class="navi-item">
+                           <a href="#" class="navi-link" data-toggle="status-change" data-status="2">
+                           <span class="navi-text"><span class="label label-light-danger label-inline font-weight-bold">Rejected</span></span>
+                           </a>
+                        </li>
+                        <li class="navi-item">
+                           <a href="#" class="navi-link" data-toggle="status-change" data-status="3">
+                           <span class="navi-text"><span class="label label-light-warning label-inline font-weight-bold">Pending</span></span>
+                           </a>
+                        </li>
+                        <li class="navi-item">
+                           <a href="#" class="navi-link" data-toggle="status-change" data-status="4">
+                           <span class="navi-text"><span class="label label-light-info label-inline font-weight-bold">On Hold</span></span>
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+               <button class="btn btn-light-success font-weight-bolder btn-sm mr-2" id="kt_subheader_group_actions_fetch" data-toggle="modal" data-target="#kt_datatable_records_fetch_modal">
+               Fetch Selected
+               </button>
+               <button class="btn btn-light-danger font-weight-bolder btn-sm mr-2" id="kt_subheader_group_actions_delete_all">
+               Delete All
+               </button>
+            </div>
+         </div>
+         <!--end::Group Actions-->
+      </div>
+      <!--end::Details-->
+      <!--begin::Toolbar-->
+      
+      <div class="d-flex align-items-center">
+         <a href="#" id="btn-toggle-loja-aberta" data-aberto="{{ loja_aberta|yesno:'true,false' }}"
+            class="btn btn-icon {% if loja_aberta %}btn-light-success pulse pulse-success{% else %}btn-light-danger pulse pulse-danger{% endif %} mr-5">
+    <i class="flaticon2-information" title="{% if loja_aberta %}Loja Aberta. Clique aqui para fechar.{% else %}Loja Fechada. Clique aqui para abrir.{% endif %}"></i>
+    <span class="pulse-ring"></span>
+   </a>
+         <a href="{{ url_marketplace }}" class="btn btn-warning" target="_blank">Ver meu site</a>
+      </div>
+      <!--end::Toolbar-->
+   </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('btn-toggle-loja-aberta');
+    if (!btn) return;
+
+    function getCsrfToken() {
+        var match = document.cookie.match(/csrftoken=([^;]+)/);
+        return match ? match[1] : '';
+    }
+
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var formData = new FormData();
+        formData.append('toggle_aberto', '1');
+        fetch("{% url 'painel_home' %}", {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCsrfToken() },
+            body: formData,
+        })
+            .then(function (resp) { return resp.json(); })
+            .then(function (data) {
+                if (!data.success) return;
+                var aberto = data.aberto;
+                var icon = btn.querySelector('.flaticon2-information');
+                btn.classList.toggle('btn-light-success', aberto);
+                btn.classList.toggle('pulse-success', aberto);
+                btn.classList.toggle('btn-light-danger', !aberto);
+                btn.classList.toggle('pulse-danger', !aberto);
+                btn.dataset.aberto = aberto;
+                if (icon) {
+                    icon.title = aberto ? 'Loja Aberta. Clique aqui para fechar.' : 'Loja Fechada. Clique aqui para abrir.';
+                }
+                if (window.Swal) {
+                    Swal.fire({
+                        title: aberto ? 'Loja aberta!' : 'Loja fechada!',
+                        icon: aberto ? 'success' : 'warning',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } else {
+                    alert(aberto ? 'Loja aberta!' : 'Loja fechada!');
+                }
+            });
+    });
+});
+</script>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1J1VWEBSE3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-1J1VWEBSE3');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViaZap — Catálogo Online, Bot com ChatGPT e Gestão Completa</title>
+    {% if configuracao.favicon %}<link rel="icon" href="{{ configuracao.favicon.url }}">{% endif %}
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
+        :root { 
+            --primario: #25D366; 
+            --escuro: #111827; 
+            --cinza-texto: #4b5563;
+            --claro: #f9fafb; 
+            --destaque: #059669; 
+            --destaque-escuro: #047857;
+            --ia-roxo: #6366f1;
+            --ia-gradiente: linear-gradient(135deg, #25D366 0%, #10b981 50%, #059669 100%);
+        }
+        body { line-height: 1.6; color: var(--escuro); background-color: #ffffff; }
+        .container { width: 92%; max-width: 1200px; margin: 0 auto; }
+        header { background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,.06); padding: 1rem 0; position: sticky; top: 0; z-index: 100; }
+        nav { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--destaque); display: flex; align-items: center; gap: 0.5rem; }
+        .logo span { color: var(--escuro); }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--escuro); font-weight: 600; font-size: 0.95rem; transition: color .2s; }
+        .nav-links a:hover { color: var(--destaque); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.4rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: .25s ease; border: none; cursor: pointer; }
+        .btn-principal { background: var(--primario); color: #fff; }
+        .btn-principal:hover { background: #1eb956; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37,211,102,0.35); }
+        .btn-secundario { background: #f3f4f6; color: var(--escuro); border: 1px solid #e5e7eb; }
+        .btn-secundario:hover { border-color: #d1d5db; background: #e5e7eb; }
+        .btn-demo { background: #111827; color: #fff; }
+        .btn-demo:hover { background: #1f2937; transform: translateY(-2px); color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .btn-destaque { background: #059669; color: #fff; }
+        .btn-destaque:hover { background: #047857; color: #fff; }
+        
+        .hero { padding: 4rem 0 3.5rem; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 3rem; align-items: center; }
+        .hero h1 { font-size: 2.75rem; line-height: 1.2; margin-bottom: 1.25rem; color: var(--escuro); font-weight: 800; }
+        .hero p { font-size: 1.15rem; margin-bottom: 1.75rem; color: var(--cinza-texto); }
+        .destaque { color: var(--destaque); }
+        
+        .botoes-hero { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: center; }
+        
+        .oferta-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f0fdf4;
+            border-radius: 12px;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-gratis {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1rem;
+            border-radius: 999px;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            color: var(--destaque-escuro);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .badge-ia {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .preco-card {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.1rem;
+        }
+
+        .preco-card span { font-size: 0.85rem; color: #4b5563; font-weight: 500; }
+        .preco-card strong { font-size: 1.8rem; color: var(--escuro); line-height: 1.1; font-weight: 800; }
+        .preco-card strong small { font-size: 0.95rem; font-weight: 600; color: #6b7280; }
+
+        .passos, .recursos, .secao-ia, .planos-secao { padding: 4.5rem 0; }
+        .secao-titulo { text-align: center; font-size: 2.2rem; margin-bottom: 0.75rem; font-weight: 800; }
+        .secao-subtitulo { text-align: center; font-size: 1.1rem; color: #6b7280; margin-bottom: 3rem; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.8rem; }
+        
+        .card { background: #fff; padding: 2rem; border-radius: 14px; box-shadow: 0 4px 15px rgba(0,0,0,.05); border: 1px solid #f3f4f6; transition: transform .25s, box-shadow .25s; text-align: left; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,.08); }
+        .card-icone { font-size: 2.2rem; margin-bottom: 1rem; display: inline-block; }
+        .card h3 { margin-bottom: 0.6rem; color: var(--escuro); font-size: 1.25rem; font-weight: 700; }
+        .card p { color: var(--cinza-texto); font-size: 0.98rem; }
+        
+        /* Destaque de Recursos Especiais */
+        .card-destaque-ia {
+            background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+            border: 2px solid #86efac;
+            position: relative;
+            overflow: hidden;
+        }
+        .tag-recurso {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--destaque);
+            color: #fff;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Banner de Demonstração */
+        .demo-banner {
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+            color: #fff;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin: 3rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        .demo-banner h3 { font-size: 1.8rem; margin-bottom: 0.5rem; font-weight: 800; }
+        .demo-banner p { color: #d1d5db; font-size: 1.05rem; max-width: 600px; }
+
+        /* Card de Preço / Plano */
+        .plano-card-box {
+            max-width: 520px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+            border: 2px solid var(--destaque);
+            text-align: center;
+            position: relative;
+        }
+        .plano-badge-topo {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--destaque);
+            color: #fff;
+            padding: 0.35rem 1.25rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        .plano-preco { font-size: 3rem; font-weight: 800; color: var(--escuro); margin: 1rem 0; }
+        .plano-preco small { font-size: 1.1rem; color: #6b7280; font-weight: 500; }
+        .plano-lista { list-style: none; text-align: left; margin: 1.5rem 0 2rem; padding: 0 1rem; }
+        .plano-lista li { margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.6rem; color: var(--escuro); font-size: 1rem; }
+        .plano-lista li span { color: var(--destaque); font-weight: bold; }
+
+        .pergunta { max-width: 800px; margin: 1rem auto; border-bottom: 1px solid #eee; padding: 1.25rem 0; }
+        .pergunta h4 { font-size: 1.1rem; color: var(--escuro); margin-bottom: 0.4rem; }
+        .pergunta p { color: var(--cinza-texto); }
+        footer { background: var(--escuro); color: #fff; padding: 3.5rem 0; text-align: center; margin-top: 4rem; }
+
+        .botoes-cabecalho { display: flex; gap: 0.75rem; align-items: center; }
+
+        .imagem-exemplo-container {
+            position: relative;
+            cursor: pointer;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,.12);
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+        }
+        .imagem-exemplo-container img { width: 100%; display: block; transition: transform .3s; }
+        .imagem-exemplo-container:hover img { transform: scale(1.02); }
+        .imagem-overlay-btn {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(17, 24, 39, 0.9);
+            color: #fff;
+            padding: 0.7rem 1.4rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        @media(max-width:900px){
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero h1 { font-size: 2.1rem; }
+            .botoes-hero { justify-content: center; }
+            .nav-links li:not(.botoes-cabecalho) { display: none; }
+            .btn { padding: 0.65rem 1rem; font-size: 0.9rem; }
+            .oferta-box { justify-content: center; text-align: center; }
+            .preco-card { align-items: center; }
+            .demo-banner { text-align: center; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primario);"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                ViaZap<span>.net</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#como-funciona">Como Funciona</a></li>
+                <li><a href="#recursos">Recursos</a></li>
+                <li><a href="#ia-bot">Bot ChatGPT</a></li>
+                <li><a href="#planos">Planos</a></li>
+                <li><a href="#duvidas">Dúvidas</a></li>
+                <li class="botoes-cabecalho">
+                    <a href="{% url 'login' %}" class="btn btn-secundario">Entrar</a>
+                    <a href="{% url 'register' %}" class="btn btn-principal">Criar Loja Grátis</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div>
+            <div class="badge-ia">🤖 Atendimento Automático com IA ChatGPT & Relatórios</div>
+            <h1>Catálogo Online com <span class="destaque">Bot ChatGPT</span> e Venda pelo WhatsApp</h1>
+            <p>Seus clientes acessam sua loja, tiram dúvidas com o atendente de Inteligência Artificial e fecham pedidos direto no WhatsApp. Você acompanha todos os acessos e relatórios em tempo real.</p>
+            
+            <div class="botoes-hero">
+                <a href="{% url 'register' %}" class="btn btn-principal">Começar 30 Dias Grátis →</a>
+                <a href="https://andreia.viazap.net/loja/" class="btn btn-demo" target="_blank" rel="noopener noreferrer">🛍️ Ver Loja de Teste</a>
+            </div>
+
+            <p style="margin-top:1rem; font-size:0.92rem; color:#6b7280;">⚡ Sem necessidade de cartão no cadastro • Sem fidelidade • Cancele quando quiser</p>
+            
+            <div class="oferta-box">
+                <div class="badge-gratis">✨ 30 dias grátis</div>
+                <div class="preco-card">
+                    <span>Depois do período de teste, apenas:</span>
+                    <strong>R$ 30,00 <small>/mês</small></strong>
+                </div>
+                <div style="font-size: 0.9rem; color: #047857; font-weight: 600; display: flex; align-items: center; gap: 0.3rem;">
+                    🔒 Sem compromisso
+                </div>
+            </div>
+        </div>
+        <div>
+            <a class="imagem-exemplo-container" href="https://andreia.viazap.net/loja/" target="_blank" rel="noopener noreferrer" style="display: block; text-decoration: none;">
+                <div style="padding: 2.5rem 1.5rem; text-align: center; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">📱🍔</div>
+                    <h3 style="font-size: 1.35rem; color: #111827; margin-bottom: 0.5rem;">Loja Modelo em Funcionamento</h3>
+                    <p style="font-size: 0.95rem; color: #4b5563; margin-bottom: 1.25rem;">Veja como fica o catálogo, o cardápio e o botão de atendimento inteligente!</p>
+                    <span class="btn btn-demo" style="pointer-events: none;">Exibir Loja de Teste (andreia.viazap.net)</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="passos" id="como-funciona" style="background:#f9fafb;">
+    <div class="container">
+        <h2 class="secao-titulo">Como funciona em 4 passos simples</h2>
+        <p class="secao-subtitulo">Em menos de 10 minutos sua loja virtual já estará online e pronta para vender.</p>
+        <div class="grade">
+            <div class="card">
+                <div class="card-icone">📸</div>
+                <h3>1. Cadastre seus Produtos</h3>
+                <p>Insira seus produtos com fotos de qualidade, variações, adicionais e preços de forma fácil.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">🎨</div>
+                <h3>2. Personalize sua Loja</h3>
+                <p>Adicione sua logotipo, defina seus horários de funcionamento, bairros de entrega e formas de pagamento.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">🤖</div>
+                <h3>3. Ative o Bot ChatGPT</h3>
+                <p>O atendente virtual inteligente tira dúvidas de clientes e auxilia na escolha dos itens 24 horas por dia.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">💬</div>
+                <h3>4. Receba Pedidos no WhatsApp</h3>
+                <p>Os pedidos chegam totalmente formatados, prontos para impressão ou preparo no seu WhatsApp.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção Destaque: Bot ChatGPT & Relatórios de Acesso -->
+<section class="secao-ia" id="ia-bot">
+    <div class="container">
+        <h2 class="secao-titulo">Tecnologia de Ponta para o seu Negócio</h2>
+        <p class="secao-subtitulo">Ferramentas avançadas que ajudam você a vender mais e entender o comportamento dos seus clientes.</p>
+        
+        <div class="grade">
+            <div class="card card-destaque-ia">
+                <span class="tag-recurso">Novidade</span>
+                <div class="card-icone">🤖</div>
+                <h3>Bot de Atendimento Conectado ao ChatGPT</h3>
+                <p>Tenha um atendente com Inteligência Artificial treinado para o seu cardápio e catálogo. Ele conversa de forma humanizada com seus clientes, responde dúvidas sobre ingredientes e ajuda a fechar o pedido mais rápido.</p>
+            </div>
+
+            <div class="card card-destaque-ia">
+                <span class="tag-recurso">Analytics</span>
+                <div class="card-icone">📊</div>
+                <h3>Relatórios Completos de Acesso ao Site</h3>
+                <p>Acompanhe em tempo real quantos visitantes acessaram seu catálogo, quais produtos são mais visualizados, horários de pico e taxa de conversão. Dados precisos para impulsionar suas vendas.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icone">⚙️</div>
+                <h3>Painel Administrativo Completo</h3>
+                <p>Gerencie pedidos em tempo real, altere status da loja para aberto/fechado, emita QR Codes, crie cupons de desconto e configure opções de entrega com praticidade.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-icone">💬</div>
+                <h3>Pedidos e mensagens automáticas no WhatsApp</h3>
+                <p>Receba os pedidos no WhatsApp totalmente formatados, prontos para impressão ou preparo. Seus clientes também recebem avisos quando o pedido é recebido, confirmado ou muda de etapa. Configure as mensagens sem custo adicional da ViaZap.</p>
+            </div>
+        </div>
+
+        <!-- Banner Chamada Loja Demo -->
+        <div class="demo-banner">
+            <div>
+                <h3>Quer ver funcionando na prática?</h3>
+                <p>Acesse a loja de testes da Andreia e experimente a navegação e a rapidez de fazer um pedido online.</p>
+            </div>
+            <a href="https://andreia.viazap.net/loja/" class="btn btn-principal" target="_blank" rel="noopener noreferrer">🛍️ Testar Loja Demo Agora</a>
+        </div>
+    </div>
+</section>
+
+<section class="recursos" id="recursos" style="background:#f0fdf4;">
+    <div class="container">
+        <h2 class="secao-titulo">Tudo o que você precisa em uma única plataforma</h2>
+        <p class="secao-subtitulo">Recursos pensados para descomplicar a rotina do seu estabelecimento comercial.</p>
+        <div class="grade">
+            <div class="card">
+                <div class="card-icone">📦</div>
+                <h3>Produtos Ilimitados</h3>
+                <p>Cadastre quantos itens desejar, com fotos, adicionais, tamanhos e categorias ilimitadas.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">💰</div>
+                <h3>0% de Comissão</h3>
+                <p>Você fica com 100% do lucro das suas vendas. Não cobramos nenhuma taxa por pedido recebido.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">🏷️</div>
+                <h3>Cupons e Promoções</h3>
+                <p>Crie cupons de desconto para fidelizar clientes e lance banners promocionais em minutos.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">📱</div>
+                <h3>100% Otimizado para Celular</h3>
+                <p>Seus clientes compram pelo smartphone com rapidez, sem precisar baixar nenhum aplicativo pesado.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">🖨️</div>
+                <h3>Impressão e Delivery</h3>
+                <p>Gerencie taxa por bairro, retirada no balcão e receba o endereço de entrega pronto para o motoboy.</p>
+            </div>
+            <div class="card">
+                <div class="card-icone">🔗</div>
+                <h3>QR Code para Mesas e Balcão</h3>
+                <p>Gere QR Codes personalizados para colocar nas mesas ou no balcão do seu estabelecimento.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Seção Planos & Preços -->
+<section class="planos-secao" id="planos">
+    <div class="container">
+        <h2 class="secao-titulo">Plano Simples e Transparente</h2>
+        <p class="secao-subtitulo">Sem pegadinhas, sem contratos longos. Você no controle total.</p>
+        
+        <div class="plano-card-box">
+            <div class="plano-badge-topo">EXPERIMENTE GRÁTIS</div>
+            <h3 style="font-size: 1.5rem; color: #111827; margin-top: 0.5rem;">Acesso Completo</h3>
+            <p style="color: #6b7280; font-size: 0.95rem;">Todas as ferramentas inclusas para você vender muito</p>
+            
+            <div class="plano-preco">
+                R$ 30,00 <small>/mês</small>
+            </div>
+            <div class="badge-gratis" style="margin-bottom: 1rem;">
+                🎉 Primeiros 30 dias 100% grátis
+            </div>
+
+            <ul class="plano-lista">
+                <li><span>✓</span> <strong>30 dias grátis</strong> para testar sem compromisso</li>
+                <li><span>✓</span> Depois apenas <strong>R$ 30,00 por mês</strong></li>
+                <li><span>✓</span> Bot inteligente conectado ao <strong>ChatGPT</strong></li>
+                <li><span>✓</span> <strong>Relatórios de acessos</strong> e estatísticas do site</li>
+                <li><span>✓</span> <strong>Zero comissão</strong> sobre seus pedidos</li>
+                <li><span>✓</span> Produtos e categorias ilimitadas</li>
+                <li><span>✓</span> Pedidos diretos no seu WhatsApp</li>
+                <li><span>✓</span> Mensagens automáticas pelo WhatsApp em cada etapa do pedido, sem custo adicional da ViaZap</li>
+                <li><span>✓</span> QR Code para mesas e balcão</li>
+                <li><span>✓</span> <strong>Sem compromisso:</strong> cancele quando quiser</li>
+            </ul>
+
+            <a href="{% url 'register' %}" class="btn btn-principal" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Criar Minha Loja Grátis →</a>
+        </div>
+    </div>
+</section>
+
+<section id="duvidas" style="padding:4rem 0; background:#f9fafb;">
+    <div class="container">
+        <h2 class="secao-titulo">Dúvidas Frequentes</h2>
+        
+        <div class="pergunta">
+            <h4>✅ Como funciona o período de 30 dias grátis?</h4>
+            <p>Você cria sua loja e tem acesso completo a todas as funcionalidades por 30 dias sem pagar nada. Após esse período, o valor é de apenas R$ 30,00 mensais, sem compromisso ou fidelidade.</p>
+        </div>
+        
+        <div class="pergunta">
+            <h4>🤖 Como o Bot conectado ao ChatGPT ajuda minha loja?</h4>
+            <p>O bot com Inteligência Artificial fica disponível para responder dúvidas frequentes dos clientes, sugerir produtos e agilizar o atendimento 24 horas por dia.</p>
+        </div>
+
+        <div class="pergunta">
+            <h4>📊 Como acompanho os relatórios de acesso?</h4>
+            <p>No seu painel administrativo, você tem acesso aos relatórios com visualizações de páginas, visitantes únicos, horários mais movimentados e histórico de pedidos.</p>
+        </div>
+
+        <div class="pergunta">
+            <h4>💵 Vocês cobram porcentagem ou taxa sobre os pedidos?</h4>
+            <p>Não! Cobramos apenas a mensalidade fixa de R$ 30,00 após os 30 dias grátis. Você fica com 100% das suas vendas.</p>
+        </div>
+        
+        <div class="pergunta">
+            <h4>⏱️ Preciso de CNPJ ou cartão de crédito para começar?</h4>
+            <p>Não. Você pode iniciar o teste de 30 dias usando seu CPF ou CNPJ, sem necessidade de cartão de crédito no cadastro.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p><strong>ViaZap.net</strong> — Catálogo Online, Atendimento com ChatGPT e Gestão de Pedidos.</p>
+        <p style="margin-top:0.75rem; font-size:0.9rem; color:#9ca3af;">30 dias grátis • Depois apenas R$ 30,00/mês • Sem compromisso</p>
+        <p style="margin-top:1rem; font-size:0.85rem; color:#6b7280;">© {% now "Y" %} ViaZap. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
+</body>
+</html>

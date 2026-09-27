@@ -1,0 +1,720 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+   <head>
+      {% include "loja/includes/google_tag_head.html" %}
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+      <title>{% if config %}{{ config.nome_loja }}{% else %}Loja{% endif %} - viazap</title>
+      <meta name="description" content="{% if config and config.descricao_loja %}{{ config.descricao_loja }}{% else %}Confira os produtos da loja{% endif %}">
+      <meta name="keywords" content="{% if config %}{{ config.nome_loja }}{% else %}Loja{% endif %}, viazap">
+      <meta property="og:title" content="{% if config %}{{ config.nome_loja }}{% else %}Loja{% endif %}">
+      <meta property="og:description" content="{% if config and config.descricao_loja %}{{ config.descricao_loja }}{% else %}Confira os produtos da loja{% endif %}">
+      <meta property="og:image" content="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}">
+      <link rel="shortcut icon" href="{% if configuracao.favicon %}{{ configuracao.favicon.url }}{% else %}{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}{% endif %}"/>
+      <link rel="manifest" href="manifest.json">
+      <link rel="stylesheet" href="{% static '_core/_cdn/bootstrap/css/bootstrap.min.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/class.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/forms.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/typography.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/template.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/theme.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/default.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/app/css/novo.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/lineicons/css/LineIcons.min.css' %}">
+      <link href="http://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="{% static '_core/_cdn/fonts/style.min.css' %}">
+      <link rel="stylesheet" href="{% static '_core/_cdn/sidr/css/jquery.sidr.light.min.css' %}">
+      <link  href="{% static '_core/_cdn/fancybox/css/jquery.fancybox.min.css' %}" rel="stylesheet">
+      <link rel="stylesheet" href="{% static 'app/estabelecimento/css/style5aaa.css' %}">
+      {% include "loja/includes/ai_chat_styles.html" %}
+      <script src="{% static '_core/_cdn/jquery/js/jquery.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/fancybox/js/jquery.fancybox.min.js' %}"></script>
+      <!-- <script src="https://demo6.lojazap.com/_core/_cdn/instantclick/js/instantclick.min.js' %}"></script> -->
+      <!-- <script src="{% static 'app/estabelecimento/js/scriptaf9f.php?insubdominiourl=demo6&amp;virtualpath=/home/lojaza04/public_html/app/estabelecimento' %}"></script> -->
+      <!-- HTML adicional -->
+      <!-- ProChaty -->
+      <script id="chat-init" src="https://app.prochaty.com/account/js/init.js?id=5357647"></script>
+      <!-- / HTML adicional -->
+
+      <!-- 🎨 CSS DINÂMICO - TEMA DE CORES -->
+      <style>
+         :root {
+            --theme-color: {{ color_theme }};
+         }
+         
+         /* Aplicação do tema dinâmico */
+         .colored,
+         .shop-bag i,
+         .naver .navbar a i,
+         .header .naver .navbar .social a:hover i,
+         .naver .navbar a:hover,
+         .user-menu i,
+         .search-bar-mobile button i,
+         .categoria .vertudo i,
+         .categoria .counter,
+         .bread i,
+         .produto-detalhes .categoria a,
+         .campo-numero i,
+         .sacola-table .sacola-remover i,
+         .sacola-table .sacola-change i,
+         .adicionado .checkicon,
+         .title-line i,
+         .back-button i,
+         .sidebar-info i,
+         .filter-select .outside,
+         .filter-select .fake-select i,
+         .pagination i,
+         .funcionamento-mobile i,
+         .fake-select i,
+         .search-bar button i,
+         .holder-shop-bag i {
+            color: var(--theme-color) !important;
+         }
+
+         .top {
+            border-color: var(--theme-color) !important;
+         }
+
+         .footer-info,
+         .categoria .produto .detalhes,
+         .cover,
+         .carousel-indicators .active,
+         .botao-acao,
+         .sidebar .sidebar-header,
+         .minitop,
+         .opcoes .opcao.active .check,
+         .floatbar {
+            background: var(--theme-color) !important;
+         }
+
+         .pagination > li > a:hover, 
+         .pagination > .active > a, 
+         .pagination > .active > a:focus, 
+         .pagination > .active > a:hover, 
+         .pagination > .active > span, 
+         .pagination > .active > span:focus, 
+         .pagination > .active > span:hover {
+            background: var(--theme-color) !important;
+            color: #fff !important;
+         }
+
+         .tv-infinite-menu a.active,
+         .tv-infinite-menu a:hover,
+         .fancybox-thumbs__list a::before {
+            border-color: var(--theme-color) !important;
+         }
+
+         /* Botões de adicionar produto */
+         .novoproduto .plus,
+         .novoproduto .plus-desc {
+            background: var(--theme-color) !important;
+         }
+
+         /* Mobile adaptations */
+         @media (max-width: 991px) {
+            .top {
+               border-top: 0;
+               background: var(--theme-color) !important;
+            }
+
+            .sacola-acoes .sacola-acao {
+               margin-top: 12px;
+               width: 100%;
+            }
+         }
+
+         @media (min-width: 992px) {
+            .sacola-acoes {
+               display: flex;
+               align-items: flex-end;
+            }
+         }
+
+         .sacola-acoes .botao-acao {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 48px;
+            padding: 10px 14px;
+            border: 0;
+            box-sizing: border-box;
+         }
+
+         .sacola-acoes .botao-acao span,
+         .sacola-acoes .botao-acao i {
+            transform: none;
+         }
+      </style>
+      <!-- / FIM CSS DINÂMICO -->
+   </head>
+   <body>
+      {% include "loja/includes/google_tag_body.html" %}
+      <div id="main" class="body-estabelecimento">
+         <div class="header">
+            <div class="minitop hidden-xs hidden-sm">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <div class="info-badges-desktop">
+                           <div class="info-badge">
+                              <i class="lni lni-money-protection"></i> 
+                              <span>Pedido minímo: R$ 0,02</span>
+                           </div>
+                           <div class="info-badge">
+                              <i class="lni lni-user"></i> 
+                              <span>Olá </span>
+                              <div class="clear"></div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-6">
+                        <div class="funcionamento">
+                           <div class="aberto" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+                              <i class="lni lni-checkmark-circle"></i>
+                              <span>Estabelecimento {{ loja_aberta|yesno:"aberto,fechado,fechado" }}</span>
+                              <a href="/painel/home" title="Painel de Controle" style="color: inherit; text-decoration: none; font-size: 1.1rem; display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.2);"><i class="lni lni-cog" style="margin-right: 0;"></i></a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="top">
+               <div class="container">
+                  <div class="row align-middle hidden-sm hidden-xs">
+                     <div class="col-md-3">
+                        <div class="brand">
+                           <a href="{% url 'loja' %}">
+                           {% if config.foto_perfil %}
+                              <img src="{{ config.foto_perfil.url }}" alt="{{ config.nome_loja }}"/>
+                           {% elif config.logo_url %}
+                              <img src="{{ config.logo_url }}" alt="{{ config.nome_loja }}"/>
+                           {% elif configuracao.logo %}
+                              <img src="{{ configuracao.logo.url }}" alt="{{ config.nome_loja }}"/>
+                           {% else %}
+                              <img src="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}" alt="{{ config.nome_loja }}"/>
+                           {% endif %}
+                           <span>{{ config.nome_loja|default:'Tiger Burger' }} <strong class="colored">.</strong></span>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-md-9">
+                        <div class="row">
+                           <div class="col-md-9">
+                              <div class="search-bar">
+                                 <div class="clear"></div>
+                                 <form class="align-middle" method="GET" action="https://demo6.lojazap.com/categoria">
+                                    <input type="text" name="busca" placeholder="Digite sua busca..." value=""/>
+                                    <input type="hidden" name="categoria" value=""/>
+                                    <button>
+                                    <i class="lni lni-search-alt"></i>
+                                    </button>
+                                    <div class="clear"></div>
+                                 </form>
+                              </div>
+                           </div>
+                           <div class="col-md-3">
+                              <a class="holder-shop-bag pull-right" href="{% url 'sacola' %}" title="Minha sacola">
+                                 <span class="cash">Minha sacola</span>
+                                 <div>
+                                    <div class="shop-bag">
+                                       <i class="lni lni-cart"></i>
+                                       <span class="counter">{{ cart_count }}</span>
+                                    </div>
+                                 </div>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row align-middle-mobile visible-sm visible-xs">
+                     <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="user-menu pull-left">
+                           <a href="#" class="sidrLeft" href="#sidebarLeft" title="Menu">
+                           <i class="lni lni-menu"></i>
+                           </a>
+                        </div>
+                     </div>
+                     <div class="col-md-6 col-sm-6 col-xs-6 nopadd">
+                     </div>
+                     <div class="col-md-3 col-sm-3 col-xs-3">
+                        <div class="user-info pull-right">
+                           <div class="holder-shop-bag pull-right">
+                              <a href="{% url 'sacola' %}" title="Minha sacola">
+                                 <div class="shop-bag">
+                                    <i class="lni lni-cart"></i>
+                                    <span class="counter"> {{cart_count}} </span>
+                                 </div>
+                              </a>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="navigator naver hidden-sm hidden-xs">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <nav class="navbar pull-left">
+                           <ul class="nav navbar-nav">
+                              <li class="active"><a href="{% url 'loja' %}">Início</a></li>
+                              <li class="dropdown">
+                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                 Categorias
+                                 <i class="lni lni-chevron-down icon-right"></i>
+                                 </a>
+                                 <ul class="dropdown-menu">
+                                    <li><a href="{% url 'loja' %}">Todas</a></li>
+                                    {% for categoria in categorias %}
+                                    <li><a href="{% url 'loja'%}?categoria_id={{ categoria.id }}">{{ categoria.name }}</a></li>
+                                    {% endfor %}
+                                 </ul>
+                              </li>
+                              <li><a href="">Ofertas</a></li>
+                              <li><span class="sidrLeft">Fale conosco</span></li>
+                              <!-- <li class="visible-sm visible-xs"><a href="#">Suporte</a></li> -->
+                           </ul>
+                        </nav>
+                        <nav class="navbar pull-right hidden-xs hidden-sm">
+                           <div class="social">
+                              {% if config.whatsapp_numero %}<a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp da loja"><i class="lni lni-whatsapp"></i></a>{% endif %}
+                           </div>
+                        </nav>
+                        <div class="clear"></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="sidebars">
+            <div id="sidebarLeft">
+               <div class="sidebar">
+                  <div class="sidebar-header">
+                     <i class="close-sidebar lni lni-close" onclick="$.sidr('close', 'sidrLeft');"></i>
+                     <div class="clear"></div>
+                  </div>
+                  <div class="sidebar-content">
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-cart-full"></i>
+                           <span>Meus Pedidos</span>
+                        </div>
+                        <div class="content">
+                           <a href="{% url 'loja' %}"><i class="lni lni-shift-right"></i> Abertos</a>
+                        </div>
+                        <div class="content">
+                           <a href="{% url 'loja' %}"><i class="lni lni-shift-right"></i> Finalizados</a>
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-alarm-clock"></i>
+                           <span>Funcionamento</span>
+                        </div>
+                        <div class="content">
+                           Aberto 24H					
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-map-marker"></i>
+                           <span>Endereço</span>
+                        </div>
+                        <div class="content">
+                           {{ config.endereco|default:'1250' }}, Nº {{ config.numero_endereco|default:'1000' }}, <br/>Bairro: {{ config.bairro|default:'SV' }}, CEP: {{ config.cep|default:'88300-000' }}, {{ config.cidade|default:'São Paulo' }}/{{ config.estado|default:'São Paulo' }}<br/>
+                        </div>
+                     </div>
+                     <div class="sidebar-info">
+                        <div class="title">
+                           <i class="lni lni-headphone-alt"></i>
+                           <span>Contato</span>
+                        </div>
+                        <div class="content">
+                           <div class="listitem">
+                              <i class="lni lni-whatsapp"></i>
+                              <span>{{ config.whatsapp|default:'Não informado' }}</span>
+                           </div>
+                           <div class="listitem">
+                              <i class="lni lni-envelope"></i>
+                              <span><a href="cdn-cgi/l/email-protection.html" class="__cf_email__" data-cfemail="740701041b06001134181b1e150e15045a171b19">[email&#160;protected]</a></span>
+                           </div>
+                        </div>
+                        <div class="social">
+                           {% if config.whatsapp_numero %}<a href="https://wa.me/{{ config.whatsapp_numero }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp da loja"><i class="lni lni-whatsapp"></i></a>{% endif %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="modalalerta" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div id="modalcarrinho" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                  <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal"><i class="lni lni-close"></i></button>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="sceneElement">
+            <div class="header-interna">
+               <div class="locked-bar visible-xs visible-sm">
+                  <div class="avatar">
+                     <div class="holder">
+                        <a href="{% url 'loja' %}">
+                        {% if config.foto_perfil %}
+                           <img src="{{ config.foto_perfil.url }}" alt="{{ config.nome_loja }}"/>
+                        {% elif config.logo_url %}
+                           <img src="{{ config.logo_url }}" alt="{{ config.nome_loja }}"/>
+                        {% else %}
+                           <img src="{% static '_core/_uploads/cadastro/2023/02/20061802236e3jji4ffg_thumb.jpg' %}" alt="{{ config.nome_loja }}"/>
+                        {% endif %}
+                        </a>
+                     </div>
+                  </div>
+               </div>
+               <div class="holder-interna holder-interna-nopadd holder-interna-sacola visible-xs visible-sm"></div>
+            </div>
+            <div class="minfit">
+               <div class="middle">
+                  <div class="container nopaddmobile">
+                     <div class="row rowtitle">
+                        <div class="col-md-12">
+                           <div class="title-icon">
+                              <span>Fechar Pedido</span>
+                           </div>
+                           <div class="bread-box">
+                              <div class="bread">
+                                 <a href="{% url 'loja' %}"><i class="lni lni-home"></i></a>
+                                 <span>/</span>
+                                 <a href="{% url 'sacola' %}">Minha sacola</a>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-md-12 hidden-xs hidden-sm">
+                           <div class="clearline"></div>
+                        </div>
+                     </div>
+                     <div class="sacola">
+                        <form id="the_form" method="POST" action="{% url 'finalizar_pedido' %}">
+                           {% csrf_token %}
+                           <div class="row">
+                              <div class="col-md-12">
+                                 <table class="listing-table sacola-table">
+                                    <thead>
+                                       <th></th>
+                                       <th>Nome</th>
+                                       <th>Qntd</th>
+                                       <th>Valor</th>
+                                       <th>Detalhes</th>
+                                       <th></th>
+                                    </thead>
+                                    <tbody>
+                                       {% if produtos %}
+                                       {% for item in produtos %}
+                                       <tr class="sacola-alterar sacola-6839" sacola-eid="68" sacola-pid="6839" valor="0.01" valor-adicional="0" valor-somado="">
+                                          <td class="td-foto">
+                                             <div class="imagem">
+                                                {% if item.produto.image %}
+                                                <img src="{{ item.produto.image.url }}" width="50" alt="{{ item.produto.nome }}">
+                                                {% elif item.produto.imagem_extra %}
+                                                <img src="{{ item.produto.imagem_extra.url }}" width="50" alt="{{ item.produto.nome }}">
+                                                {% else %}
+                                                <span class="sem-imagem">Sem imagem</span>
+                                                {% endif %}
+                                             </div>
+                                          </td>
+                                          <td class="td-nome">
+                                             <a href="{% url 'detalhe' item.produto.id %}">
+                                             <span class="nome">{{ item.produto.nome }}</span>
+                                             </a>
+                                          </td>
+                                          <td class="td-detalhes visible-xs visible-sm">
+                                             <div class="line detalhes">
+                                             </div>
+                                          </td>
+                                          <td class="td-quantidade">
+                                             <div class="clear"></div>
+                                             <div class="holder-acao">
+                                                <div class="item-acao visible-xs visible-sm">
+                                                   <a class="sacola-change" href="{% url 'detalhe' item.produto.id %}">
+                                                   <i class="lni lni-pencil"></i> 
+                                                   </a>
+                                                </div>
+                                                <div class="item-acao">
+                                                   <div class="line quantidade">
+                                                      <div class="clear"></div>
+                                                      <div class="campo-numero">
+                                                         <i class="decrementar lni lni-minus"></i>
+                                                         <input id="quantidade_{{ item.produto.id }}" data-id="{{ item.produto.id }}" type="number" name="quantidade" value="{{ item.quantidade }}" min="1"/>
+                                                         <i class="incrementar lni lni-plus"></i>
+                                                      </div>
+                                                      <div class="clear"></div>
+                                                   </div>
+                                                </div>
+                                                <div class="item-acao visible-xs visible-sm">
+                                                   <a class="sacola-remover" href="#" data-id="{{ item.produto.id }}">
+                                                      <i class="lni lni-trash"></i> 
+                                                   </a>
+
+                                                </div>
+                                             </div>
+                                          </td>
+                                          <td class="td-valor" id="valor_{{ item.produto.id }}">
+                                             <span></span>
+                                             <div class="line valor">
+                                                <span> R$  {{ item.subtotal|floatformat:2 }}</span>
+                                             </div>
+                                          </td>
+                                          <td class="td-detalhes hidden-xs hidden-sm">
+                                             <div class="line detalhes">
+                                                {{ item.produto.description }}
+                                             </div>
+                                          </td>
+                                          <td class="td-acoes hidden-xs hidden-sm">
+                                             <div class="holder">
+                                                <a href="#" class="sacola-remover" data-id="{{ item.produto.id }}">
+                                                <i class="lni lni-trash"></i> 
+                                                <span class="visible-xs">Excluir</span>
+                                                </a>
+                                             </div>
+                                             
+                                             <div class="clear visible-xs visible-sm"></div>
+                                             
+                                          </td>
+                                          {% endfor %}
+                                          {% else %}
+                                       </tr>
+                                       <tr class="sacola-null">
+                                          <td colspan="5"><span class="nulled">Sua sacola de compras está vazia, adicione produtos para poder fazer o seu pedido!</span></td>
+                                       </tr>
+                                       {% endif %}
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                           <div class="linha-subtotal">
+                              <div class="row error-pedido-minimo error-pedido-minimo-sacola">
+                                 <div class="col-md-12">
+                                    <input class="fake-hidden" name="pedido_minimo" value=""/>
+                                 </div>
+                              </div>
+                        </form>
+                        <div class="row sacola-acoes">
+                           <div class="col-md-4">
+                              <div class="subtotal"><strong>Subtotal:</strong> <span>{{ total }}</span></div>
+                           </div>
+                           {% if config.delivery %}
+                           <div class="col-md-4 sacola-acao">
+                              <a class="botao-acao" href="{% url 'cadastro_form' %}"><i class="lni lni-cart-full"></i> <span>Comprar</span></a>
+                           </div>
+                           {% endif %}
+                           {% if config.chamar_whatsapp %}
+                           <div class="col-md-4 sacola-acao">
+                              <form id="whatsappForm" method="POST" action="{% url 'pedido_whatsapp' %}">
+                                 {% csrf_token %}
+                                 <label for="whatsappVendedor">Vendedor</label>
+                                 <input name="vendedor" type="text" class="form-control" placeholder="Nome do vendedor" id="whatsappVendedor" required>
+                                 <button class="botao-acao" type="submit"><i class="lni lni-whatsapp"></i> <span>Chamar no WhatsApp</span></button>
+                              </form>
+                           </div>
+                           {% endif %}
+                        </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- INICIO FOOTER -->
+         <div class="footer">
+            <div class="footer-info">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        <span>{% include "loja/includes/endereco_rodape.html" %}</span>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-12">
+                        <div class="social">
+                           {% include "loja/includes/whatsapp_rodape.html" %}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="copyright">
+               <div class="container">
+                  <div class="row">
+                     <div class="col-md-12">
+                        {% include "loja/includes/logo_rodape.html" %}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- FIM FOOTER -->
+         {% include "loja/includes/ai_chat.html" %}
+      </div>
+      <!--	<script data-cfasync="false" src="{% static 'cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"></script> -->
+      <script src="{% static '_core/_cdn/bootstrap/js/bootstrap.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/sidr/js/jquery.sidr.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/maskMoney/js/maskmoney.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/maskedInput/js/jquery.maskedinput.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/validate/js/jquery.validate.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/sticky/js/jquery.sticky.min.js' %}"></script>
+      <script src="{% static '_core/_cdn/app/js/template.js' %}"></script>
+      <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"f8178609612d4a0fa8656f39eac0fd7b","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+   </body>
+   <script>
+$(document).ready(function() {
+    $(".sacola-remover").click(function(e){
+        e.preventDefault();
+
+        // tenta pegar de data-id ou de sacola-pid
+        let produto_id = $(this).data("id") || $(this).attr("sacola-pid");
+        let linha = $(this).closest("tr");
+
+        if(!produto_id){
+            alert("ID do produto não encontrado.");
+            return;
+        }
+
+        $.ajax({
+            url: "{% url 'remover_do_carrinho_ajax' %}",
+            type: "POST",
+            data: {
+                'produto_id': produto_id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(response){
+                if(response.status === "ok"){
+                    linha.remove();
+                    $(".counter").text(response.cart_count);
+                    $(".subtotal span").text("R$ " + response.total.toFixed(2));
+
+                    if(response.cart_count === 0){
+                        window.location.href = "{% url 'loja' %}";
+                    }
+                } else {
+                    alert(response.mensagem);
+                }
+            },
+            error: function(){
+                alert("Erro ao tentar remover o produto. Tente novamente.");
+            }
+        });
+    });
+});
+
+      
+   </script>
+   <script>
+      $(document).ready(function() {
+          // Incrementar
+          $(".incrementar").off("click").on("click", function(){
+              let input = $(this).closest(".campo-numero").find("input[type='number']");
+              let valor = parseInt(input.val()) + 1;
+              input.val(valor);
+              atualizarCarrinho(input.data("id"), valor);
+          });
+      
+          // Decrementar
+          $(".decrementar").off("click").on("click", function(){
+              let input = $(this).closest(".campo-numero").find("input[type='number']");
+              let valor = parseInt(input.val()) - 1;
+              if(valor < 1) valor = 1;
+              input.val(valor);
+              atualizarCarrinho(input.data("id"), valor);
+          });
+      
+          // Função AJAX do carrinho
+          function atualizarCarrinho(produto_id, quantidade) {
+              $.ajax({
+                  url: "{% url 'atualizar_carrinho_ajax' %}",
+                  type: "POST",
+                  data: {
+                      'produto_id': produto_id,
+                      'quantidade': quantidade,
+                      'csrfmiddlewaretoken': '{{ csrf_token }}'
+                  },
+                  success: function(response){
+                      if(response.status == "ok"){
+                          $(".counter").text(response.cart_count);
+                          // Atualiza subtotal do item
+                          $("#subtotal_" + produto_id).text("R$ " + response.item_subtotal.toFixed(2));
+                          // Atualiza valor total do carrinho
+                          $(".subtotal span").text("R$ " + response.total.toFixed(2));
+                          // Atualiza o campo Valor na tabela (preço x quantidade)
+                          $("#valor_" + produto_id).text("R$ " + response.item_subtotal.toFixed(2));
+                      } else {
+                          alert(response.mensagem);
+                      }
+                  }
+              });
+          }
+      });
+      
+   </script>
+   <!--
+      <script>
+      function atualizarCarrinho(produto_id, quantidade) {
+          $.ajax({
+              url: "{% url 'atualizar_carrinho_ajax' %}",
+              type: "POST",
+              data: {
+                  'produto_id': produto_id,
+                  'quantidade': quantidade,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function(response){
+                  if(response.status == "ok"){
+                      $(".counter").text(response.cart_count);
+                      $("#subtotal_" + produto_id).text("R$ " + response.item_subtotal.toFixed(2));
+                      $(".subtotal span").text("R$ " + response.total.toFixed(2));
+                  } else {
+                      alert(response.mensagem);
+                  }
+              }
+          });
+      }
+      
+      function incrementar(selector) {
+          let input = $(selector);
+          let valor = parseInt(input.val()) + 1;
+          input.val(valor);
+          atualizarCarrinho(input.data("id"), valor);
+      }
+      
+      function decrementar(selector) {
+          let input = $(selector);
+          let valor = parseInt(input.val()) - 1;
+          if(valor < 1) valor = 1;
+          input.val(valor);
+          atualizarCarrinho(input.data("id"), valor);
+      }
+      
+      
+      
+      </script>   
+      
+      -->
+</html>

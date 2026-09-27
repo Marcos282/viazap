@@ -1,0 +1,91 @@
+
+.colored,
+.shop-bag i,
+.naver .navbar a i,
+.header .naver .navbar .social a:hover i,
+.naver .navbar a:hover,
+.user-menu i,
+.search-bar-mobile button i,
+.categoria .vertudo i,
+.categoria .counter,
+.bread i,
+.produto-detalhes .categoria a,
+.campo-numero i,
+.sacola-table .sacola-remover i,
+.sacola-table .sacola-change i,
+.adicionado .checkicon,
+.title-line i,
+.back-button i,
+.sidebar-info i,
+.filter-select .outside,
+.filter-select .fake-select i,
+.pagination i,
+.funcionamento-mobile i,
+.fake-select i,
+.search-bar button i,
+.holder-shop-bag i
+ {
+color: #ff5900 !important;
+}
+
+.top {
+border-color: #ff5900 !important;
+}
+
+.footer-info,
+.categoria .produto .detalhes,
+.cover,
+.carousel-indicators .active,
+.botao-acao,
+.sidebar .sidebar-header,
+.minitop,
+.opcoes .opcao.active .check,
+.floatbar {
+background: #ff5900 !important;
+}
+
+.pagination > li > a:hover, .pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover {
+background: #ff5900 !important;
+color: #fff !important;
+}
+
+.is-sticky .avatar {
+height: 70px !important;
+width: 70px !important;
+}
+
+.tv-infinite-menu a.active,
+.tv-infinite-menu a:hover,
+.fancybox-thumbs__list a::before {
+border-color: #ff5900 !important;
+}
+
+/* ALL MOBILE */
+
+@media (max-width: 991px) {
+
+	.user-menu i {
+	color: #fff !important;
+	}
+
+	.shop-bag i {
+	color: #fff !important;
+	}
+
+	.shop-bag .counter {
+	border: 0;
+	padding-top: 2px;
+	}
+
+	.top {
+	border-top: 0;
+	background: #ff5900 !important;
+	}
+
+}
+
+/* ALL DESK */
+
+@media (min-width: 991px) {
+
+}

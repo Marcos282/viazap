@@ -1,0 +1,229 @@
+{% load static %}
+<!-- Token CSRF oculto para requisições AJAX -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+<div class="col-lg-14">
+   <!--begin::Advance Table Widget 4-->
+   <div class="card card-custom card-stretch gutter-b">
+      <!--begin::Header-->
+      <div class="card-header border-0 py-5">
+         <h3 class="card-title align-items-start flex-column">
+            <span class="d-inline-flex align-items-center">
+            <span class="card-label font-weight-bolder text-dark" style="margin-right: 0.5em;">Banners:</span>
+            <span id="contador-banners" class="symbol-label font-weight-bolder font-size-h6" style="background: #f1f1f1; border-radius: 0.6em; padding: 0.2em 0.7em;">{{ qt_banners }}</span>
+            </span>
+            <span class="text-muted mt-3 font-weight-bold font-size-sm">Gerencie os banners da sua loja</span>
+         </h3>
+         <div class="card-toolbar">
+            <a href="{% url 'painel_banners_add' %}" class="btn btn-success font-weight-bolder font-size-sm">
+               <i class="fa fa-plus"></i> Adicionar Banner
+            </a>
+         </div>
+      </div>
+      <!--end::Header-->
+      <!--begin::Body-->
+      <div class="card-body pt-0 pb-3">
+         <div class="tab-content">
+            <!--begin::Table-->
+            <div class="table-responsive table-responsive">
+               <table class="table table-hover rounded">
+                  <thead>
+                     <tr class="text-left text-uppercase thead-dark">
+                        <th style="min-width: 100px;">Imagem</th>
+                        <th style="min-width: 140px;">Título</th>
+                        <!-- <th style="min-width: 120px;">Link</th> -->
+                        <!-- <th style="min-width: 80px;">Ordem</th> -->
+                        <th style="min-width: 100px;">Status</th>
+                        <th style="min-width: 100px;">Ações</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                  {% for banner in banners %}
+                     <tr>
+                        <td class="py-4" style="padding-left: 20px; vertical-align: middle;">
+                           <div class="symbol symbol-50 symbol-light">
+                              {% if banner.banner_pc %}
+                                 <img src="{{ banner.banner_pc.url }}" alt="{{ banner.titulo }}" class="img-fluid rounded" style="width: 60px; height: 40px; object-fit: cover;">
+                              {% else %}
+                                 <div class="symbol-label bg-light-warning">
+                                    <i class="fa fa-image text-warning"></i>
+                                 </div>
+                              {% endif %}
+                           </div>
+                        </td>
+                        <td class="pl-0 py-4" style="vertical-align: middle;">
+                           <div>
+                              <span class="text-dark-75 d-block font-size-lg font-weight-bold">{{ banner.titulo }}</span>
+                           </div>
+                        </td>
+                        <!-- <td class="pl-0 py-4">
+                           <div>
+                              {% if banner.link %}
+                                 <a href="{{ banner.link }}" target="_blank" class="text-primary">
+                                    {{ banner.link|truncatechars:30 }}
+                                 </a>
+                              {% else %}
+                                 <span class="text-muted">-</span>
+                              {% endif %}
+                           </div>
+                        </td> -->
+                        <!-- <td class="pl-0 py-4">
+                           <span class="badge badge-light-primary font-weight-bold">{{ banner.ordem_exibicao }}</span>
+                        </td> -->
+                        <td class="pl-0 py-4" style="vertical-align: middle;">
+                           {% if banner.ativo %}
+                              <span class="badge badge-success">Ativo</span>
+                           {% else %}
+                              <span class="badge badge-danger">Inativo</span>
+                           {% endif %}
+                        </td>
+                        <td class="pl-0 py-8 d-none d-sm-table-cell" style="vertical-align: middle;">
+                           <!-- <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm">
+                              <span class="svg-icon svg-icon-md svg-icon-primary">
+                                 <img src="{% static 'assets/imagens/svg/icons/Communication/Share.svg' %}"/>      >
+                              </span>
+                           </a> -->
+                           <a href="{% url 'painel_banners_edit' banner.id %}" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3">
+                           <span class="svg-icon svg-icon-md svg-icon-primary">
+                           <img src="{% static 'assets/imagens/svg/icons/Communication/Write.svg' %}"/>
+                           </span>
+                           </a>
+                           <!-- Botão Trash abre modal -->
+                           <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm" data-toggle="modal" data-target="#modalExcluirBanner{{ banner.id }}">
+                           <span class="svg-icon svg-icon-md svg-icon-primary">
+                           <img src="{% static 'assets/imagens/svg/icons/General/Trash.svg' %}"/>
+                           </span>
+                           </a>
+                           <!-- Modal de confirmação -->
+                           <div class="modal fade" id="modalExcluirBanner{{ banner.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{ banner.id }}" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                 <div class="modal-content">
+                                    <div class="modal-header">
+                                       <h5 class="modal-title" id="modalLabel{{ banner.id }}">Confirmar exclusão</h5>
+                                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                       <span aria-hidden="true">&times;</span>
+                                       </button>
+                                    </div>
+                                    <div class="modal-body">
+                                       Tem certeza que deseja excluir o banner <strong>{{ banner.titulo }}</strong>?
+                                    </div>
+                                    <div class="modal-footer">
+                                       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                       <!-- Botão que chama a função JavaScript para deletar via AJAX -->
+                                       <button type="button" class="btn btn-danger" onclick="deleteBannerAjax({{ banner.id }}, '{{ banner.titulo }}')">Excluir</button>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <!-- <a href="#" class="btn btn-icon btn-light btn-hover-primary btn-sm mx-3">
+                           <span class="svg-icon svg-icon-md svg-icon-primary">
+                           <img src="{% static 'assets/imagens/svg/icons/Navigation/Check.svg' %}"/>
+                           </span>
+                           </a> -->
+                        </td>
+                     </tr>
+                  {% empty %}
+                     <tr>
+                        <td colspan="4" class="text-center py-10">
+                           <div class="d-flex flex-column align-items-center">
+                              <i class="fa fa-image text-muted mb-4" style="font-size: 3rem;"></i>
+                              <h4 class="text-muted mb-3">Nenhum banner encontrado</h4>
+                              <p class="text-muted mb-4">Adicione banners para exibir na sua loja</p>
+                              <a href="{% url 'painel_banners_add' %}" class="btn btn-primary">
+                                 <i class="fa fa-plus"></i> Adicionar Primeiro Banner
+                              </a>
+                           </div>
+                        </td>
+                     </tr>
+                  {% endfor %}
+                  </tbody>
+               </table>
+            </div>
+            <!--end::Table-->
+         </div>
+      </div>
+      <!--end::Body-->
+   </div>
+   <!--end::Advance Table Widget 4-->
+</div>
+
+<script>
+/**
+ * Função para deletar banner via AJAX
+ * @param {number} bannerId - ID do banner a ser deletado
+ * @param {string} bannerTitulo - Título do banner para exibição
+ */
+function deleteBannerAjax(bannerId, bannerTitulo) {
+    // 1. Fecha o modal antes de fazer a requisição
+    $('#modalExcluirBanner' + bannerId).modal('hide');
+    
+    // 2. Obtém o token CSRF necessário para requisições Django
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // 3. Faz a requisição AJAX usando fetch (método moderno)
+    fetch(`{% url 'painel_banners_delete' 0 %}`.replace('0', bannerId), {
+        method: 'POST',  // Método HTTP
+        headers: {
+            'Content-Type': 'application/json',  // Tipo do conteúdo
+            'X-CSRFToken': csrfToken,           // Token de segurança do Django
+            'X-Requested-With': 'XMLHttpRequest' // Identifica como requisição AJAX
+        },
+        body: JSON.stringify({              // Dados enviados (se necessário)
+            'action': 'delete'
+        })
+    })
+    .then(response => {
+        // 4. Verifica se a resposta foi bem-sucedida
+        if (response.ok) {
+            return response.json();  // Converte resposta para JSON
+        } else {
+            throw new Error('Erro na requisição: ' + response.status);
+        }
+    })
+    .then(data => {
+        // 5. Processa a resposta de sucesso
+        if (data.success) {
+            // Remove a linha da tabela do DOM
+            const row = document.querySelector(`#modalExcluirBanner${bannerId}`).closest('tr');
+            row.remove();
+            
+            // Exibe mensagem de sucesso
+            Swal.fire({
+                icon: 'success',
+                title: 'Banner excluído!',
+                text: `O banner "${bannerTitulo}" foi excluído com sucesso.`,
+                timer: 3000,
+                showConfirmButton: false
+            });
+            
+            // Atualiza contador de banners usando ID específico
+            const contador = document.getElementById('contador-banners');
+            if (contador) {
+                const currentCount = parseInt(contador.textContent);
+                const newCount = currentCount - 1;
+                contador.textContent = newCount;
+                
+                console.log(`Contador atualizado de ${currentCount} para ${newCount}`); // Debug
+            } else {
+                console.log('Contador não encontrado pelo ID #contador-banners'); // Debug
+            }
+        } else {
+            // Exibe mensagem de erro retornada pelo servidor
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: data.error || 'Erro ao excluir banner.'
+            });
+        }
+    })
+    .catch(error => {
+        // 6. Trata erros da requisição
+        console.error('Erro AJAX:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro de conexão!',
+            text: 'Não foi possível excluir o banner. Tente novamente.'
+        });
+    });
+}
+</script>
+
