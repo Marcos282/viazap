@@ -152,30 +152,46 @@ def register_view(request):
     from django.core.mail import send_mail
     from django.utils.encoding import force_bytes
     from django.utils.http import urlsafe_base64_encode
+    from django.core.exceptions import ValidationError
 
     form = UserCreationForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
-            user = form.save(commit=False)
-            user.email_confirmation_pending = True
-            user.save()
+            try:
+                user = form.save(commit=False)
+                user.email_confirmation_pending = True
+                user.save()
+            except (ValidationError, ValueError) as e:
+                if hasattr(e, 'message_dict'):
+                    for field, errs in e.message_dict.items():
+                        for err in errs:
+                            form.add_error(field, err)
+                else:
+                    form.add_error(None, str(e))
+                return render(request, 'register/register.html', {'form': form})
+            except Exception as e:
+                form.add_error(None, f'Erro ao criar conta: {str(e)}')
+                return render(request, 'register/register.html', {'form': form})
 
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
             confirmation_url = build_public_url(request,
                 f'/register/confirm/{uidb64}/{token}/'
             )
-            send_mail(
-                subject='Confirme seu e-mail',
-                message=(
-                    f'Olá, {user.username},\n\n'
-                    'Clique no link abaixo para confirmar seu e-mail e ativar sua conta:\n\n'
-                    f'{confirmation_url}\n\n'
-                    'Se você não solicitou este cadastro, ignore esta mensagem.'
-                ),
-                from_email=None,
-                recipient_list=[user.email],
-            )
+            try:
+                send_mail(
+                    subject='Confirme seu e-mail',
+                    message=(
+                        f'Olá, {user.username},\n\n'
+                        'Clique no link abaixo para confirmar seu e-mail e ativar sua conta:\n\n'
+                        f'{confirmation_url}\n\n'
+                        'Se você não solicitou este cadastro, ignore esta mensagem.'
+                    ),
+                    from_email=None,
+                    recipient_list=[user.email],
+                )
+            except Exception as e:
+                print(f"Erro ao enviar email de confirmacao: {e}")
             messages.success(request, 'Cadastro realizado. Confira seu e-mail para ativar a conta.')
             return redirect('login')
     return render(request, 'register/register.html', {'form': form})

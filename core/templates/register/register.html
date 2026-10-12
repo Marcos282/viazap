@@ -244,6 +244,18 @@
             background: var(--white);
         }
 
+        .is-invalid {
+            border-color: #dc2626 !important;
+            background: #fff8f8 !important;
+        }
+
+        .field-error {
+            color: #dc2626;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
         .input-with-suffix {
             position: relative;
             display: flex;
@@ -397,6 +409,14 @@
                 <h2>Criar conta</h2>
                 <p class="subtitle">Preencha os dados abaixo para começar.</p>
 
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="form-errors" style="{% if message.tags == 'success' %}background: #eefbf1; border-color: rgba(22, 163, 74, 0.16); color: #15803d;{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
                 {% if form.errors %}
                     <div class="form-errors">
                         <ul>
@@ -418,24 +438,36 @@
                     <div class="field">
                         <label for="id_username">Nome do site</label>
                         <div class="input-with-suffix">
-                            <input type="text" name="username" id="id_username" required>
+                            <input type="text" name="username" id="id_username" value="{{ form.username.value|default:'' }}" class="{% if form.username.errors %}is-invalid{% endif %}" required>
                             <span class="input-suffix">viazap.net</span>
                         </div>
+                        {% if form.username.errors %}
+                            <div class="field-error">{{ form.username.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="field">
                         <label for="id_email">E-mail</label>
-                        <input type="email" name="email" id="id_email" required>
+                        <input type="email" name="email" id="id_email" value="{{ form.email.value|default:'' }}" class="{% if form.email.errors %}is-invalid{% endif %}" required>
+                        {% if form.email.errors %}
+                            <div class="field-error">{{ form.email.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="field">
                         <label for="id_password1">Senha</label>
-                        <input type="password" name="password1" id="id_password1" required>
+                        <input type="password" name="password1" id="id_password1" value="{{ form.password1.value|default:'' }}" class="{% if form.password1.errors %}is-invalid{% endif %}" required>
+                        {% if form.password1.errors %}
+                            <div class="field-error">{{ form.password1.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="field">
                         <label for="id_password2">Confirmar senha</label>
-                        <input type="password" name="password2" id="id_password2" required>
+                        <input type="password" name="password2" id="id_password2" value="{{ form.password2.value|default:'' }}" class="{% if form.password2.errors %}is-invalid{% endif %}" required>
+                        {% if form.password2.errors %}
+                            <div class="field-error">{{ form.password2.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <button type="submit" class="primary-btn">Criar conta</button>
