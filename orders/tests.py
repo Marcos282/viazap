@@ -20,9 +20,9 @@ from menu.models import Produto, Category
 
 class OrderFlowTests(TestCase):
     def setUp(self):
-        self.a = Tenant.objects.create(name='Loja A', subdomain='flow-a')
-        self.b = Tenant.objects.create(name='Loja B', subdomain='flow-b')
-        self.user = User.objects.create_user(email='flow-a@example.com', password='test', username='flow-a', tenant=self.a)
+        self.a = Tenant.objects.create(name='Loja A', subdomain='flowa')
+        self.b = Tenant.objects.create(name='Loja B', subdomain='flowb')
+        self.user = User.objects.create_user(email='flowa@example.com', password='test', username='flowa', tenant=self.a)
         self.config = TenantSettings.load(self.a)
         self.factory = RequestFactory()
 
@@ -148,7 +148,7 @@ class OrderFlowTests(TestCase):
         client = Client(enforce_csrf_checks=True)
         client.force_login(self.user)
         response = client.post(reverse('pedido_status', args=[order.pk]),
-                               {'status': 'confirmado', 'status_atual': 'novo'}, HTTP_HOST='flow-a.localhost')
+                               {'status': 'confirmado', 'status_atual': 'novo'}, HTTP_HOST='flowa.localhost')
         self.assertEqual(response.status_code, 403)
 
     def test_indicators_are_scoped_and_use_completion_date(self):

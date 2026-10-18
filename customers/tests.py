@@ -8,10 +8,10 @@ from tenants.models import Tenant
 
 class TenantSessionContextTests(TestCase):
     def setUp(self):
-        self.tenant = Tenant.objects.create(name='Loja Teste', subdomain='loja-teste')
+        self.tenant = Tenant.objects.create(name='Loja Teste', subdomain='lojateste')
         self.user = User.objects.create_user(
-            email='admin@loja-teste.com',
-            username='loja-teste',
+            email='admin@lojateste.com',
+            username='lojateste',
             password='senha123',
             tenant=self.tenant,
         )
@@ -19,7 +19,7 @@ class TenantSessionContextTests(TestCase):
     def test_login_persists_tenant_id_in_session(self):
         response = self.client.post(
             reverse('login'),
-            {'email': 'admin@loja-teste.com', 'password': 'senha123'},
+            {'email': 'admin@lojateste.com', 'password': 'senha123'},
         )
 
         self.assertEqual(response.status_code, 302)
@@ -36,10 +36,10 @@ class TenantSessionContextTests(TestCase):
         self.assertEqual(response.context['tenant'].id, self.tenant.id)
 
     def test_painel_blocks_authenticated_user_from_other_subdomain(self):
-        other_tenant = Tenant.objects.create(name='Outra Loja', subdomain='outra-loja')
+        other_tenant = Tenant.objects.create(name='Outra Loja', subdomain='outraloja')
         other_user = User.objects.create_user(
-            email='admin@outra-loja.com',
-            username='outra-loja',
+            email='admin@outraloja.com',
+            username='outraloja',
             password='senha123',
             tenant=other_tenant,
         )
@@ -47,7 +47,7 @@ class TenantSessionContextTests(TestCase):
         self.client.force_login(other_user)
         response = self.client.get(
             reverse('painel_home'),
-            HTTP_HOST='loja-teste.localhost:8000',
+            HTTP_HOST='lojateste.localhost:8000',
         )
 
         self.assertEqual(response.status_code, 302)
@@ -111,13 +111,13 @@ class UserCredentialUniquenessTests(TestCase):
 class PasswordFlowTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            email='password-test@example.com', username='password-test',
+            email='passwordtest@example.com', username='passwordtest',
             password='Original!8392Forest',
         )
 
     def test_registration_rejects_weak_password(self):
         form = UserCreationForm(data={
-            'username': 'new-shop', 'email': 'new@example.com',
+            'username': 'newshop', 'email': 'new@example.com',
             'password1': 'a', 'password2': 'a',
         })
         self.assertFalse(form.is_valid())
@@ -127,7 +127,7 @@ class PasswordFlowTests(TestCase):
         from django.core import mail
         with self.settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend'):
             response = self.client.post(reverse('register'), {
-                'username': 'new-shop',
+                'username': 'newshop',
                 'email': 'new@example.com',
                 'password1': 'Strong!8392Forest',
                 'password2': 'Strong!8392Forest',
@@ -175,7 +175,7 @@ class PasswordFlowTests(TestCase):
     def test_reset_form_rejects_weak_mismatched_and_similar_passwords(self):
         from .forms import SetNewPasswordForm
         for first, second in [('a', 'a'), ('Forest!82934', 'different'),
-                              ('password-test', 'password-test')]:
+                              ('passwordtest', 'passwordtest')]:
             with self.subTest(password=first):
                 form = SetNewPasswordForm(
                     {'password1': first, 'password2': second}, user=self.user,
@@ -212,7 +212,7 @@ class PasswordFlowTests(TestCase):
         response = painel_configuracao(request)
         self.assertEqual(response.status_code, 400)
         self.user.refresh_from_db()
-        self.assertEqual(self.user.email, 'password-test@example.com')
+        self.assertEqual(self.user.email, 'passwordtest@example.com')
         self.assertTrue(self.user.check_password('Original!8392Forest'))
 
     def test_reset_email_uses_https_behind_trusted_proxy(self):
@@ -330,3 +330,93 @@ class ImageReductionFormatTests(SimpleTestCase):
                 self.assertEqual(output.format, 'JPEG')
                 self.assertEqual(output.mode, 'RGB')
                 self.assertEqual(output.getpixel((0, 0)), (255, 255, 255))
+
+
+class LowercaseShopIdentifierTests(TestCase):
+    def test_form_and_registration_normalize_identifier(self):
+        form = UserCreationForm(data={
+            'username': ' MiXeDShop ', 'email': 'mixedshop@example.com',
+            'password1': 'Senha-Forte-83746!', 'password2': 'Senha-Forte-83746!',
+        })
+        self.assertTrue(form.is_valid(), form.errors)
+        self.assertEqual(form.cleaned_data['username'], 'mixedshop')
+        user = form.save()
+        self.assertEqual(user.username, 'mixedshop')
+        self.assertEqual(user.tenant.subdomain, 'mixedshop')
+
+    def test_manager_and_direct_save_normalize_identifiers(self):
+        managed = User.objects.create_user(email='manager-case@example.com', username='MaNaGeR')
+        direct = User(email='direct-case@example.com', username='DiReCt')
+        direct.set_unusable_password()
+        direct.save()
+        for user, expected in ((managed, 'manager'), (direct, 'direct')):
+            user.refresh_from_db()
+            self.assertEqual(user.username, expected)
+            self.assertEqual(user.tenant.subdomain, expected)
+
+    def test_tenant_normalizes_without_changing_display_name(self):
+        tenant = Tenant.objects.create(name='Minha Loja', subdomain=' TeNaNt ')
+        tenant.refresh_from_db()
+        self.assertEqual(tenant.subdomain, 'tenant')
+        self.assertEqual(tenant.name, 'Minha Loja')
+
+    def test_partial_user_save_keeps_identifiers_in_sync(self):
+        user = User.objects.create_user(email='partial@example.com', username='partial')
+        User.objects.filter(pk=user.pk).update(username='PARTIAL')
+        user.refresh_from_db()
+        user.save(update_fields=['email_confirmation_pending'])
+        user.refresh_from_db()
+        self.assertEqual(user.username, 'partial')
+        self.assertEqual(user.tenant.subdomain, 'partial')
+
+    def test_hostname_resolves_legacy_uppercase_tenant(self):
+        from django.test import RequestFactory
+        from django.http import HttpResponse
+        from tenants.middleware import TenantMiddleware
+        from types import SimpleNamespace
+        tenant = Tenant.objects.create(name='Legacy', subdomain='legacy')
+        Tenant.objects.filter(pk=tenant.pk).update(subdomain='LeGaCy')
+        request = RequestFactory().get('/loja/', HTTP_HOST='legacy.viazap.net')
+        request.user = SimpleNamespace(is_authenticated=False)
+        response = TenantMiddleware(lambda req: HttpResponse(str(req.tenant.pk)))(request)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, str(tenant.pk).encode())
+
+
+class ShopIdentifierValidationTests(TestCase):
+    def test_invalid_registration_identifiers_are_rejected_without_records(self):
+        from django.core.exceptions import ValidationError
+        invalid = ['loja legal', 'café', 'loja@site', 'loja.com', 'loja_nome',
+                   'loja-nome', 'loja/', 'loja!', '💜', 'K', 'a' * 51]
+        for identifier in invalid:
+            with self.subTest(identifier=identifier):
+                form = UserCreationForm(data={
+                    'username': identifier, 'email': 'invalid@example.com',
+                    'password1': 'Senha-Forte-83746!', 'password2': 'Senha-Forte-83746!',
+                })
+                self.assertFalse(form.is_valid())
+                self.assertIn('username', form.errors)
+                with self.assertRaises(ValidationError):
+                    User.objects.create_user(email='invalid@example.com', username=identifier)
+                with self.assertRaises(ValidationError):
+                    User(email='invalid@example.com', username=identifier).save()
+                with self.assertRaises(ValidationError):
+                    Tenant.objects.create(name='Invalid', subdomain=identifier)
+        self.assertFalse(User.objects.exists())
+        self.assertFalse(Tenant.objects.exists())
+
+    def test_alphanumeric_uppercase_is_saved_in_lowercase(self):
+        user = User.objects.create_user(email='valid@example.com', username='LoJa123')
+        self.assertEqual(user.username, 'loja123')
+        self.assertEqual(user.tenant.subdomain, 'loja123')
+
+    def test_legacy_identifier_does_not_block_existing_account_saves(self):
+        tenant = Tenant.objects.create(name='Legacy', subdomain='legacy')
+        user = User.objects.create_user(email='legacy@example.com', username='legacy', tenant=tenant)
+        Tenant.objects.filter(pk=tenant.pk).update(subdomain='legacy-shop')
+        User.objects.filter(pk=user.pk).update(username='legacy-shop')
+        user.refresh_from_db()
+        user.save(update_fields=['email_confirmation_pending'])
+        user.refresh_from_db()
+        self.assertEqual(user.tenant.subdomain, 'legacy-shop')
+        self.assertEqual(user.username, 'legacy-shop')

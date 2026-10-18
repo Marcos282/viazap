@@ -438,9 +438,10 @@
                     <div class="field">
                         <label for="id_username">Nome do site</label>
                         <div class="input-with-suffix">
-                            <input type="text" name="username" id="id_username" value="{{ form.username.value|default:'' }}" class="{% if form.username.errors %}is-invalid{% endif %}" required>
+                            <input type="text" name="username" id="id_username" maxlength="50" pattern="[a-z0-9]+" autocapitalize="none" spellcheck="false" oninput="this.value = this.value.toLowerCase()" aria-describedby="username-help" value="{{ form.username.value|default:'' }}" class="{% if form.username.errors %}is-invalid{% endif %}" required>
                             <span class="input-suffix">viazap.net</span>
                         </div>
+                        <small id="username-help">Use apenas letras de a a z e números, sem acentos, espaços ou símbolos.</small>
                         {% if form.username.errors %}
                             <div class="field-error">{{ form.username.errors.0 }}</div>
                         {% endif %}

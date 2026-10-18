@@ -102,7 +102,7 @@ class TenantMiddleware:
                 request.tenant = None
             else:
                 try:
-                    tenant = Tenant.objects.get(subdomain=subdomain)
+                    tenant = Tenant.objects.get(subdomain__iexact=subdomain)
                     request.tenant = tenant
                     tenant_id = tenant.id
                     logger.info("✅ Tenant encontrado: %s | ID: %s", tenant, tenant_id)

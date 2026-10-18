@@ -122,9 +122,9 @@ class ChatSessionTests(TestCase):
     def setUp(self):
         from tenants.models import Tenant
         from customers.models import User
-        self.tenant = Tenant.objects.create(name='Loja A', subdomain='chat-a')
-        self.other = Tenant.objects.create(name='Loja B', subdomain='chat-b')
-        self.operator = User.objects.create(tenant=self.tenant, username='chat-a', email='chat-a@example.com', is_staff=True)
+        self.tenant = Tenant.objects.create(name='Loja A', subdomain='chata')
+        self.other = Tenant.objects.create(name='Loja B', subdomain='chatb')
+        self.operator = User.objects.create(tenant=self.tenant, username='chata', email='chata@example.com', is_staff=True)
 
     def test_messages_and_handoff_survive_module_reload(self):
         import importlib
@@ -290,15 +290,15 @@ class GoogleTagTenantTests(TestCase):
     def setUp(self):
         from tenants.models import Tenant, TenantSettings
 
-        self.first = Tenant.objects.create(name='Analytics A', subdomain='analytics-a')
-        self.second = Tenant.objects.create(name='Analytics B', subdomain='analytics-b')
+        self.first = Tenant.objects.create(name='Analytics A', subdomain='analyticsa')
+        self.second = Tenant.objects.create(name='Analytics B', subdomain='analyticsb')
         TenantSettings.objects.create(tenant=self.first, tag_google_analytics='g-1j1vwebse3')
         TenantSettings.objects.create(tenant=self.second, tag_google_analytics='G-OUTRALOJA1')
 
     def test_context_exposes_only_current_tenant_tag(self):
         from customers.contexto import configuracao_context
 
-        request = RequestFactory().get('/loja/', HTTP_HOST='analytics-a.localhost')
+        request = RequestFactory().get('/loja/', HTTP_HOST='analyticsa.localhost')
         request.tenant = self.first
         context = configuracao_context(request)
         self.assertEqual(context['ga_measurement_id'], 'G-1J1VWEBSE3')
@@ -321,8 +321,8 @@ class AITokenUsageTests(TestCase):
         from django.test import override_settings
         from tenants.models import Tenant
         from .ai_chat import ask_ai_assistant, get_ai_token_usage
-        first = Tenant.objects.create(name='Tokens A', subdomain='tokens-a')
-        second = Tenant.objects.create(name='Tokens B', subdomain='tokens-b')
+        first = Tenant.objects.create(name='Tokens A', subdomain='tokensa')
+        second = Tenant.objects.create(name='Tokens B', subdomain='tokensb')
         response = Mock()
         response.json.return_value = {
             'model': 'test-model',

@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.password_validation import validate_password
 from customers.models import User
 from tenants.models import Tenant
+from tenants.identifiers import normalize_shop_identifier
 from menu.models import Category    
 
 class UserCreationForm(forms.ModelForm):
@@ -14,7 +15,7 @@ class UserCreationForm(forms.ModelForm):
         fields = ('username', 'email')
 
     def clean_username(self):
-        username = self.cleaned_data['username'].strip()
+        username = normalize_shop_identifier(self.cleaned_data['username'])
         if User.objects.filter(username__iexact=username).exists():
             raise forms.ValidationError('Este username já está em uso.')
         if Tenant.objects.filter(subdomain__iexact=username).exists():

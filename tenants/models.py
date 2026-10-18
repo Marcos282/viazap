@@ -3,6 +3,7 @@
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from .identifiers import normalize_shop_identifier
  
 class SingletonModel(models.Model):
     """
@@ -73,6 +74,18 @@ class Tenant(models.Model):
     cpf_ou_cnpj = models.CharField(max_length=20, blank=True, null=True)
     nome_responsavel = models.CharField(max_length=100, blank=True, null=True)
     aberto = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            try:
+                self.subdomain = normalize_shop_identifier(self.subdomain)
+            except ValidationError as exc:
+                raise ValidationError({'subdomain': exc.messages}) from exc
+        else:
+            self.subdomain = self.subdomain.strip().lower()
+        if kwargs.get("update_fields") is not None:
+            kwargs["update_fields"] = set(kwargs["update_fields"]) | {"subdomain"}
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

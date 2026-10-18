@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from datetime import timedelta
 from tenants.models import Tenant
+from tenants.identifiers import normalize_shop_identifier
 
 # --- User customizado para multi-tenant ---
 class UserManager(BaseUserManager):
@@ -16,7 +17,7 @@ class UserManager(BaseUserManager):
         # Se não foi fornecido username, usar a parte antes do @ do email
         if not username:
             username = email.split('@')[0]
-        username = username.strip()
+        username = normalize_shop_identifier(username)
 
         if not username:
             raise ValueError('O campo username é obrigatório')
@@ -60,6 +61,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         database = kwargs.get('using') or router.db_for_write(type(self), instance=self)
+        if self._state.adding:
+            try:
+                self.username = normalize_shop_identifier(self.username)
+            except ValidationError as exc:
+                raise ValidationError({'username': exc.messages}) from exc
+        else:
+            self.username = self.username.strip().lower()
+        if kwargs.get("update_fields") is not None:
+            kwargs["update_fields"] = set(kwargs["update_fields"]) | {"username"}
         with transaction.atomic(using=database):
             if not self.tenant_id:
                 tenants = Tenant.objects.using(database)
